@@ -1,0 +1,143 @@
+
+/* Notebook Paper Background & Layout */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    
+    display: flex;
+    flex-direction: column; 
+    justify-content: center;
+    align-items: center;
+    
+    background-color: #fff;
+    
+    /* Notebook Paper */
+    background-image: 
+
+        /* The Red Vertical Margin Line */
+        linear-gradient(to right, transparent 60px, #ff9ea5 60px, #ff9ea5 62px, transparent 62px),
+        
+        /* The Blue Horizontal Lines */
+        repeating-linear-gradient(transparent, transparent 29px, #afe0fa 30px);
+        
+    /* Positioning background elements */
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat;
+    background-attachment: fixed; /* Keeps lines fixed when scrolling */
+}
+
+/* Contact Manager Title */
+.main-title {
+    /* Fonts */
+    font-family: 'Comic Sans MS', 'Brush Script MT', cursive;
+    font-size: 3.5em;
+    color: #333;
+    margin: 0 0 30px 0; /* Margin bottom pushes the bubble down */
+    text-align: center;
+    
+}
+
+
+/* Grey Bubble Container*/
+.container {
+    background-color: #f0f2f5; /* Grey background */
+    width: 350px;
+    border: 4px solid #a0a0a0;
+    border-radius: 20px; /* Rounded bubble corners */
+    
+    overflow: hidden;
+    position: relative;
+    z-index: 10;
+}
+
+/* Tab Navigation */
+.tabs {
+    display: flex;
+    background-color: #d1d5db; /* Darker grey for inactive tabs */
+    border-bottom: 2px solid #ccc;
+}
+
+.tab-btn {
+    flex: 1;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: 0.3s;
+    background-color: #d1d5db;
+    color: #666;
+}
+
+/* Active Tab Style */
+.tab-btn.active {
+    background-color: #f0f2f5; 
+    color: #000;
+    border-bottom: none; 
+    border-top: 4px solid #ff0000; /* Red accent on top */
+}
+
+.tab-btn:hover:not(.active) {
+    background-color: #e5e7eb;
+}
+
+/* Form Content & Inputs */
+.tab-content {
+    padding: 30px 25px;
+    display: none;
+    animation: fadeIn 0.3s;
+    text-align: center;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+h2 {
+    margin-top: 0;
+    margin-bottom: 25px;
+    color: #333;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    background-color: #fff;
+    font-size: 14px;
+}
+
+input:focus {
+    border-color: #22c55e;
+    outline: none;
+}
+
+/* Buttons & Animations */
+.btn-submit {
+    width: 100%;
+    padding: 12px;
+    background-color: #22c55e; /* Green button */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 10px;
+    transition: background 0.2s;
+}
+
+.btn-submit:hover {
+    background-color: #16a34a;
+}
+
+/* Slide up and fade in animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
