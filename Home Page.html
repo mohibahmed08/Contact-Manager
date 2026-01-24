@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing Page - Login/Register</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1 class="main-title">Contact Manager</h1>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab(event, 'register')">Sign Up (Register)</button>
+            <button class="tab-btn" onclick="openTab(event, 'login')">Login</button>
+        </div>
+
+        <div id="register" class="tab-content active">
+            <h2>Register</h2>
+            <form>
+                <input type="text" placeholder="First Name">
+                <input type="text" placeholder="Last Name">
+                <input type="email" placeholder="Email">
+                <input type="password" placeholder="Password">
+                <button type="submit" class="btn-submit">Sign Up</button>
+            </form>
+        </div>
+
+        <div id="login" class="tab-content">
+            <h2>Login</h2>
+            <form>
+                <input type="email" placeholder="Email"> 
+                <input type="password" placeholder="Password">
+                <button type="submit" class="btn-submit">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>
