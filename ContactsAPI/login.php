@@ -24,16 +24,17 @@
             if (password_verify($inData["Password"], $row['Password'])) {
 			    returnWithInfo( $row['FirstName'], $row['LastName'], $row['ID'] );
             } else {
-                returnWithError("Invalid Password");
+                returnWithError("Invalid Login");
             }
 		}
 		else
 		{
-			returnWithError("Username Not Found");
+			returnWithError("Invalid Login");
 		}
 
 		$stmt->close();
 		$conn->close();
+        exit();
 	}
 	
 	function getRequestInfo()
