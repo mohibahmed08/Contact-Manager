@@ -25,7 +25,7 @@ switch ($inData["action"]) {
         break;
 
     case "searchContacts":
-        require_once "contacts.php";
+        require_once "searchContacts.php";
         handleSearchContacts($inData);
         break;
 
