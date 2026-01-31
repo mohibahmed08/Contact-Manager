@@ -18,21 +18,24 @@
         $stmtInsert = $conn->prepare("INSERT INTO Users (FirstName, LastName, Login, Password) VALUES (?, ?, ?, ?)");
         $hashedPassword = password_hash($inData["password"], PASSWORD_DEFAULT); // Hashes password for better security incase database is hacked
 		$stmtInsert->bind_param("ssss", $inData["FirstName"], $inData["LastName"], $inData["login"], $hashedPassword);
-		$stmtInsert->execute();
-		$result = $stmtInsert->get_result();
 
         if (!$stmtInsert->execute()) {
             if ($conn->errno == 1062) 
                 returnWithError("Account already exists");
             else 
                 returnWithError("Failed to create account: " . $conn->error);
+            
+            $stmtInsert->close();
+            $conn->close();
             exit();
         }
 
-        returnWithInfo( $row['FirstName'], $row['LastName'], $row['ID'] );
+        returnWithInfo( $inData['FirstName'], $inData['LastName'], $conn->insert_id );
 
-		$stmt->close();
+		$stmtInsert->close();
 		$conn->close();
+
+        exit();
 	}
 	
 	function getRequestInfo()
