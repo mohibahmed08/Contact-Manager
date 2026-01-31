@@ -29,6 +29,11 @@ switch ($inData["action"]) {
         handleSearchContacts($inData);
         break;
 
+    case "getContacts":
+        require_once "getContacts.php";
+        handleFetchContacts($inData);
+        break;
+
     default:
         sendError("Unknown action");
 }
