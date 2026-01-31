@@ -15,8 +15,8 @@
         {
             // Insert new account into database
             $stmtInsert = $conn->prepare("INSERT INTO Users (FirstName, LastName, Login, Password) VALUES (?, ?, ?, ?)");
-            $hashedPassword = password_hash($inData["password"], PASSWORD_DEFAULT); // Hashes password for better security incase database is hacked
-            $stmtInsert->bind_param("ssss", $inData["FirstName"], $inData["LastName"], $inData["login"], $hashedPassword);
+            $hashedPassword = password_hash($inData["Password"], PASSWORD_DEFAULT); // Hashes password for better security incase database is hacked
+            $stmtInsert->bind_param("ssss", $inData["FirstName"], $inData["LastName"], $inData["Login"], $hashedPassword);
 
             if (!$stmtInsert->execute()) {
                 if ($conn->errno == 1062) 
@@ -26,7 +26,7 @@
                 
                 $stmtInsert->close();
                 $conn->close();
-                exit();
+                return;
             }
 
             returnWithInfo( $inData['FirstName'], $inData['LastName'], $conn->insert_id );
@@ -34,7 +34,7 @@
             $stmtInsert->close();
             $conn->close();
 
-            exit();
+            return;
         }
     }
 	
