@@ -1,11 +1,35 @@
-/* ================ REMOVE LATER AFTER MERGING ============== */
-body{
+/* Notebook Paper Background & Layout */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    
     display: flex;
+    flex-direction: column; 
     justify-content: center;
+    align-items: center;
+    
+    background-color: #fff;
+    
+    /* Notebook Paper */
+    background-image: 
+
+        /* The Red Vertical Margin Line */
+        linear-gradient(to right, transparent 60px, #ff9ea5 60px, #ff9ea5 62px, transparent 62px),
+        
+        /* The Blue Horizontal Lines */
+        repeating-linear-gradient(transparent, transparent 29px, #afe0fa 30px);
+        
+    /* Positioning background elements */
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat;
+    background-attachment: fixed; /* Keeps lines fixed when scrolling */
 }
-/* ========================================================== */
 
 .edit-contact-card-wrapper{
+
+    /* SOLIDIFY THE BACKGROUND COLOR FOR CREATE CONTACT */
+    background-color: #fafafa;
 
     /* FORMATTING ELEMENTS TO THE CENTER */
     display: flex;
@@ -17,17 +41,14 @@ body{
     width: max-content;
     
     /* GAP BETWEEN ITEMS */
-    gap: 1em;
+    gap: 1.5em;
 
     /* CREATE A BORDER FOR THE CONTACT CARD */
     border: 1px solid black;
     /* BORDER CURVATURE */
     border-radius: 1em;
     /* BORDER PADDING FROM CONTENT */
-    padding: 80px;
-
-    /* BACKGROUND COLOR */
-    /* background-color: slategray; */
+    padding: 4%;
 
 }
 
@@ -47,7 +68,8 @@ body{
     /* SOLID BLACK BORDER */
     border: 1px solid black;
     /* BUBBLE BACKGROUND COLOR */
-    background-color: seashell;
+    background: rgba(36, 122, 197, 0.15);
+    backdrop-filter: blur(3px);
     /* BUBBLE FOREGROUND COLOR */
     color: black;
 }
@@ -57,6 +79,12 @@ body{
     /* RELATIVE TO THE BUBBLE WRAPPER */
     width: 35%;
     height: 35%;
+}
+
+.edit-contact-title{
+    /* MANUALLY ADJUSTING THE SPACING BETWEEN TITLE AND OTHER DOM ELEMENTS */
+    /* top | right | bottom | left */
+    margin: 15px 10px 10px 5px;
 }
 
 .edit-contact-fields-wrapper{
@@ -134,6 +162,10 @@ body{
     border-radius: 6px;
     /* PADDING TEXT FROM BORDER */
     padding: 10px 20px;
+
+    /* MANUALLY ADJUSTING THE SPACING BETWEEN ACTION BUTTON AND OTHER DOM ELEMENTS */
+    /* top | right | bottom | left */
+    margin: 15px 10px 0px 5px;
 
     /* POINTER CURSOR WHEN HOVERED */
     cursor: pointer;
