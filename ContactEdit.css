@@ -1,0 +1,158 @@
+/* ================ REMOVE LATER AFTER MERGING ============== */
+body{
+    display: flex;
+    justify-content: center;
+}
+/* ========================================================== */
+
+.edit-contact-card-wrapper{
+
+    /* FORMATTING ELEMENTS TO THE CENTER */
+    display: flex;
+    /* ONE COLUMN VERTICALLY STACKED GRID */
+    flex-direction: column;
+    /* CENTERS CONTENT HORIZONTALLY */
+    align-items: center;
+    /* FORCE WIDTH TO SHRINK WRAP CONTENT */
+    width: max-content;
+    
+    /* GAP BETWEEN ITEMS */
+    gap: 1em;
+
+    /* CREATE A BORDER FOR THE CONTACT CARD */
+    border: 1px solid black;
+    /* BORDER CURVATURE */
+    border-radius: 1em;
+    /* BORDER PADDING FROM CONTENT */
+    padding: 80px;
+
+    /* BACKGROUND COLOR */
+    /* background-color: slategray; */
+
+}
+
+.edit-contact-name-bubble-wrapper{
+    /* FORMATTING FOR INITALS TO CENTER */
+    display: flex;
+    /* HORIZONTAL AND VERTICAL CENTERING */
+    justify-content: center;
+    align-items: center;
+
+    /* WIDTH AND HEIGHT OF THE DIV BUBBLE */
+    width: 100px;
+    height: 100px;
+    /* CURVES THE BLACK BORDER */
+    border-radius: 5em;
+
+    /* SOLID BLACK BORDER */
+    border: 1px solid black;
+    /* BUBBLE BACKGROUND COLOR */
+    background-color: seashell;
+    /* BUBBLE FOREGROUND COLOR */
+    color: black;
+}
+
+.edit-contact-pencil-icon{
+    /* WIDTH AND HEIGHT OF THE ICON */
+    /* RELATIVE TO THE BUBBLE WRAPPER */
+    width: 35%;
+    height: 35%;
+}
+
+.edit-contact-fields-wrapper{
+    /* FORMATTING ELEMENTS TO THE CENTER */
+    display: flex;
+    /* ONE COLUMN VERTICALLY STACKED GRID */
+    flex-direction: column;
+    /* CENTERS CONTENT HORIZONTALLY */
+    align-items: center;
+    /* GAP BETWEEN ITEMS */
+    gap: 1em;
+}
+
+.edit-contact-field {
+    /* SET THE WIDTH OF THE FIELDS */
+    width: 250px;
+
+    /* FONT SIZE OF TEXT INPUT WITHIN THE FIELDS */
+    font-size: 15px;
+
+    /* SUBTLE BORDER COLOR SURROUND FIELDS */
+    border: 2px solid #d1d5db;
+    /* CURVATURE TO THE FIELDS' BORDER */
+    border-radius: 8px;
+    /* PADDING WITHIN THE INPUT FIELDS */
+    padding: 10px 14px;
+
+    /* BACKGROUND COLOR OF THE FIELDS */
+    background-color: #ffffff;
+    /* FOREGROUND COLOR OF THE FIELDS */
+    color: #111827;
+
+    /* TRANSITION TAG FOR BORDER AND SHADOW */
+    transition: 
+        border-color 0.2s ease;
+        box-shadow: 0.2s ease;
+    
+}
+/* FOCUS STATE WHEN CLICKED ONTO A FIELD */
+.edit-contact-field:focus {
+    /* FADE INTO THIS BORDER COLOR */
+    border-color: #2563eb;
+    /* FADE INTO THIS SHADOW COLOR */
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    /* REMOVE PRIOR OUTLINE FOR THIS TO SHOW */
+    outline: none; 
+}
+/* FIELD PLACEHOLDER FOREGROUND COLOR */
+.edit-contact-field::placeholder {
+    color: #9ca3af;
+}
+/* FIELD DISABLED STATE (REMOVE ALL & TREAT LIKE H1) */
+.edit-contact-field:disabled {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+}
+
+.edit-contact-action-button {
+    /* BUTTON WIDTH */
+    width: 200px;
+
+    /* SIZE OF THE FOREGROUND */
+    font-size: 15px;
+    /* BOLDNESS ON THE FOREGROUND */
+    font-weight: 500;
+
+    /* BUTTON FOREGROUND COLOR */
+    color: #ffffff;
+    /* BUTTON BACKGROUND COLOR */
+    background-color: #2563eb;      
+
+    /* REMOVE DEFAULT BORDER */
+    border: none;
+    /* BORDER CURVATURE */
+    border-radius: 6px;
+    /* PADDING TEXT FROM BORDER */
+    padding: 10px 20px;
+
+    /* POINTER CURSOR WHEN HOVERED */
+    cursor: pointer;
+
+    /* SMOOTH TRANSITIONS ON HOVER AND CLICK */
+    transition: 
+        background-color 0.2s ease, 
+        transform 0.1s ease;
+}
+/* BUTTON WHEN HOVERED */
+.edit-contact-action-button:hover {
+    background-color: #1e40af;      /* darker blue */
+}
+/* BUTTON WHEN CLICKED */
+.edit-contact-action-button:active {
+    background-color: #1e3a8a;
+}
+/* BUTTONN WHEN DISABLED */
+.edit-contact-action-button:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+}
