@@ -28,6 +28,9 @@ body {
 
 .edit-contact-card-wrapper{
 
+    /* MAKE CHILDREN RELATIVE TO THIS WRAPPER */
+    position: relative;
+
     /* SOLIDIFY THE BACKGROUND COLOR FOR CREATE CONTACT */
     background-color: #fafafa;
 
@@ -50,6 +53,57 @@ body {
     /* BORDER PADDING FROM CONTENT */
     padding: 4%;
 
+}
+
+.edit-contact-back-button-bubble-wrapper{
+    /* ABSOLUTE BASED ON RELATIVE TO PARENT */
+    position: absolute;
+    /* 20 PIXELS FROM THE TOP LEFT */
+    top: 20px;
+    left: 20px;
+
+    /* FORMATTING FOR INITALS TO CENTER */
+    display: flex;
+    /* HORIZONTAL AND VERTICAL CENTERING */
+    justify-content: center;
+    align-items: center;
+
+    /* WIDTH AND HEIGHT OF THE DIV BUBBLE */
+    width: 50px;
+    height: 50px;
+    /* CURVES THE BLACK BORDER */
+    border-radius: 5em;
+
+    /* POINTER CURSOR WHEN HOVERED */
+    cursor: pointer;
+
+    /* SOLID BLACK BORDER */
+    border: 1px solid black;
+    /* BUBBLE BACKGROUND COLOR */
+    background: rgba(210, 180, 140, 0.15); /* soft beige */
+    backdrop-filter: blur(3px);
+    /* BUBBLE FOREGROUND COLOR */
+    color: black;
+}
+
+.edit-contact-back-button-bubble-wrapper:hover{
+    /* DARKEN THE BACKGROUND ON HOVER */
+    background: rgba(210, 180, 140, 0.25);
+}
+
+.edit-contact-back-button{
+    /* REMOVE THE DEFAULT BORDER */
+    border: none;
+    /* MAKE BACKGROUND TRANSPARENT */
+    background-color: transparent;
+    
+    /* ENLARGE THE FONT SIZE */
+    font-size: 1.2em;
+    /* MAKE FONT BOLD */
+    font-weight: 500;
+
+    /* POINTER CURSOR WHEN HOVERED */
+    cursor: pointer;
 }
 
 .edit-contact-name-bubble-wrapper{
@@ -84,7 +138,7 @@ body {
 .edit-contact-title{
     /* MANUALLY ADJUSTING THE SPACING BETWEEN TITLE AND OTHER DOM ELEMENTS */
     /* top | right | bottom | left */
-    margin: 15px 10px 10px 5px;
+    margin: 5px 10px 10px 5px;
 }
 
 .edit-contact-fields-wrapper{
@@ -154,7 +208,7 @@ body {
     /* BUTTON FOREGROUND COLOR */
     color: #ffffff;
     /* BUTTON BACKGROUND COLOR */
-    background-color: #2563eb;      
+    background: linear-gradient(135deg, #2563eb, #1e40af);
 
     /* REMOVE DEFAULT BORDER */
     border: none;
@@ -165,7 +219,7 @@ body {
 
     /* MANUALLY ADJUSTING THE SPACING BETWEEN ACTION BUTTON AND OTHER DOM ELEMENTS */
     /* top | right | bottom | left */
-    margin: 15px 10px 0px 5px;
+    margin: 10px 10px -10px 5px;
 
     /* POINTER CURSOR WHEN HOVERED */
     cursor: pointer;
@@ -177,13 +231,9 @@ body {
 }
 /* BUTTON WHEN HOVERED */
 .edit-contact-action-button:hover {
-    background-color: #1e40af;      /* darker blue */
+    background: linear-gradient(135deg, #1e3a8a, #1e40af);
 }
-/* BUTTON WHEN CLICKED */
-.edit-contact-action-button:active {
-    background-color: #1e3a8a;
-}
-/* BUTTONN WHEN DISABLED */
+/* BUTTON WHEN DISABLED */
 .edit-contact-action-button:disabled {
     background-color: #9ca3af;
     cursor: not-allowed;

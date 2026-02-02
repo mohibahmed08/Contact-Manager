@@ -15,6 +15,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if(savedContactInfo.length == 4){
             //SET THE TITLE TO EDIT CONTACT
             document.getElementById('title-label').textContent = "Edit Contact";
+            //SET THE WEBPAGE NAME ACCORDINGLY
+            document.getElementById('webpage-name').textContent = "Edit Contact";
             //INITALIZE THE FIELDS ACCORDINGLY (ASSUMING IN PROPER ORDER)
             document.getElementById('first-name-field').value = savedContactInfo[0];
             document.getElementById('last-name-field').value = savedContactInfo[1];
@@ -35,6 +37,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if(!savedContactInfo){
         //SET THE TITLE TO CREATE CONTACT
         document.getElementById('title-label').textContent = "Create Contact";
+        //SET THE WEBPAGE NAME ACCORDINGLY
+        document.getElementById('webpage-name').textContent = "Create Contact";
         //INITALIZE THE FIELDS ACCORDINGLY
         document.getElementById('first-name-field').value = "";
         document.getElementById('last-name-field').value = "";
@@ -47,25 +51,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-// //CHECKS IF A FIELD IS UNIQUE FROM WHATS IN THE DB
-// function isTaken(fields){
-//     //HOLDS IF THE FIELD HAS BEEN TAKEN OR NOT
-//     let isTaken = false;
-//     //ITERATE THROUGH BACKEND FIELDS AND SEARCH FOR FIELD VALUE
-//     fields.array.forEach(element => {
-//         //SEARCH IN BACKEND FOR ELEMENT
-//         fetch('backend.php', { // <-- CHANGE THIS OUT WITH THE ACTUAL BACKEND CODE NAME !!!!!!!!!!!!!
-//             //GET FROM THE BACKEND PHP
-//             method: 'GET',
-//             //STATE WE ARE RECIEVING JSON FILE TYPE
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             },
-//         });
-//     });
-//     //RETURN IF IS TAKEN, TO DISPLAY ON DOM
-//     return isTaken;
-// } 
+//IF BACK BUTTON IS CLICKED
+document.getElementById("back-button").addEventListener("click", function () {
+    //SWITCH BACK TO THE CONTACT PAGE
+    window.location.href = 'Contacts.html';
+});
+//TIE THE WRAPPER OF THE BACK BUTTON TO DO THE SAME THING
+document.getElementById("back-button-wrapper").addEventListener("click", function () {
+    //ACTIVATE BACK BUTTON CLICK ABOVE
+    document.getElementById("back-button").click();
+});
+
+//CHECKS IF A FIELD IS UNIQUE FROM WHATS IN THE DB
+function isTaken(firstName, lastName, phoneNumber, emailAddress){
+    //SEARCH FOR THE CONTACT TO SEE IF ITS BEEN ENTERED PRIOR
+    let results = search(firstName, lastName, phoneNumber, emailAddress);
+    //SET THE FIELD TO RED COLOR IF SEARCH WAS SUCCESSFUL, ELSE BLACK
+    document.getElementById('first-name-field').style.borderColor = results.contains(firstName) ? 'red' : 'black';
+    document.getElementById('last-name-field').style.borderColor = results.contains(lastName) ? 'red' : 'black';
+    document.getElementById('phone-number-field').style.borderColor = results.contains(phoneNumber) ? 'red' : 'black';
+    document.getElementById('email-address-field').style.borderColor = results.contains(emailAddress) ? 'red' : 'black';
+} 
 
 //TASKS FOR WHEN WHEN THE ACTION BUTTON IS CLICKED
 document.getElementById("action-button").addEventListener("click", function () {
@@ -76,14 +82,11 @@ document.getElementById("action-button").addEventListener("click", function () {
     let phoneNumber = document.getElementById("phone-number-field").value;
     let emailAddress = document.getElementById("email-address-field").value;
 
-    //CREATE AN ARRAY OF FIELDS TO BE SENT TO IS TAKEN
-    let fields = {firstName, lastName, phoneNumber, emailAddress};
-
     //CHECK IF THE FIELD DATA HAS BEEN TAKEN ALREADY IN BACKEND
-    if(isTaken(fields)) return; //PASS IN CURRENT FIELD INFO (NEED METHOD TO BE COMPLETED !!!!!!!!)
+    if(isTaken(firstName, lastName, phoneNumber, emailAddress)) return; //PASS IN CURRENT FIELD INFO (NEED METHOD TO BE COMPLETED !!!!!!!!)
 
-    //SEND TO BACKEND VIA API ENDPOINT
-    fetch('backend.php', { // <-- CHANGE THIS OUT WITH THE ACTUAL BACKEND CODE NAME !!!!!!!!!!!!!
+    //IF NOT ALREADY TAKEN, THEN SEND TO BACKEND VIA API ENDPOINT
+    fetch('addContact.php', { // <-- CHANGE THIS OUT WITH THE ACTUAL BACKEND CODE NAME !!!!!!!!!!!!!
         //POST TO THE BACKEND PHP
         method: 'POST',
         //STATE WE ARE SENDING JSON FILE TYPE

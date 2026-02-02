@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- WEBPAGE TITLE -->
-    <title>Edit Contact</title>
+    <title id = "webpage-name">Edit Contact</title>
 
     <!-- TIE THE CSS SHEET TO EDIT DOM ELEMENTS -->
     <link rel="stylesheet" href="ContactEdit.css">
@@ -19,19 +19,12 @@
     <div class = "edit-contact-card-wrapper">
        
         <!-- BACK BUTTON ON TOP LEFT IF APPLICABLE -->
-        <!-- <div class = "edit-contact-back-button-bubble-wrapper">
-            <button class = "edit-contact-back-button"></button>
-        </div> -->
-
-        <!-- EDIT BUTTON ON TOP RIGHT IF APPLICABLE -->
-        <!-- <div class = "edit-contact-edit-button-bubble-wrapper">
-            <button class = "edit-contact-edit-button"></button>
-        </div> -->
+        <div class = "edit-contact-back-button-bubble-wrapper" id = "back-button-wrapper">
+            <button class = "edit-contact-back-button" id = "back-button">&lt;</button>
+        </div>
 
         <!-- WILL HOLD THE NAME BUBBLE FOR EDIT CONTACT -->
         <div class = "edit-contact-name-bubble-wrapper">
-            <!-- INITIALS WITHIN THE CONTACT BUBBLE IF CONTACT CREATED -->
-            <h1 class = "edit-contact-initials"></h1>
             <!-- OR IF CREATING CONTACT, USE A WRITING ICON -->
             <img class = "edit-contact-pencil-icon" src = "pencil-line.svg" alt = "Edit Icon"/>
         </div>
@@ -43,13 +36,13 @@
         
         <div class = "edit-contact-fields-wrapper">
             <!-- INPUT FOR THE USER'S FIRST NAME -->
-            <input class = "edit-contact-field" id = "first-name-field" placeholder = "First Name"/>
+            <input class = "edit-contact-field" id = "first-name-field" placeholder = "First Name *"/>
             <!-- INPUT FOR THE USER'S LAST NAME -->
-            <input class = "edit-contact-field" id = "last-name-field" placeholder = "Last Name"/>
+            <input class = "edit-contact-field" id = "last-name-field" placeholder = "Last Name *"/>
             <!-- INPUT FOR THE USER'S PHONE NUMBER -->
-            <input class = "edit-contact-field" id = "phone-number-field" placeholder = "Phone Number"/>
-                <!-- INPUT FOR THE USER'S EMAIL ADDRESS -->
-            <input class = "edit-contact-field" id = "email-address-field" placeholder = "Email Address"/>
+            <input class = "edit-contact-field" id = "phone-number-field" placeholder = "Phone Number *"/>
+            <!-- INPUT FOR THE USER'S EMAIL ADDRESS -->
+            <input class = "edit-contact-field" id = "email-address-field" placeholder = "Email Address *"/>
         </div>
         
         <!-- BOTTOM WRAPPER FOR THE ACTION BUTTON (UPDATE, DELETE, ADD, ...) -->
