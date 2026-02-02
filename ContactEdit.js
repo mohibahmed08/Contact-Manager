@@ -1,3 +1,56 @@
+//HOLDS THE DOM FIELD REFERENCE FOR ALL FIELDS
+const firstNameField = document.getElementById('first-name-field');
+const lastNameField = document.getElementById('last-name-field');
+const phoneNumberField = document.getElementById('phone-number-field');
+const emailAddressField = document.getElementById('email-address-field');
+
+//SETS ALL FIELDS TO A CERTAIN PARAMETER
+function setAllFields(newText){
+    firstNameField.textContent = newText;
+    lastNameField.textContent = newText;
+    phoneNumberField.textContent = newText;
+    emailAddressField.textContent = newText;
+}
+
+//SETS ALL FIELDS TO ERROR FOR A CERTAIN PARAMETER
+function setAllFieldsErr(array){
+
+    //ORIGINATE CONTAINS VALUE TO FALSE
+    let containsVal = false;
+
+    //IF FIRST NAME EXISTS IN LIST, ADD ERROR, ELSE REMOVE ERROR
+    if(firstNameField.value.trim() === "" || (array && array.includes(firstNameField.value.trim()))) {
+        firstNameField.classList.add('error');
+        containsVal = true;
+    }
+    else firstNameField.classList.remove('error');
+    
+    //IF LAST NAME EXISTS IN LIST, ADD ERROR, ELSE REMOVE ERROR
+    if(lastNameField.value.trim() === "" || (array && array.includes(lastNameField.value.trim()))) {
+        lastNameField.classList.add('error');
+        containsVal = true;
+    }
+    else lastNameField.classList.remove('error');
+   
+    //IF PHONE NUMBER EXISTS IN LIST, ADD ERROR, ELSE REMOVE ERROR
+    if(phoneNumberField.value.trim() === "" || (array && array.includes(phoneNumberField.value.trim()))){
+        phoneNumberField.classList.add('error');
+        containsVal = true;
+    } 
+    else phoneNumberField.classList.remove('error');
+    
+    //IF EMAIL ADDRESS EXISTS IN LIST, ADD ERROR, ELSE REMOVE ERROR
+    if(emailAddressField.value.trim() === "" || (array && array.includes(emailAddressField.value.trim()))) {
+        emailAddressField.classList.add('error');
+        containsVal = true;
+    }
+    else emailAddressField.classList.remove('error');
+
+    //RETURN CONTAINS VALUE AFTER EDITS
+    return containsVal;
+
+}
+
 //LOADED DOM ON PAGE STARTUP
 document.addEventListener("DOMContentLoaded", () => {
     
@@ -18,10 +71,10 @@ document.addEventListener("DOMContentLoaded", () => {
             //SET THE WEBPAGE NAME ACCORDINGLY
             document.getElementById('webpage-name').textContent = "Edit Contact";
             //INITALIZE THE FIELDS ACCORDINGLY (ASSUMING IN PROPER ORDER)
-            document.getElementById('first-name-field').value = savedContactInfo[0];
-            document.getElementById('last-name-field').value = savedContactInfo[1];
-            document.getElementById('phone-number-field').value = savedContactInfo[2];
-            document.getElementById('email-address-field').value = savedContactInfo[3];
+            firstNameField.value = savedContactInfo[0];
+            lastNameField.value = savedContactInfo[1];
+            phoneNumberField.value = savedContactInfo[2];
+            emailAddressField.value = savedContactInfo[3];
         }
         //IF NOT PROPER SIZE, EXPLAIN WHAT SHOULD BE GIVEN
         else{
@@ -40,10 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
         //SET THE WEBPAGE NAME ACCORDINGLY
         document.getElementById('webpage-name').textContent = "Create Contact";
         //INITALIZE THE FIELDS ACCORDINGLY
-        document.getElementById('first-name-field').value = "";
-        document.getElementById('last-name-field').value = "";
-        document.getElementById('phone-number-field').value = "";
-        document.getElementById('email-address-field').value = "";
+        setAllFields("");
     }
 
     //STATE SUCCESSFUL LOADING WITH PROPER TITLE
@@ -64,26 +114,29 @@ document.getElementById("back-button-wrapper").addEventListener("click", functio
 
 //CHECKS IF A FIELD IS UNIQUE FROM WHATS IN THE DB
 function isTaken(firstName, lastName, phoneNumber, emailAddress){
+    
     //SEARCH FOR THE CONTACT TO SEE IF ITS BEEN ENTERED PRIOR
     let results = search(firstName, lastName, phoneNumber, emailAddress);
-    //SET THE FIELD TO RED COLOR IF SEARCH WAS SUCCESSFUL, ELSE BLACK
-    document.getElementById('first-name-field').style.borderColor = results.contains(firstName) ? 'red' : 'black';
-    document.getElementById('last-name-field').style.borderColor = results.contains(lastName) ? 'red' : 'black';
-    document.getElementById('phone-number-field').style.borderColor = results.contains(phoneNumber) ? 'red' : 'black';
-    document.getElementById('email-address-field').style.borderColor = results.contains(emailAddress) ? 'red' : 'black';
+    
+    //SET ALL FIELDS BASED ON IF RESULTS CONTAINS VALUE
+    setAllFieldsErr(results);
+
 } 
 
 //TASKS FOR WHEN WHEN THE ACTION BUTTON IS CLICKED
 document.getElementById("action-button").addEventListener("click", function () {
     
     //TAKE FIELD INFORMATION FROM THE CREATE CONTACT FIELDS
-    let firstName = document.getElementById("first-name-field").value;
-    let lastName = document.getElementById("last-name-field").value;
-    let phoneNumber = document.getElementById("phone-number-field").value;
-    let emailAddress = document.getElementById("email-address-field").value;
+    let firstName = firstNameField.value;
+    let lastName = lastNameField.value;
+    let phoneNumber = phoneNumberField.value;
+    let emailAddress = emailAddressField.value;
 
+    //IF ANY FIELDS CONTAIN EMPTY STRING
+    let isEmpty = setAllFieldsErr();
+    
     //CHECK IF THE FIELD DATA HAS BEEN TAKEN ALREADY IN BACKEND
-    if(isTaken(firstName, lastName, phoneNumber, emailAddress)) return; //PASS IN CURRENT FIELD INFO (NEED METHOD TO BE COMPLETED !!!!!!!!)
+    if(isEmpty || isTaken(firstName, lastName, phoneNumber, emailAddress)) return; //PASS IN CURRENT FIELD INFO (NEED METHOD TO BE COMPLETED !!!!!!!!)
 
     //IF NOT ALREADY TAKEN, THEN SEND TO BACKEND VIA API ENDPOINT
     fetch('addContact.php', { // <-- CHANGE THIS OUT WITH THE ACTUAL BACKEND CODE NAME !!!!!!!!!!!!!

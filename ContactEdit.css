@@ -195,6 +195,17 @@ body {
     background-color: #f3f4f6;
     cursor: not-allowed;
 }
+/* ERROR STYLE WHEN FIELD ISN'T COMPLETED PROPERLY */
+.edit-contact-field.error {
+    /* SET THE BORDER COLOR TO RED */
+    border-color: red;
+}
+/* ERROR FOCUS HIGHLIGHTING */
+.edit-contact-field.error:focus{
+    /* SET THE FOCUS COLOR TO DARK RED */
+    border-color: darkred;
+    box-shadow: 0 0 0 3px rgba(235, 37, 37, 0.15);
+}
 
 .edit-contact-action-button {
     /* BUTTON WIDTH */
