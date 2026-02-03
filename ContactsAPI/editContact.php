@@ -11,14 +11,8 @@
         }
         else
         {
-            if ($inData["OldPhone"]) {
-                $oldPhone = $inData["OldPhone"];
-            } else {
-                oldPhone = $inData["Phone"];
-            }
-
-            $stmt = $conn->prepare("UPDATE Contacts INSERT ON NULL FirstName, LastName, Phone, Email VALUES ?, ?, ?, ? WHERE UserID = ? AND Phone = ?");
-            $stmt->bind_param("ssssis", $inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $inData["ID"], $oldPhone);
+            $stmt = $conn->prepare("UPDATE Contacts SET FirstName = ?, LastName = ?, Phone = ?, Email = ? WHERE UserID = ? AND ID = ?;");
+            $stmt->bind_param("ssssii", $inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $inData["UserID"], $inData["ID"]);
 
             $stmt->execute();
             $result = $stmt->get_result();
