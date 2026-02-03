@@ -1,0 +1,267 @@
+/* ===== Notebook Paper Background ===== */
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    
+    
+
+
+    background-image:
+        /* Red margin line */
+        linear-gradient(
+            to right,
+            transparent 60px,
+            #ff9ea5 60px,
+            #ff9ea5 62px,
+            transparent 62px
+        ),
+        /* Blue horizontal lines */
+        repeating-linear-gradient(
+            transparent,
+            transparent 29px,
+            #00a6ff 30px
+        );
+
+    background-attachment: fixed;
+}
+
+/* ===== Main Container ===== */
+.container {
+    
+    width: 1200px;
+    height: 700px;
+
+    
+    border-radius: 20px;
+    box-sizing: border-box;
+
+    overflow-y: auto;
+    background-color: #f4f4f6;
+    padding: 40px;
+    border-radius: 24px;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== Title ===== */
+.container h2 {
+    text-align: center;
+    font-family: 'Comic Sans MS', 'Brush Script MT';
+    font-size: 3em;
+    margin-bottom: 40px;
+}
+
+/* ===== Add Contact Form ===== */
+.add-contact {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.add-contact input {
+    flex: 1;
+    padding: 10px;
+    font-size: 1em;
+
+    border-radius: 8px;
+    border: none;
+}
+
+.add-contact button {
+    padding: 10px 18px;
+    font-size: 1em;
+
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+
+    background-color: #333;
+    color: white;
+}
+
+.add-contact button:hover {
+    background-color: #000;
+}
+
+/* ===== Contact List ===== */
+#contactList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.contact {
+    background-color: #ffffff;
+    padding: 18px 22px;
+    margin-bottom: 18px;
+    border-radius: 14px;
+
+    display: flex;
+    align-items: center;
+
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+
+.first-name,
+.last-name {
+    font-weight: bold;
+    font-size: 1.20em; /* slightly bigger */
+    margin-bottom: 4px;
+
+}
+
+
+.email {
+    font-size: 1em;
+    color: #555;
+    cursor: pointer;
+    display: block;
+}
+
+.phone {
+    font-size: 1em;
+    color: #777;
+    cursor: pointer;
+    display: block;
+}
+
+
+.contact-actions {
+    display: flex;
+    gap: 4px;
+    margin-left: auto; /* THIS pushes buttons to the right */
+}
+
+
+.edit-btn {
+    padding: 10px 18px;
+    font-size: 1.05em;
+
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+
+    background-color: #007bff;
+    color: white;
+    height: fit-content;
+}
+
+.edit-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Delete button */
+.delete-btn {
+    padding: 6px 10px;
+    font-size: 1em;
+
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+
+    background-color: #dc3545;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #b52a37;
+}
+
+/* ===== Modal Background ===== */
+.modal {
+    display: none; /* hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background-color: rgba(0, 0, 0, 0.5); /* dim background */
+
+    justify-content: center;
+    align-items: center;
+
+    z-index: 1000;
+}
+
+/* ===== Modal Box ===== */
+.modal-content {
+    background-color: white;
+   
+    border-radius: 12px;
+
+    
+    text-align: center;
+    width: 400px;
+    padding: 40px 30px;
+    font-size: 1.05em;
+}
+
+/* ===== Modal Buttons ===== */
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.modal-actions button {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#confirmDelete {
+    background-color: #dc3545;
+    color: white;
+}
+
+#cancelDelete {
+    background-color: #ccc;
+}
+
+.contact:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+    transition: all 0.2s ease;
+}
+
+.avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background-color: #0d6efd;
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-weight: 700;
+    margin-right: 14px;
+}
+
+.contact-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+#emptyState {
+    text-align: center;
+    color: #777;
+    margin-top: 40px;
+}
+.contact.removing {
+    opacity: 0;
+    transform: translateX(20px);
+    transition: all 0.25s ease;
+}
