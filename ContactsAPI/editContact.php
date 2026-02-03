@@ -2,6 +2,10 @@
     require_once "helperFunctions.php";
 
     function handleEditContact($inData) {
+        if (!isset($inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $inData["UserID"], $inData["ID"])) {
+            returnWithError("Missing required fields");
+            return;
+        }
         $id = 0;
 
         $conn = new mysqli("localhost", "API", "admin1234", "ContactManager"); 	
