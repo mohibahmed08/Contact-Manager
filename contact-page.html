@@ -12,8 +12,38 @@
     <h2>Contacts</h2>
 
     <ul id="contactList">
-        <!-- INTENTIONALLY LEFT EMPTY!!! This is populated from the database -->
-         
+        <!-- Should be blank once fully implemented!!! This is populated from the database -->
+        <li class="contact">
+
+            <!-- Left side: avatar + contact details -->
+            <div class="contact-info">
+
+                <div class="avatar">JD</div>
+
+                <div class="contact-details">
+                    <div class="name">
+                        <span class="first-name">John</span>
+                        <span class="last-name">Doe</span>
+                    </div>
+
+                    <a class="email" href="mailto:john.doe@example.com">
+                        john.doe@example.com
+                    </a>
+                    <a class="phone" href="tel:1234567890">
+                        (123) 456-7890
+                    </a>
+
+                </div>
+
+            </div>
+
+            <!-- Right side: actions -->
+            <div class="contact-actions">
+                <button class="edit-btn" onclick="editContact(this)">Edit</button>
+                <button class="delete-btn" onclick="deleteContact(this)">🗑</button>
+            </div>
+
+        </li>
     </ul>
 </div>
 
