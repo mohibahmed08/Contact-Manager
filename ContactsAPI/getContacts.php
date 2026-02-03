@@ -6,7 +6,7 @@
         $firstName = "";
         $lastName = "";
 
-        $conn = new mysqli("localhost", "PLACEHOLDER_USERNAME", "PLACEHOLDER_PASSWORD", "ContactManager"); 	
+        $conn = new mysqli("localhost", "API", "admin1234", "ContactManager"); 	
         if( $conn->connect_error )
         {
             returnWithError( $conn->connect_error );
