@@ -18,13 +18,30 @@
             $stmt = $conn->prepare("UPDATE Contacts SET FirstName = ?, LastName = ?, Phone = ?, Email = ? WHERE UserID = ? AND ID = ?;");
             $stmt->bind_param("ssssii", $inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $inData["UserID"], $inData["ID"]);
 
-            $stmt->execute();
-            $result = $stmt->get_result();
+            if (!$stmt->execute()) {
+                returnWithError("Update failed: " . $stmt->error);
+                $stmt->close();
+                $conn->close();
+                return;
+            }
 
-            sendResultInfoAsJson( '"success": "true"' );
+            // Failure/no changes
+            if ($stmt->affected_rows === 0) {
+                returnWithError("No rows affected.");
+                $stmt->close();
+                $conn->close();
+                return;
+            }
+
+            sendResultInfoAsJson(json_encode([
+                "success" => true,
+                "affectedRows" => $stmt->affected_rows,
+                "error" => ""
+            ]));
 
             $stmt->close();
             $conn->close();
+
             return;
         }
     }	
