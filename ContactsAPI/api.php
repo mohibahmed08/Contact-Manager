@@ -34,6 +34,11 @@ switch ($inData["action"]) {
         handleFetchContacts($inData);
         break;
 
+    case "editContact":
+        require_once "editContact.php";
+        handleEditContacts($inData);
+        break;
+
     default:
         sendError("Unknown action");
 }
