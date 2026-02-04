@@ -18,34 +18,98 @@ function setAllFieldsErr(array){
     //ORIGINATE CONTAINS VALUE TO FALSE
     let containsVal = false;
 
-    //IF FIRST NAME EXISTS IN LIST, ADD ERROR, ELSE REMOVE ERROR
-    if(firstNameField.value.trim() === "" || (array && array.includes(firstNameField.value.trim()))) {
-        firstNameField.classList.add('error');
-        containsVal = true;
+    //IF ANY FIELD IS EMPTY, RETURN ERROR
+    if(firstNameField.value.trim() === "") { 
+        //ADD THE ERROR IF EMPTY FIELD
+        firstNameField.classList.add('error'); 
+        //STATE ERROR FOR RETURN
+        containsVal = true; 
     }
+    //ELSE REMOVE ERROR
     else firstNameField.classList.remove('error');
-    
-    //IF LAST NAME EXISTS IN LIST, ADD ERROR, ELSE REMOVE ERROR
-    if(lastNameField.value.trim() === "" || (array && array.includes(lastNameField.value.trim()))) {
+
+    //IF ANY FIELD IS EMPTY, RETURN ERROR
+    if(lastNameField.value.trim() === "") {
+        //ADD THE ERROR IF EMPTY FIELD
         lastNameField.classList.add('error');
+        //STATE ERROR FOR RETURN
         containsVal = true;
     }
+    //ELSE REMOVE ERROR
     else lastNameField.classList.remove('error');
-   
-    //IF PHONE NUMBER EXISTS IN LIST, ADD ERROR, ELSE REMOVE ERROR
-    if(phoneNumberField.value.trim() === "" || (array && array.includes(phoneNumberField.value.trim()))){
-        phoneNumberField.classList.add('error');
-        containsVal = true;
-    } 
-    else phoneNumberField.classList.remove('error');
-    
-    //IF EMAIL ADDRESS EXISTS IN LIST, ADD ERROR, ELSE REMOVE ERROR
-    if(emailAddressField.value.trim() === "" || (array && array.includes(emailAddressField.value.trim()))) {
+
+    //IF ANY FIELD IS EMPTY, RETURN ERROR
+    if(emailAddressField.value.trim() === "") {
+        //ADD THE ERROR IF EMPTY FIELD
         emailAddressField.classList.add('error');
+        //STATE ERROR FOR RETURN
         containsVal = true;
     }
+    //ELSE REMOVE ERROR
     else emailAddressField.classList.remove('error');
 
+    //IF ANY FIELD IS EMPTY, RETURN ERROR
+    if(phoneNumberField.value.trim() === "") {
+        //ADD THE ERROR IF EMPTY FIELD
+        phoneNumberField.classList.add('error');
+        //STATE ERROR FOR RETURN
+        containsVal = true;
+    }
+    //ELSE REMOVE ERROR
+    else phoneNumberField.classList.remove('error');
+
+    //IF ERROR EXISTS, RETURN
+    if(containsVal) return containsVal;
+
+    //CHECK IF PHP RETURNED ARRAY CONTAINS ALL SAME INFO AS BEING ENTERED
+    array.forEach(element => {
+        
+        //SPLIT THE CURRENT FIELD INTO ARRAY CONTENTS
+        let field = element.split(", ");
+        
+        //CHECK IF THE (FIRST && LAST) || EMAIL || PHONE MATCH
+        if(
+            //IF THE FIRST AND LAST NAME ARE THE SAME, THEN YOU HAVE A DUPLICATE
+            (field[0] === firstNameField.value.trim() && field[1] === lastNameField.value.trim()) 
+        ){
+            //SET ERROR TO THE FIRST AND LAST NAME FIELD
+            firstNameField.classList.add('error');
+            lastNameField.classList.add('error');
+            //SET CONTAINS VALUE TO TRUE
+            containsVal = true;
+        }
+        //ELSE REMOVE THE ERROR
+        else {
+            firstNameField.classList.remove('error');
+            lastNameField.classList.add('error');
+        }
+      
+        if(
+            //NEXT CHECK FOR MATCHING EMAIL ADDRESS
+            field[2] === emailAddressField.value.trim()
+        ){
+            //SET ERROR TO THE EMAIL ADDRESS FIELD
+            emailAddressField.classList.add('error');
+            //SET CONTAINS VALUE TO TRUE
+            containsVal = true;
+        }
+        //ELSE REMOVE THE ERROR
+        else emailAddressField.classList.remove('error');
+      
+        if(
+            //FINALLY CHECK FOR MATCHING PHONE NUMBER
+            field[3] === phoneNumberField.value.trim()
+        ){
+            //SET ERROR TO THE PHONE FIELD
+            phoneNumberField.classList.add('error');
+            //SET CONTAINS VALUE TO TRUE
+            containsVal = true;
+        }
+        //ELSE REMOVE THE ERROR
+        else phoneNumberField.classList.remove('error');
+
+    });
+    
     //RETURN CONTAINS VALUE AFTER EDITS
     return containsVal;
 
@@ -113,13 +177,41 @@ document.getElementById("back-button-wrapper").addEventListener("click", functio
 });
 
 //CHECKS IF A FIELD IS UNIQUE FROM WHATS IN THE DB
-function isTaken(firstName, lastName, phoneNumber, emailAddress){
+function isTaken(/*firstName, lastName, phoneNumber, */emailAddress){
     
-    //SEARCH FOR THE CONTACT TO SEE IF ITS BEEN ENTERED PRIOR
-    let results = search(firstName, lastName, phoneNumber, emailAddress);
-    
-    //SET ALL FIELDS BASED ON IF RESULTS CONTAINS VALUE
-    setAllFieldsErr(results);
+    //SEARCH THE CONTACTS VIA BACKEND TO SEE IF CONTACT HAS ALREADY BEEN ASSIGNED
+    fetch("searchContacts.php", {
+        //POST THE CONTACT INFORMATION TO SEARCH FOR
+        method: "POST",
+        //SPECIFY JSON CODE BETWEEN API AND FRONTEND
+        headers: {
+            "Content-Type": "application/json"
+        },
+        //TURN THE USER ID AND NAME INTO SEARCH FOR
+        body: JSON.stringify({
+            ID: localStorage("UserID"), //OR CHANGE WITH WHATEVER HOLDS THE ID
+            query: emailAddress //SEARCH FOR EMAIL ADDRESS TO CONFIRM NOT SAME PERSON
+        })
+    })
+    //THEN SEND THE RESPONSE AS THE JSON
+    .then(res => res.json())
+
+    //LOG WHAT DATA HAS BEEN SENT
+    .then(data => {
+        //SEND API DATA TO SCREEN
+        console.log(data);
+        //LOG ANY API EXTRANIOUS ERRORS
+        if (data.error) {
+            console.error("API Error:", data.error);
+            return;
+        }
+        //SEND THE ARRAY OF FIELDS TO BE RETURNED
+        setAllFieldsErr(data.results || data);
+    })
+    //LOG ANY FETCH EXTRANIOUS ERRORS
+    .catch(err => {
+        console.error("Fetch failed:", err);
+    });
 
 } 
 
@@ -139,7 +231,7 @@ document.getElementById("action-button").addEventListener("click", function () {
     if(isEmpty || isTaken(firstName, lastName, phoneNumber, emailAddress)) return; //PASS IN CURRENT FIELD INFO (NEED METHOD TO BE COMPLETED !!!!!!!!)
 
     //IF NOT ALREADY TAKEN, THEN SEND TO BACKEND VIA API ENDPOINT
-    fetch('addContact.php', { // <-- CHANGE THIS OUT WITH THE ACTUAL BACKEND CODE NAME !!!!!!!!!!!!!
+    fetch('editContact.php', { // <-- CHANGE THIS OUT WITH THE ACTUAL BACKEND CODE NAME !!!!!!!!!!!!!
         //POST TO THE BACKEND PHP
         method: 'POST',
         //STATE WE ARE SENDING JSON FILE TYPE
@@ -149,13 +241,15 @@ document.getElementById("action-button").addEventListener("click", function () {
         //STRINGIFY FIELD INFO TO JSON DELIVERABLE
         body: JSON.stringify({ 
             //ASSIGN THE FIRSTNAME FIELD WITH FIRSTNAME IN DOM
-            firstName: firstName, 
+            FirstName: firstName, 
             //ASSIGN THE LASTNAME FIELD WITH LASTNAME IN DOM
-            lastName: lastName, 
+            LastName: lastName, 
             //ASSIGN THE PHONENUMBER FIELD WITH PHONENUMBER IN DOM
-            phoneNumber: phoneNumber, 
+            Phone: phoneNumber, 
             //ASSIGN THE EMAILADDRESS FIELD WITH EMAILADDRESS IN DOM
-            emailAddress: emailAddress 
+            Email: emailAddress,
+            //ASSIGN THE ID FIELD WITH LOCAL STORAGE IN DOM
+            ID: localStorage("UserID") //OR CHANGE WITH WHATEVER HOLDS THE ID
         })
     })
         //THEN SEND THE RESPONSE AS THE JSON
@@ -166,4 +260,5 @@ document.getElementById("action-button").addEventListener("click", function () {
         })
         //CATCH ANY EXTRANIOUS ERRORS
         .catch(error => console.error('Fetch error:', error));
+
 });
