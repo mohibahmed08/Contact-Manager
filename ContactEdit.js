@@ -38,8 +38,8 @@ function setAllFieldsErr(array){
     //ELSE REMOVE ERROR
     else lastNameField.classList.remove('error');
 
-    //IF ANY FIELD IS EMPTY, RETURN ERROR
-    if(emailAddressField.value.trim() === "") {
+    //IF ANY FIELD IS EMPTY OR IF ADDRESS FIELD DOESN'T CONTAIN '@' OR '.', RETURN ERROR
+    if(emailAddressField.value.trim() === "" || !emailAddressField.value.trim().includes("@") || !emailAddressField.value.trim().includes(".")) {
         //ADD THE ERROR IF EMPTY FIELD
         emailAddressField.classList.add('error');
         //STATE ERROR FOR RETURN
@@ -48,8 +48,8 @@ function setAllFieldsErr(array){
     //ELSE REMOVE ERROR
     else emailAddressField.classList.remove('error');
 
-    //IF ANY FIELD IS EMPTY, RETURN ERROR
-    if(phoneNumberField.value.trim() === "") {
+    //IF ANY FIELD IS EMPTY OR IF PHONE NUMBER FIELD DOESN'T CONTAIN ALL DIGITS NEEDED, RETURN ERROR
+    if(phoneNumberField.value.trim() === "" || phoneNumberField.value.trim().length < 14) {
         //ADD THE ERROR IF EMPTY FIELD
         phoneNumberField.classList.add('error');
         //STATE ERROR FOR RETURN
@@ -177,7 +177,8 @@ document.getElementById("back-button-wrapper").addEventListener("click", functio
 });
 
 //CHECKS IF A FIELD IS UNIQUE FROM WHATS IN THE DB
-function isTaken(/*firstName, lastName, phoneNumber, */emailAddress){
+//-------------> REMOVE DEAD VARIABLES IF NOT NEEDED WHEN MERGE
+function isTaken(firstName, lastName, phoneNumber, emailAddress){ 
     
     //SEARCH THE CONTACTS VIA BACKEND TO SEE IF CONTACT HAS ALREADY BEEN ASSIGNED
     fetch("searchContacts.php", {
@@ -260,5 +261,26 @@ document.getElementById("action-button").addEventListener("click", function () {
         })
         //CATCH ANY EXTRANIOUS ERRORS
         .catch(error => console.error('Fetch error:', error));
+
+});
+
+//FOR FORMATTING THE PHONE NUMBER FIELD PROPERLY AS USER TYPES THEIR PHONE NUMBER
+document.getElementById("phone-number-field").addEventListener("input", function (e) {
+
+    //REMOVE EVERYTHING THAT ISN'T A NUMBER AND LIMIT THE RESULT TO 10 DIGITS ONLY
+    let digits = e.target.value.replace(/\D/g, "").substring(0, 10);
+
+    //SEPARATE THE PHONE NUMBER INTO PARTS
+    let parts = [];
+
+    //IF THEIR IS SOMETHING ENTERED, PUSH OPEN PARARENTHESIS AT FIRST INDEX
+    if (digits.length > 0) parts.push("(" + digits.substring(0, 3));
+    //IF YOU'VE ENTERED THE FIRST 3 DIGITS, THEN CLOSE THE PARENTHESIS FOR AREA CODE
+    if (digits.length >= 4) parts.push(") " + digits.substring(3, 6));
+    //AFTER THE NEXT 3 DIGITS, HAVE A DASH TO SEPARATE PHONE NUMBER FIELD
+    if (digits.length >= 7) parts.push("-" + digits.substring(6, 10));
+
+    //REJOIN THE FIELD PARTS WITHIN THE FIELD TO SHOW PROPER FORMATTING
+    e.target.value = parts.join("");
 
 });

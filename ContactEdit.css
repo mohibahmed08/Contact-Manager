@@ -85,22 +85,20 @@ body {
     /* BUBBLE FOREGROUND COLOR */
     color: black;
 }
-
 .edit-contact-back-button-bubble-wrapper:hover{
     /* DARKEN THE BACKGROUND ON HOVER */
     background: rgba(210, 180, 140, 0.25);
 }
 
-.edit-contact-back-button{
+.edit-contact-back-icon{
     /* REMOVE THE DEFAULT BORDER */
     border: none;
     /* MAKE BACKGROUND TRANSPARENT */
     background-color: transparent;
-    
-    /* ENLARGE THE FONT SIZE */
-    font-size: 1.2em;
-    /* MAKE FONT BOLD */
-    font-weight: 500;
+
+    /* MAKE WIDTH AND HEIGHT OF THE ICON TO BE 130% BASED ON REFERENCE */
+    width: 1.3em;
+    height: 1.3em;
 
     /* POINTER CURSOR WHEN HOVERED */
     cursor: pointer;
