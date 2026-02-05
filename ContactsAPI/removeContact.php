@@ -3,8 +3,7 @@
 
     $inData = json_decode(file_get_contents("php://input"), true);
 
-    
-    if (!isset($inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $inData["UserID"], $inData["ID"])) {
+    if (!isset($inData["UserID"], $inData["ID"])) {
         returnWithError("Missing required fields");
         return;
     }
@@ -17,19 +16,11 @@
     }
     else
     {
-        $stmt = $conn->prepare("UPDATE Contacts SET FirstName = ?, LastName = ?, Phone = ?, Email = ? WHERE UserID = ? AND ID = ?;");
-        $stmt->bind_param("ssssii", $inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $inData["UserID"], $inData["ID"]);
+        $stmt = $conn->prepare("DELETE FROM Contacts WHERE UserID = ? AND ID = ?;");
+        $stmt->bind_param("ii", $inData["UserID"], $inData["ID"]);
 
         if (!$stmt->execute()) {
-            returnWithError("Update failed: " . $stmt->error);
-            $stmt->close();
-            $conn->close();
-            return;
-        }
-
-        // Failure/no changes
-        if ($stmt->affected_rows === 0) {
-            returnWithError("No rows affected.");
+            returnWithError("Deletion failed: " . $stmt->error);
             $stmt->close();
             $conn->close();
             return;

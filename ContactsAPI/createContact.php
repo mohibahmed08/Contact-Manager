@@ -3,8 +3,8 @@
 
     $inData = json_decode(file_get_contents("php://input"), true);
 
-    
-    if (!isset($inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $inData["UserID"], $inData["ID"])) {
+
+    if (!isset($inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $inData["UserID"])) {
         returnWithError("Missing required fields");
         return;
     }
@@ -17,11 +17,11 @@
     }
     else
     {
-        $stmt = $conn->prepare("UPDATE Contacts SET FirstName = ?, LastName = ?, Phone = ?, Email = ? WHERE UserID = ? AND ID = ?;");
-        $stmt->bind_param("ssssii", $inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $inData["UserID"], $inData["ID"]);
+        $stmt = $conn->prepare("INSERT INTO Contacts (FirstName, LastName, Phone, Email, UserID) VALUES (?, ?, ?, ?, ?);");
+        $stmt->bind_param("ssssi", $inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $inData["UserID"]);
 
         if (!$stmt->execute()) {
-            returnWithError("Update failed: " . $stmt->error);
+            returnWithError("Insert failed: " . $stmt->error);
             $stmt->close();
             $conn->close();
             return;
@@ -35,9 +35,11 @@
             return;
         }
 
+        $newId = $conn->insert_id;
+
         sendResultInfoAsJson(json_encode([
             "success" => true,
-            "affectedRows" => $stmt->affected_rows,
+            "id" => $newId,
             "error" => ""
         ]));
 
