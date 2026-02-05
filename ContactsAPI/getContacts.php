@@ -6,6 +6,7 @@
     $id = 0;
     $firstName = "";
     $lastName = "";
+    $query = isset($inData["query"]) ? trim($inData["query"]) : "";
 
     $conn = new mysqli("localhost", "API", "admin1234", "ContactManager"); 	
     if( $conn->connect_error )
@@ -15,7 +16,7 @@
     else
     {
         $stmt = null;
-        if ($inData["query"] === "" or $inData["query"] === null or !$inData["query"]) {
+        if ($query === "") {
             $stmt = $conn->prepare("SELECT ID, UserID, FirstName, LastName, Phone, Email FROM Contacts WHERE UserID = ? ORDER BY LastName, FirstName");
             $stmt->bind_param("i", $inData["UserID"]);
         } else {
