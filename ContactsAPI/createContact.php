@@ -15,8 +15,8 @@
         }
         else
         {
-            $stmt = $conn->prepare("INSERT INTO Contacts VALUES FirstName = ?, LastName = ?, Phone = ?, Email = ?, UserID = ?, ID = ?;");
-            $stmt->bind_param("ssssii", $inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $inData["UserID"], $inData["ID"]);
+            $stmt = $conn->prepare("INSERT INTO (Contacts FirstName, LastName, Phone, Email, UserID) VALUES (?, ?, ?, ?, ?);");
+            $stmt->bind_param("ssssii", $inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $inData["ID"]);
 
             if (!$stmt->execute()) {
                 returnWithError("Update failed: " . $stmt->error);
