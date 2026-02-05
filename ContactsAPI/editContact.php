@@ -5,15 +5,26 @@
 
     
     if (!isset($inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $inData["UserID"], $inData["ID"])) {
-        returnWithError("Missing required fields");
-        return;
+        sendResultInfoAsJson(json_encode([
+            "success" => false,
+            "affectedRows" => 0,
+            "error" => "Missing required fields"
+        ]));
+
+        exit();
     }
     $id = 0;
 
     $conn = new mysqli("localhost", "API", "admin1234", "ContactManager"); 	
     if( $conn->connect_error )
     {
-        returnWithError( $conn->connect_error );
+        sendResultInfoAsJson(json_encode([
+            "success" => false,
+            "affectedRows" => 0,
+            "error" => $conn->connect_error
+        ]));
+
+        exit();
     }
     else
     {
@@ -21,18 +32,28 @@
         $stmt->bind_param("ssssii", $inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $inData["UserID"], $inData["ID"]);
 
         if (!$stmt->execute()) {
-            returnWithError("Update failed: " . $stmt->error);
+            sendResultInfoAsJson(json_encode([
+                "success" => false,
+                "affectedRows" => 0,
+                "error" => "Update failed: " . $stmt->error
+            ]));
+
             $stmt->close();
             $conn->close();
-            return;
+            exit();
         }
 
         // Failure/no changes
         if ($stmt->affected_rows === 0) {
-            returnWithError("No rows affected.");
+            sendResultInfoAsJson(json_encode([
+                "success" => false,
+                "affectedRows" => $stmt->affected_rows,
+                "error" => "No rows affected."
+            ]));
+
             $stmt->close();
             $conn->close();
-            return;
+            exit();
         }
 
         sendResultInfoAsJson(json_encode([
@@ -44,7 +65,7 @@
         $stmt->close();
         $conn->close();
 
-        return;
+        exit();
     }
 
     
