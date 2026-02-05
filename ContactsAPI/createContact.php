@@ -12,7 +12,7 @@
         ]));
         exit();
     }
-    
+
     $id = 0;
 
     $conn = new mysqli("localhost", "API", "admin1234", "ContactManager"); 	
@@ -26,10 +26,14 @@
         $stmt->bind_param("ssssi", $inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $inData["UserID"]);
 
         if (!$stmt->execute()) {
-            returnWithError("Insert failed: " . $stmt->error);
+            sendResultInfoAsJson(json_encode([
+                "success" => false,
+                "id" => 0,
+                "error" => "Insert failed: " . $stmt->error
+            ]));
             $stmt->close();
             $conn->close();
-            return;
+            exit();
         }
 
         // Failure/no changes
