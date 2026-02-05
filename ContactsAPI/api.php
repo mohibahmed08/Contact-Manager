@@ -40,8 +40,13 @@ switch ($inData["action"]) {
         break;
 
     case "createContact":
-        require_once "editContact.php";
+        require_once "createContact.php";
         handleCreateContact($indata);
+        break;
+
+    case "removeContact":
+        require_once "removeContact.php";
+        handleRemoveContact($indata);
         break;
 
     default:
