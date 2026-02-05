@@ -1,4 +1,8 @@
 <?php
+    ini_set('log_errors', 1);
+    ini_set('error_log', '/var/log/apache2/php_errors.log');
+    error_reporting(E_ALL);
+    
     require_once "helperFunctions.php";
 
     $inData = $_GET;
