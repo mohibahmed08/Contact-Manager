@@ -1,35 +1,34 @@
 <?php
     require_once "helperFunctions.php";
 
-    function handleFetchContacts($inData) {
-        $id = 0;
-        $firstName = "";
-        $lastName = "";
+    $inData = json_decode(file_get_contents("php://input"), true);
 
-        $conn = new mysqli("localhost", "API", "admin1234", "ContactManager"); 	
-        if( $conn->connect_error )
-        {
-            returnWithError( $conn->connect_error );
+    $id = 0;
+    $firstName = "";
+    $lastName = "";
+
+    $conn = new mysqli("localhost", "API", "admin1234", "ContactManager"); 	
+    if( $conn->connect_error )
+    {
+        returnWithError( $conn->connect_error );
+    }
+    else
+    {
+        $stmt = $conn->prepare("SELECT ID, UserID, FirstName, LastName, Phone, Email FROM Contacts WHERE UserID = ? ORDER BY LastName, FirstName");
+        $stmt->bind_param("i", $inData["ID"]);
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $rows = [];
+        while ($row = $result->fetch_assoc()) {
+            $rows[] = $row;
         }
-        else
-        {
-            $stmt = $conn->prepare("SELECT ID, UserID, FirstName, LastName, Phone, Email FROM Contacts WHERE UserID = ? ORDER BY LastName, FirstName");
-            $stmt->bind_param("i", $inData["ID"]);
 
-            $stmt->execute();
-            $result = $stmt->get_result();
+        returnContactWithInfo( $rows );
 
-            $rows = [];
-            while ($row = $result->fetch_assoc()) {
-                $rows[] = $row;
-            }
-
-            returnContactWithInfo( $rows );
-
-            $stmt->close();
-            $conn->close();
-            return;
-        }
-    }	
-    
+        $stmt->close();
+        $conn->close();
+        return;
+    }    
 ?>
