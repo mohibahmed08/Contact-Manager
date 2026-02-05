@@ -8,6 +8,13 @@
     $lastName = "";
     $query = isset($inData["query"]) ? trim($inData["query"]) : "";
 
+    // Make sure user ID is given
+    if (!isset($inData["UserID"])) {
+        returnContactWithError("Missing UserID");
+        exit();
+    }
+
+
     $conn = new mysqli("localhost", "API", "admin1234", "ContactManager"); 	
     if( $conn->connect_error )
     {
@@ -21,7 +28,7 @@
             $stmt->bind_param("i", $inData["UserID"]);
         } else {
             $stmt = $conn->prepare("SELECT * FROM Contacts WHERE UserID = ? AND ( FirstName LIKE ? OR LastName LIKE ? OR Email LIKE ? OR Phone LIKE ? );");
-            $search = "%" . $inData["query"] . "%";
+            $search = "%" . $query . "%";
             $stmt->bind_param("issss", $inData["UserID"], $search, $search, $search, $search);
         }
         
