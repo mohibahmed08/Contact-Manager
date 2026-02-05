@@ -1,7 +1,7 @@
 <?php
     require_once "helperFunctions.php";
 
-    $inData = json_decode(file_get_contents("php://input"), true);
+    $inData = $_GET;
 
     $id = 0;
     $firstName = "";
@@ -14,8 +14,16 @@
     }
     else
     {
-        $stmt = $conn->prepare("SELECT ID, UserID, FirstName, LastName, Phone, Email FROM Contacts WHERE UserID = ? ORDER BY LastName, FirstName");
-        $stmt->bind_param("i", $inData["ID"]);
+        $stmt = null;
+        if ($inData["query"] === "" or $inData["query"] === null or !$inData["query"]) {
+            $stmt = $conn->prepare("SELECT ID, UserID, FirstName, LastName, Phone, Email FROM Contacts WHERE UserID = ? ORDER BY LastName, FirstName");
+            $stmt->bind_param("i", $inData["UserID"]);
+        } else {
+            $stmt = $conn->prepare("SELECT * FROM Contacts WHERE UserID = ? AND ( FirstName LIKE ? OR LastName LIKE ? OR Email LIKE ? OR Phone LIKE ? );");
+            $search = "%" . $inData["query"] . "%";
+            $stmt->bind_param("issss", $inData["UserID"], $search, $search, $search, $search);
+        }
+        
 
         $stmt->execute();
         $result = $stmt->get_result();
