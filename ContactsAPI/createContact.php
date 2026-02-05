@@ -2,7 +2,7 @@
     require_once "helperFunctions.php";
 
     function handleCreateContact($inData) {
-        if (!isset($inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $inData["UserID"], $inData["ID"])) {
+        if (!isset($inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $inData["UserID"])) {
             returnWithError("Missing required fields");
             return;
         }
@@ -16,7 +16,7 @@
         else
         {
             $stmt = $conn->prepare("INSERT INTO (Contacts FirstName, LastName, Phone, Email, UserID) VALUES (?, ?, ?, ?, ?);");
-            $stmt->bind_param("ssssii", $inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $inData["ID"]);
+            $stmt->bind_param("ssssi", $inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $inData["UserID"]);
 
             if (!$stmt->execute()) {
                 returnWithError("Update failed: " . $stmt->error);
