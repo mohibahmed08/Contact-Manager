@@ -1,11 +1,23 @@
 <?php
+    ini_set('log_errors', 1);
+    ini_set('error_log', '/var/log/apache2/php_errors.log');
+    error_reporting(E_ALL);
+    
     require_once "helperFunctions.php";
 
-    $inData = json_decode(file_get_contents("php://input"), true);
+    $inData = $_GET;
 
     $id = 0;
     $firstName = "";
     $lastName = "";
+    $query = isset($inData["query"]) ? trim($inData["query"]) : "";
+
+    // Make sure user ID is given
+    if (!isset($inData["UserID"])) {
+        returnContactWithError("Missing UserID");
+        exit();
+    }
+
 
     $conn = new mysqli("localhost", "API", "admin1234", "ContactManager"); 	
     if( $conn->connect_error )
@@ -14,8 +26,16 @@
     }
     else
     {
-        $stmt = $conn->prepare("SELECT ID, UserID, FirstName, LastName, Phone, Email FROM Contacts WHERE UserID = ? ORDER BY LastName, FirstName");
-        $stmt->bind_param("i", $inData["ID"]);
+        $stmt = null;
+        if ($query === "") {
+            $stmt = $conn->prepare("SELECT ID, UserID, FirstName, LastName, Phone, Email FROM Contacts WHERE UserID = ? ORDER BY LastName, FirstName");
+            $stmt->bind_param("i", $inData["UserID"]);
+        } else {
+            $stmt = $conn->prepare("SELECT * FROM Contacts WHERE UserID = ? AND ( FirstName LIKE ? OR LastName LIKE ? OR Email LIKE ? OR Phone LIKE ? );");
+            $search = "%" . $query . "%";
+            $stmt->bind_param("issss", $inData["UserID"], $search, $search, $search, $search);
+        }
+        
 
         $stmt->execute();
         $result = $stmt->get_result();

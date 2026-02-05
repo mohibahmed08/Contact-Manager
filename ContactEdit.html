@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <!-- METADATA PRESETS -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- WEBPAGE TITLE -->
+    <title id = "webpage-name">Edit Contact</title>
+
+    <!-- TIE THE CSS SHEET TO EDIT DOM ELEMENTS -->
+    <link rel="stylesheet" href="ContactEdit.css">
+
+</head>
+<body>
+
+    <!-- CONTACT CARD WRAPPER DIV -->
+    <div class = "edit-contact-card-wrapper">
+       
+        <!-- BACK BUTTON ON TOP LEFT IF APPLICABLE -->
+        <div class = "edit-contact-back-button-bubble-wrapper" id = "back-button-wrapper">
+            <!-- BACK ARROW ICON IMAGE -->
+            <img class = "edit-contact-back-icon" id = "back-button" src = "arrow-big-left.svg" alt = "Back Icon"/>
+        </div>
+
+        <!-- WILL HOLD THE NAME BUBBLE FOR EDIT CONTACT -->
+        <div class = "edit-contact-name-bubble-wrapper">
+            <!-- OR IF CREATING CONTACT, USE A WRITING ICON -->
+            <img class = "edit-contact-pencil-icon" src = "pencil-line.svg" alt = "Edit Icon"/>
+        </div>
+        
+        <!-- HOLDS THE FULL NAME OF THE CURRENT CONTACT WANTING TO EDIT -->
+        <!-- OR HOLDS TITLE OF THE CURRENT ACTIONS NEEDED TO BE DONE -->
+        <h1 class = "edit-contact-title" id = "title-label">Create Contact</h1>
+        <!-- WILL HOLD THE EDITABLE FIELDS WITH CONTACT INFORMATION -->
+        
+        <div class = "edit-contact-fields-wrapper">
+            <!-- INPUT FOR THE USER'S FIRST NAME -->
+            <input class = "edit-contact-field" id = "first-name-field" placeholder = "First Name *"/>
+            <!-- INPUT FOR THE USER'S LAST NAME -->
+            <input class = "edit-contact-field" id = "last-name-field" placeholder = "Last Name *"/>
+            <!-- INPUT FOR THE USER'S PHONE NUMBER -->
+            <input class = "edit-contact-field" id = "phone-number-field" placeholder = "Phone Number *"/>
+            <!-- INPUT FOR THE USER'S EMAIL ADDRESS -->
+            <input class = "edit-contact-field" id = "email-address-field" placeholder = "Email Address *"/>
+        </div>
+        
+        <!-- BOTTOM WRAPPER FOR THE ACTION BUTTON (UPDATE, DELETE, ADD, ...) -->
+        <div class = "edit-contact-action-button-wrapper">
+            <button class = "edit-contact-action-button" id = "action-button">Done</button>
+        </div>
+
+     </div>
+
+    <!-- TIE THE JAVASCRIPT TO THE HTML DOM -->
+    <script src="ContactEdit.js"></script>
+
+</body>
+</html>
