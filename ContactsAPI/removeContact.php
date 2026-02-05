@@ -4,15 +4,27 @@
     $inData = json_decode(file_get_contents("php://input"), true);
 
     if (!isset($inData["UserID"], $inData["ID"])) {
-        returnWithError("Missing required fields");
-        return;
+        http_response_code(400);
+        sendResultInfoAsJson(json_encode([
+            "success" => false,
+            "affectedRows" => 0,
+            "error" => "Missing required fields"
+        ]));
+        exit();
     }
     $id = 0;
 
     $conn = new mysqli("localhost", "API", "admin1234", "ContactManager"); 	
     if( $conn->connect_error )
     {
-        returnWithError( $conn->connect_error );
+        http_response_code(500);
+        sendResultInfoAsJson(json_encode([
+            "success" => false,
+            "affectedRows" => 0,
+            "error" => "Deletion failed: " . $conn->connect_error
+        ]));
+
+        exit();
     }
     else
     {
@@ -20,10 +32,16 @@
         $stmt->bind_param("ii", $inData["UserID"], $inData["ID"]);
 
         if (!$stmt->execute()) {
-            returnWithError("Deletion failed: " . $stmt->error);
+            http_response_code(500);
+            sendResultInfoAsJson(json_encode([
+                "success" => false,
+                "affectedRows" => 0,
+                "error" => "Deletion failed: " . $stmt->error
+            ]));
+
             $stmt->close();
             $conn->close();
-            return;
+            exit();
         }
 
         sendResultInfoAsJson(json_encode([
@@ -35,8 +53,8 @@
         $stmt->close();
         $conn->close();
 
-        return;
+        exit();
     }
 
-    
+    exit();
 ?>
