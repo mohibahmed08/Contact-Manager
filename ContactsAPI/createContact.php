@@ -5,9 +5,14 @@
 
 
     if (!isset($inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $inData["UserID"])) {
-        returnWithError("Missing required fields");
-        return;
+        sendResultInfoAsJson(json_encode([
+            "success" => false,
+            "id" => 0,
+            "error" => "Missing required fields"
+        ]));
+        exit();
     }
+    
     $id = 0;
 
     $conn = new mysqli("localhost", "API", "admin1234", "ContactManager"); 	
