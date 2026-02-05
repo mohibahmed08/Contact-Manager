@@ -15,11 +15,11 @@
         }
         else
         {
-            $stmt = $conn->prepare("INSERT INTO (Contacts FirstName, LastName, Phone, Email, UserID) VALUES (?, ?, ?, ?, ?);");
+            $stmt = $conn->prepare("INSERT INTO Contacts (FirstName, LastName, Phone, Email, UserID) VALUES (?, ?, ?, ?, ?);");
             $stmt->bind_param("ssssi", $inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $inData["UserID"]);
 
             if (!$stmt->execute()) {
-                returnWithError("Update failed: " . $stmt->error);
+                returnWithError("Insert failed: " . $stmt->error);
                 $stmt->close();
                 $conn->close();
                 return;
