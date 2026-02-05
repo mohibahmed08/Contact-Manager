@@ -1,7 +1,7 @@
 <?php
     require_once "helperFunctions.php";
 
-    function handleEditContact($inData) {
+    function handleRemoveContact($inData) {
         if (!isset($inData["UserID"], $inData["ID"])) {
             returnWithError("Missing required fields");
             return;
