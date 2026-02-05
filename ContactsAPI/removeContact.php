@@ -25,14 +25,6 @@
                 return;
             }
 
-            // Failure/no changes
-            if ($stmt->affected_rows === 0) {
-                returnWithError("No rows deleted.");
-                $stmt->close();
-                $conn->close();
-                return;
-            }
-
             sendResultInfoAsJson(json_encode([
                 "success" => true,
                 "affectedRows" => $stmt->affected_rows,
