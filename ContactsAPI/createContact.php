@@ -52,7 +52,7 @@
         $stmt->close();
         $conn->close();
 
-        return;
+        exit();
     }
 
     
