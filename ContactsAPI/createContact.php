@@ -16,10 +16,15 @@
     $id = 0;
 
     $conn = new mysqli("localhost", "API", "admin1234", "ContactManager"); 	
-    if( $conn->connect_error )
-    {
-        returnWithError( $conn->connect_error );
+    if ($conn->connect_error) {
+        sendResultInfoAsJson(json_encode([
+            "success" => false,
+            "id" => 0,
+            "error" => $conn->connect_error
+        ]));
+        exit();
     }
+
     else
     {
         $stmt = $conn->prepare("INSERT INTO Contacts (FirstName, LastName, Phone, Email, UserID) VALUES (?, ?, ?, ?, ?);");
@@ -34,14 +39,6 @@
             $stmt->close();
             $conn->close();
             exit();
-        }
-
-        // Failure/no changes
-        if ($stmt->affected_rows === 0) {
-            returnWithError("No rows affected.");
-            $stmt->close();
-            $conn->close();
-            return;
         }
 
         $newId = $conn->insert_id;
