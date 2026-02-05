@@ -33,9 +33,11 @@
                 return;
             }
 
+            $newId = $conn->insert_id;
+
             sendResultInfoAsJson(json_encode([
                 "success" => true,
-                "affectedRows" => $stmt->affected_rows,
+                "id" => $newId,
                 "error" => ""
             ]));
 
