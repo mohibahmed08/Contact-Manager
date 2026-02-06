@@ -8,10 +8,18 @@
     $firstName = "";
     $lastName = "";
 
+    if (!is_array($inData) || !isset($inData["Login"], $inData["Password"])) {
+        http_response_code(400);
+        returnWithError("Missing Login or Password");
+        exit();
+    }
+
     $conn = new mysqli("localhost", "API", "admin1234", "ContactManager"); 	
     if( $conn->connect_error )
     {
+        http_response_code(500);
         returnWithError( $conn->connect_error );
+        exit();
     }
     else
     {
@@ -23,18 +31,21 @@
         if( $row = $result->fetch_assoc()  )
         {
             if (password_verify($inData["Password"], $row['Password'])) {
+                http_response_code(200);
                 returnWithInfo( $row['FirstName'], $row['LastName'], $row['ID'] );
             } else {
+                http_response_code(401);
                 returnWithError("Invalid Login");
             }
         }
         else
         {
+            http_response_code(401);
             returnWithError("Invalid Login");
         }
 
         $stmt->close();
         $conn->close();
-        return;
+        exit;
     }
 ?>

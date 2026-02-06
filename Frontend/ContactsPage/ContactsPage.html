@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact List</title>
-    <link rel="stylesheet" href="style1.css">
+    <link rel="stylesheet" href="ContactsPage.css">
 </head>
 <body>
 
@@ -39,8 +39,8 @@
 
             <!-- Right side: actions -->
             <div class="contact-actions">
-                <button class="edit-btn" onclick="editContact(this)">Edit</button>
-                <button class="delete-btn" onclick="deleteContact(this)">🗑</button>
+                <button class="edit-btn" id = "editButton" onclick="editContact(this)">Edit</button>
+                <button class="delete-btn" id = "deleteButton" onclick="deleteContact(this)">🗑</button>
             </div>
 
         </li>
@@ -91,6 +91,17 @@ document.getElementById("confirmDelete").onclick = function () {
 
     document.getElementById("deleteModal").style.display = "none";
 };
+
+// ADDED BY JASON TO LINK EDIT TO CONTACT PAGE FOR NOW
+document.getElementById("editButton").onclick = () => {
+    //OBTAIN THE CONTACT INFO ON CURRENT SELECTION (NEEDS THIS FORMAT FOR IT TO WORK)
+    let contactInfo = ["John", "Doe", "(123) 456-7890", "john.doe@example.com"];
+    //  ^^^^^^^^^^^ HARD CODED UNTIL YOU SET UP THE LIST TO DYNAMIC !!!!!!!
+    //PASS IN THE CURRENT FIELD INFO ARRAY TO LOCAL STORAGE VIA JSON
+    localStorage.setItem("contactInfo", JSON.stringify(contactInfo));    
+    //SWITCH CONCURRENT WINDOW TO THE CONTACT EDIT PAGE
+    window.location.href = '../EditContactPage/ContactEdit.html';
+}
 
 </script>
 

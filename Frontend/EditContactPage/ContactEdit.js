@@ -119,7 +119,8 @@ function setAllFieldsErr(array){
 document.addEventListener("DOMContentLoaded", () => {
     
     //ACCESS LOCAL STORAGE THAT MAY OR MAY NOT HAVE BEEN INITALIZED ON PRIOR PAGE
-    const savedContactInfo = localStorage.getItem("contactInfo"); // <-- CHANGE WITH PROPER NAME!!!!
+    const raw = localStorage.getItem("contactInfo");
+    const savedContactInfo = raw ? JSON.parse(raw) : null;
     //I'M ASSUMING LOCAL STORAGE IS AN ARRAY OF THE FIELDS
 
     //IF SAVED FIELD INFO IS NULL (I.E. WE DIDN'T HAVE LOCAL STORAGE)
@@ -165,10 +166,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+//UNLOADING DOM ON PAGE END
+window.addEventListener("beforeunload", (e) => {
+    //CLEAR THE LOCAL STORAGE CACHE WITH PRIOR CONTACT
+    localStorage.removeItem("contactInfo");
+});
+
+
 //IF BACK BUTTON IS CLICKED
 document.getElementById("back-button").addEventListener("click", function () {
     //SWITCH BACK TO THE CONTACT PAGE
-    window.location.href = 'Contacts.html';
+    window.location.href = '../ContactsPage/ContactsPage.html';
 });
 //TIE THE WRAPPER OF THE BACK BUTTON TO DO THE SAME THING
 document.getElementById("back-button-wrapper").addEventListener("click", function () {
