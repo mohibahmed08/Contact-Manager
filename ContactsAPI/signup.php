@@ -14,11 +14,19 @@
         exit();
     }
 
+    $inData["Login"] = trim($inData["Login"]);
+    if ($inData["Login"] === "" || $inData["Password"] === "") {
+        http_response_code(400);
+        returnWithError("Missing required fields. Login and Password cannot be blank.");
+        exit();
+    }
+
     $conn = new mysqli("localhost", "API", "admin1234", "ContactManager"); 	
     if( $conn->connect_error )
     {
         http_response_code(500);
         returnWithError( $conn->connect_error );
+        exit();
     }
     else
     {
