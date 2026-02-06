@@ -8,6 +8,12 @@
     $firstName = "";
     $lastName = "";
 
+    if (!is_array($inData) || !isset($inData["FirstName"], $inData["LastName"], $inData["Login"], $inData["Password"])) {
+        http_response_code(400);
+        returnWithError("Missing required fields");
+        exit();
+    }
+
     $conn = new mysqli("localhost", "API", "admin1234", "ContactManager"); 	
     if( $conn->connect_error )
     {
