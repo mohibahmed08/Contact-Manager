@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Landing Page - Login/Register</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="HomePage.css">
 </head>
 <body>
 
@@ -23,7 +23,7 @@
                 <input type="text" placeholder="Last Name">
                 <input type="email" placeholder="Email">
                 <input type="password" placeholder="Password">
-                <button type="submit" class="btn-submit">Sign Up</button>
+                <button type="submit" id = "signup-submit" class="btn-submit">Sign Up</button>
             </form>
         </div>
 
@@ -38,4 +38,17 @@
     </div>
 
 </body>
+
+<!-- ADDED BY JASON UNTIL WE ADD ACTUAL LOGIN INFORMATION -->
+<script>
+
+    //ONLY GOES TO CONTACTS PAGE AFTER SUBMIT IS RAN
+    document.getElementById("signup-submit").addEventListener("click", function (e) {
+        //REMOVE THIS ONCE FINISHED, IT JUST REMOVES DEFAULT PROPERTIES !!!!!!!!!!!!!!
+        e.preventDefault(); 
+        //SWITCH HTML PAGE TO THE CONTACTS PAGE
+        window.location.href = '../ContactsPage/ContactsPage.html';
+    });
+
+</script>
 </html>
