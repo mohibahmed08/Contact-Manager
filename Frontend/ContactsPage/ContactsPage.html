@@ -9,6 +9,13 @@
 <body>
 
 <div class="container">
+
+    <!-- BACK BUTTON WITH ITS IMAGE -->
+    <button class = "contacts-page-back-button" id = "back-button">
+        <img class = "contacts-page-back-button-img" src = "../Icons/arrow-big-left.svg" id = "back-button-img"/>
+    </button>
+    
+    <!-- TITLE -->
     <h2>Contacts</h2>
 
     <ul id="contactList">
@@ -101,6 +108,16 @@ document.getElementById("editButton").onclick = () => {
     localStorage.setItem("contactInfo", JSON.stringify(contactInfo));    
     //SWITCH CONCURRENT WINDOW TO THE CONTACT EDIT PAGE
     window.location.href = '../EditContactPage/ContactEdit.html';
+}
+
+// ADDED BY JASON - BACK BUTTON ACTIONS
+document.getElementById("back-button").onclick = () => {
+    //SWITCH CONCURRENT WINDOW TO THE CONTACT EDIT PAGE
+    window.location.href = '../HomePage/HomePage.html';
+}
+document.getElementById("back-button-img").onclick = () => {
+    //SWITCH CONCURRENT WINDOW TO THE CONTACT EDIT PAGE
+    window.location.href = '../HomePage/HomePage.html';
 }
 
 </script>

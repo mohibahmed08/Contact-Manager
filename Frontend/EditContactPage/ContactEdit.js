@@ -172,7 +172,6 @@ window.addEventListener("beforeunload", (e) => {
     localStorage.removeItem("contactInfo");
 });
 
-
 //IF BACK BUTTON IS CLICKED
 document.getElementById("back-button").addEventListener("click", function () {
     //SWITCH BACK TO THE CONTACT PAGE
