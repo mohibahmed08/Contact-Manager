@@ -17,6 +17,7 @@
     $conn = new mysqli("localhost", "API", "admin1234", "ContactManager"); 	
     if( $conn->connect_error )
     {
+        http_response_code(500);
         returnWithError( $conn->connect_error );
     }
     else
@@ -27,22 +28,27 @@
         $stmtInsert->bind_param("ssss", $inData["FirstName"], $inData["LastName"], $inData["Login"], $hashedPassword);
 
         if (!$stmtInsert->execute()) {
-            if ($conn->errno == 1062) 
+            if ($conn->errno == 1062) {
+                http_response_code(409);
                 returnWithError("Account already exists");
-            else 
+            }
+            else {
+                http_response_code(500);
                 returnWithError("Failed to create account: " . $conn->error);
+            }
             
             $stmtInsert->close();
             $conn->close();
-            return;
+            exit();
         }
 
+        http_response_code(201);
         returnWithInfo( $inData['FirstName'], $inData['LastName'], $conn->insert_id );
 
         $stmtInsert->close();
         $conn->close();
 
-        return;
+        exit();
     }
 
 ?>
