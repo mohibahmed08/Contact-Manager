@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Landing Page - Login/Register</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="HomePage.css">
 </head>
 <body>
 
@@ -12,8 +12,8 @@
 
     <div class="container">
         <div class="tabs">
-            <button class="tab-btn active" onclick="openTab(event, 'register')">Sign Up (Register)</button>
             <button class="tab-btn" onclick="openTab(event, 'login')">Login</button>
+            <button class="tab-btn active" onclick="openTab(event, 'register')">Sign Up (Register)</button>
         </div>
 
         <div id="register" class="tab-content active">
@@ -23,7 +23,7 @@
                 <input type="text" placeholder="Last Name">
                 <input type="email" placeholder="Email">
                 <input type="password" placeholder="Password">
-                <button type="submit" class="btn-submit">Sign Up</button>
+                <button type="submit" id = "signup-submit" class="btn-submit">Sign Up</button>
             </form>
         </div>
 
@@ -38,4 +38,42 @@
     </div>
 
 </body>
-</html>
+
+<script>
+
+    function openTab(evt, tabName) {
+            // Get all elements with class="tab-content" 
+            var tabContent = document.getElementsByClassName("tab-content");
+            for (var i = 0; i < tabContent.length; i++) {
+                tabContent[i].classList.remove("active");
+            }
+
+            // Get all elements with class="tab-btn" 
+            var tabLinks = document.getElementsByClassName("tab-btn");
+            for (var i = 0; i < tabLinks.length; i++) {
+                tabLinks[i].classList.remove("active");
+            }
+
+            // Show the current tab
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+    
+    // <!-- ADDED BY JASON UNTIL WE ADD ACTUAL LOGIN INFORMATION -->
+
+    //ONLY GOES TO CONTACTS PAGE AFTER SUBMIT IS RAN
+    document.getElementById("signup-submit").addEventListener("click", function (e) {
+        //REMOVE THIS ONCE FINISHED, IT JUST REMOVES DEFAULT PROPERTIES !!!!!!!!!!!!!!
+        e.preventDefault(); 
+        //SWITCH HTML PAGE TO THE CONTACTS PAGE
+        window.location.href = '../ContactsPage/ContactsPage.html';
+    });
+
+    // LOGIN BUTTON TEST
+    document.getElementById("login-submit").addEventListener("click", function (e) {
+        e.preventDefault(); 
+        // Redirect to Contacts Page
+        window.location.href = '../ContactsPage/ContactsPage.html';
+    });
+
+</script>
