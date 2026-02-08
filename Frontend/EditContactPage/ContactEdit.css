@@ -19,7 +19,7 @@ body {
         linear-gradient(to right, transparent 60px, #ff9ea5 60px, #ff9ea5 62px, transparent 62px),
         
         /* The Blue Horizontal Lines */
-        repeating-linear-gradient(transparent, transparent 29px, #afe0fa 30px);
+        repeating-linear-gradient(transparent, transparent 29px, #00a6ff 30px);
         
     /* Positioning background elements */
     background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat;
