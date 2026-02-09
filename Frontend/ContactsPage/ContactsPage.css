@@ -265,3 +265,60 @@ body {
     transform: translateX(20px);
     transition: all 0.25s ease;
 }
+
+/* Greeting */
+.user-greeting {
+    text-align: right;
+    font-family: 'Comic Sans MS', 'Brush Script MT', cursive;
+    font-size: 1.2em;
+    color: #555;
+    margin-bottom: 10px; /* Space between greeting and header row */
+}
+
+/* Header Controls (Search - Title - Logout)  */
+.header-controls {
+    display: flex;
+    justify-content: space-between; /* Pushes items to Left, Center, Right */
+    align-items: center; /* Vertically aligns them */
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+/* Modify the existing h2 */
+.container h2 {
+    margin: 0; /* Remove default margins */
+    flex-grow: 1; /* Allows title to take up available space */
+    text-align: center; /* Ensure text stays centered */
+}
+
+/* Search Bar Style */
+.search-container input {
+    padding: 10px 15px;
+    border-radius: 20px; /* Rounded pill shape */
+    border: 1px solid #ccc;
+    outline: none;
+    font-size: 0.9em;
+    width: 200px;
+    transition: border 0.3s;
+}
+
+.search-container input:focus {
+    border-color: #007bff;
+}
+
+/* Logout Button Style */
+.logout-btn {
+    padding: 8px 16px;
+    background-color: #6c757d; 
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9em;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.logout-btn:hover {
+    background-color: #5a6268;
+}

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Landing Page - Login/Register</title>
+    <title>Contact Manager</title>
     <link rel="stylesheet" href="HomePage.css">
 </head>
 <body>
@@ -13,67 +13,37 @@
     <div class="container">
         <div class="tabs">
             <button class="tab-btn" onclick="openTab(event, 'login')">Login</button>
-            <button class="tab-btn active" onclick="openTab(event, 'register')">Sign Up (Register)</button>
+            <button class="tab-btn active" onclick="openTab(event, 'register')">Sign Up</button>
         </div>
 
         <div id="register" class="tab-content active">
             <h2>Register</h2>
             <form>
-                <input type="text" placeholder="First Name">
-                <input type="text" placeholder="Last Name">
-                <input type="email" placeholder="Email">
-                <input type="password" placeholder="Password">
-                <button type="submit" id = "signup-submit" class="btn-submit">Sign Up</button>
+                <input type="text" id="reg-firstName" placeholder="First Name">
+                <input type="text" id="reg-lastName" placeholder="Last Name">
+                <input type="email" id="reg-email" placeholder="Email">
+                <input type="password" id="reg-password" placeholder="Password">
+                
+                <span id="signupResult" class="result-text"></span>
+                
+                <button type="submit" id="signup-submit" class="btn-submit">Sign Up</button>
             </form>
         </div>
 
         <div id="login" class="tab-content">
             <h2>Login</h2>
             <form>
-                <input type="email" placeholder="Email"> 
-                <input type="password" placeholder="Password">
-                <button type="submit" class="btn-submit">Sign In</button>
+                <input type="email" id="login-email" placeholder="Email"> 
+                <input type="password" id="login-password" placeholder="Password">
+                
+                <span id="loginResult" class="result-text"></span>
+
+                <button type="submit" id="login-submit" class="btn-submit">Sign In</button>
             </form>
         </div>
     </div>
 
+    <script src="HomePage.js"></script>
+
 </body>
-
-<script>
-
-    function openTab(evt, tabName) {
-            // Get all elements with class="tab-content" 
-            var tabContent = document.getElementsByClassName("tab-content");
-            for (var i = 0; i < tabContent.length; i++) {
-                tabContent[i].classList.remove("active");
-            }
-
-            // Get all elements with class="tab-btn" 
-            var tabLinks = document.getElementsByClassName("tab-btn");
-            for (var i = 0; i < tabLinks.length; i++) {
-                tabLinks[i].classList.remove("active");
-            }
-
-            // Show the current tab
-            document.getElementById(tabName).classList.add("active");
-            evt.currentTarget.classList.add("active");
-        }
-    
-    // <!-- ADDED BY JASON UNTIL WE ADD ACTUAL LOGIN INFORMATION -->
-
-    //ONLY GOES TO CONTACTS PAGE AFTER SUBMIT IS RAN
-    document.getElementById("signup-submit").addEventListener("click", function (e) {
-        //REMOVE THIS ONCE FINISHED, IT JUST REMOVES DEFAULT PROPERTIES !!!!!!!!!!!!!!
-        e.preventDefault(); 
-        //SWITCH HTML PAGE TO THE CONTACTS PAGE
-        window.location.href = '../ContactsPage/ContactsPage.html';
-    });
-
-    // LOGIN BUTTON TEST
-    document.getElementById("login-submit").addEventListener("click", function (e) {
-        e.preventDefault(); 
-        // Redirect to Contacts Page
-        window.location.href = '../ContactsPage/ContactsPage.html';
-    });
-
-</script>
+</html>

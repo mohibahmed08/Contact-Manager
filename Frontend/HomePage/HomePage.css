@@ -117,6 +117,19 @@ input:focus {
     outline: none;
 }
 
+/* Error Fields (Turns border red) */
+input.error {
+    border: 2px solid #ef4444 !important;
+    background-color: #fef2f2;
+}
+
+.result-text {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 10px;
+    min-height: 20px;
+}
+
 /* Buttons & Animations */
 .btn-submit {
     width: 100%;
