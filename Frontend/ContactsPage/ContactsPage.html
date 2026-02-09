@@ -9,13 +9,22 @@
 <body>
 
 <div class="container">
-    <h2>Contacts</h2>
 
+    <div id="userName" class="user-greeting">Hello, John Doe</div>
+
+    <div class="header-controls">
+        
+        <div class="search-container">
+            <input type="text" id="searchText" placeholder="Search..." onkeyup="searchContacts()">
+        </div>
+
+        <h2>Contacts</h2>
+
+        <button class="logout-btn" onclick="window.location.href='HomePage.html'">Logout</button>
+    </div>
     <ul id="contactList">
-        <!-- Should be blank once fully implemented!!! This is populated from the database -->
         <li class="contact">
 
-            <!-- Left side: avatar + contact details -->
             <div class="contact-info">
 
                 <div class="avatar">JD</div>
@@ -37,10 +46,9 @@
 
             </div>
 
-            <!-- Right side: actions -->
             <div class="contact-actions">
-                <button class="edit-btn" id = "editButton" onclick="editContact(this)">Edit</button>
-                <button class="delete-btn" id = "deleteButton" onclick="deleteContact(this)">🗑</button>
+                <button class="edit-btn" id="editButton" onclick="editContact(this)">Edit</button>
+                <button class="delete-btn" id="deleteButton" onclick="deleteContact(this)">🗑</button>
             </div>
 
         </li>
@@ -48,7 +56,6 @@
 </div>
 
 
-<!-- Delete Confirmation Modal -->
 <div id="deleteModal" class="modal">
     <div class="modal-content">
         <p id="deleteText"></p>
