@@ -170,7 +170,7 @@ document.getElementById("editButton").onclick = () => {
         
         let contactList = "";
 
-        let url = 'ContactsAPI/getContacts.php?UserID=' + encodeURIComponent(userId); // 
+        let url = 'http://colorslab.xyz/ContactsAPI/getContacts.php?UserID=' + encodeURIComponent(userId); // 
         
         let xhr = new XMLHttpRequest();
         xhr.open("GET", url, true); // 
@@ -221,7 +221,7 @@ document.getElementById("editButton").onclick = () => {
         let lastName = "";
         
         let data = document.cookie;
-        let splits = data.split(",");
+        let splits = data.split(";");
         
         for(let i = 0; i < splits.length; i++) {
             let thisOne = splits[i].trim();
