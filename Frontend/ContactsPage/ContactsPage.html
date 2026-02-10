@@ -237,16 +237,9 @@ document.getElementById("editButton").onclick = () => {
                 userId = parseInt(tokens[1].trim());
             }
         }
-        
-        // If no user ID found, go back to Login
-        if(userId < 0 || isNaN(userId)) {
-            window.location.href = '../HomePage/HomePage.html';
-        }
-        else {
-            // Update Greeting
-            document.getElementById("userName").innerText = "Hello, " + firstName + " " + lastName;
-        }
-    }
+
+        document.getElementById("userName").innerText = "Hello, " + firstName + " " + lastName;
+    }  
 
     // Logout 
     function doLogout() {
