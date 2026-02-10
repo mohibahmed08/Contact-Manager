@@ -1,4 +1,4 @@
-const urlBase = 'ContactAPI'; 
+const urlBase = 'http://colorslab.xyz/ContactsAPI'; 
 const extension = 'php';
 
 let userId = 0;
