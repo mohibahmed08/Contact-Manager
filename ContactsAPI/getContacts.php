@@ -1,7 +1,19 @@
 <?php
+    // ===== DEBUG MODE (REMOVE OR DISABLE IN PRODUCTION) =====
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
     ini_set('log_errors', 1);
-    ini_set('error_log', '/var/log/apache2/php_errors.log');
+
+    // Log file (make sure Apache can write to this)
+    ini_set('error_log', __DIR__ . '/php_errors.log');
+
     error_reporting(E_ALL);
+
+    // Force JSON output even on fatal errors
+    header('Content-Type: application/json; charset=utf-8');
+
+    // END CHAT GPT ASSISTANCE. PROMPT: "[pasted file] New beginning of the file with RETURNING AND VISIBLE ERRORS?"
+
     
     require_once "helperFunctions.php";
 
