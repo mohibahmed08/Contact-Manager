@@ -197,7 +197,7 @@ function isTaken(firstName, lastName, phoneNumber, emailAddress){
             "Content-Type": "application/json"
         },
         //TURN THE USER ID AND NAME INTO SEARCH FOR
-        body: JSON.stringify({
+        body: JSON.stringify({ // ?UserID={id}& query={something}
             ID: localStorage("UserID"), //OR CHANGE WITH WHATEVER HOLDS THE ID
             query: emailAddress //SEARCH FOR EMAIL ADDRESS TO CONFIRM NOT SAME PERSON
         })

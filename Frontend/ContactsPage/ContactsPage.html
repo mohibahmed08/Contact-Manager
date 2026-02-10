@@ -130,8 +130,8 @@ document.getElementById("editButton").onclick = () => {
         return '(' + phone[0] + phone[1] + phone[2] + ') ' + phone[3] + phone[4] + phone[5] + "-" + phone[6] + phone[7] + phone[8] + phone[9];
     }
 
-    function buildContact(firstName, lastName, email, phone) {
-        return `<li class="contact">
+    function buildContact(firstName, lastName, email, phone, contactId) {
+        return `<li class="contact" data-contact-id="${contactId}">
             <!-- Left side: avatar + contact details -->
             <div class="contact-info">
                 <div class="avatar">${getInitials(firstName, lastName)}</div>
@@ -165,18 +165,15 @@ document.getElementById("editButton").onclick = () => {
     // Modified from searchColor() in colors lab
     function retrieveContacts()
     {
-        let userId = 0; // Ideally we should use session storage or cookies here!!
-        document.getElementById("contactList").innerHTML = "";
+        let userId = window.currentUserId; // uses the cookie stored in readCookie
+        document.getElementById("contactList").innerHTML = ""; 
         
         let contactList = "";
 
-        let tmp = {action:"getContacts", ID:userId};
-        let jsonPayload = JSON.stringify( tmp );
-
-        let url = 'ContactsAPI/api.php';
+        let url = 'ContactsAPI/getContacts.php?UserID=' + encodeURIComponent(userId); // 
         
         let xhr = new XMLHttpRequest();
-        xhr.open("POST", url, true);
+        xhr.open("GET", url, true); // 
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
         try
         {
@@ -192,8 +189,9 @@ document.getElementById("editButton").onclick = () => {
                         let lastName = jsonObject.results[i].LastName;
                         let phone = jsonObject.results[i].Phone;
                         let email = jsonObject.results[i].Email;
+                        let contactId = jsonObject.results[i].ID; // 
 
-                        let newContact = buildContact(firstName, lastName, email, phone);
+                        let newContact = buildContact(firstName, lastName, email, phone, contactId); // 
 
                         document.getElementById("contactList").innerHTML += newContact;
                     }
@@ -201,7 +199,7 @@ document.getElementById("editButton").onclick = () => {
                     console.log("Contacts have been retrieved");
                 }
             };
-            xhr.send(jsonPayload);
+            xhr.send();
         }
         catch(err)
         {
@@ -215,7 +213,9 @@ document.getElementById("editButton").onclick = () => {
     // Read Cookie When Page Loads
     document.addEventListener('DOMContentLoaded', function() {readCookie();});
 
+
     function readCookie() {
+        
         let userId = -1;
         let firstName = "";
         let lastName = "";
@@ -237,9 +237,20 @@ document.getElementById("editButton").onclick = () => {
                 userId = parseInt(tokens[1].trim());
             }
         }
-
-        document.getElementById("userName").innerText = "Hello, " + firstName + " " + lastName;
-    }  
+        
+        // If no user ID found, go back to Login
+        if(userId < 0 || isNaN(userId)) {
+            window.location.href = '../HomePage/HomePage.html';
+        }
+        else {
+            // save the user id for other uses
+            window.currentUserId = userId;
+            // Update Greeting
+            document.getElementById("userName").innerText = "Hello, " + firstName + " " + lastName;
+            // Retrieve Contacts
+            retrieveContacts();
+        }
+    }
 
     // Logout 
     function doLogout() {
