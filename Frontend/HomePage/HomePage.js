@@ -1,4 +1,4 @@
-const urlBase = 'ContactAPI'; 
+const urlBase = 'http://colorslab.xyz/ContactsAPI'; 
 const extension = 'php';
 
 let userId = 0;
@@ -31,31 +31,57 @@ function clearErrors() {
 document.getElementById("signup-submit").addEventListener("click", function (e) {
     e.preventDefault();
 
-    let firstNameVal = document.getElementById("reg-firstName").value;
-    let lastNameVal = document.getElementById("reg-lastName").value;
-    let emailVal = document.getElementById("reg-email").value;
-    let passwordVal = document.getElementById("reg-password").value;
+    let firstNameField = document.getElementById("reg-firstName"); 
+    let lastNameField = document.getElementById("reg-lastName");   
+    let emailField = document.getElementById("reg-email");         
+    let passwordField = document.getElementById("reg-password");   
     let resultSpan = document.getElementById("signupResult");
+
+    // Pull from Field
+    let firstNameVal = firstNameField.value.trim(); 
+    let lastNameVal = lastNameField.value.trim();   
+    let emailVal = emailField.value.trim();         
+    let passwordVal = passwordField.value;
 
     // Validation
     let hasError = false;
     resultSpan.innerHTML = "";
 
-    if(firstNameVal.trim() === "") { document.getElementById("reg-firstName").classList.add('error'); hasError = true; } 
-    else document.getElementById("reg-firstName").classList.remove('error');
+    // 1. First Name Check
+    if(firstNameVal === "") { 
+        firstNameField.classList.add('error'); 
+        hasError = true; 
+    } else {
+        firstNameField.classList.remove('error');
+    }
 
-    if(lastNameVal.trim() === "") { document.getElementById("reg-lastName").classList.add('error'); hasError = true; } 
-    else document.getElementById("reg-lastName").classList.remove('error');
+    // 2. Last Name Check
+    if(lastNameVal === "") { 
+        lastNameField.classList.add('error'); 
+        hasError = true; 
+    } else {
+        lastNameField.classList.remove('error');
+    }
 
-    if(emailVal.trim() === "") { document.getElementById("reg-email").classList.add('error'); hasError = true; } 
-    else document.getElementById("reg-email").classList.remove('error');
+    // 3. Email Check (Empty OR missing '@' OR missing '.')
+    if(emailVal === "" || !emailVal.includes("@") || !emailVal.includes(".")) { 
+        emailField.classList.add('error'); 
+        hasError = true; 
+    } else {
+        emailField.classList.remove('error');
+    }
 
-    if(passwordVal.trim() === "") { document.getElementById("reg-password").classList.add('error'); hasError = true; } 
-    else document.getElementById("reg-password").classList.remove('error');
+    // 4. Password Check
+    if(passwordVal.trim() === "") { 
+        passwordField.classList.add('error'); 
+        hasError = true; 
+    } else {
+        passwordField.classList.remove('error');
+    }
 
     if(hasError) {
         resultSpan.style.color = "red";
-        resultSpan.innerHTML = "Please fill in all fields.";
+        resultSpan.innerHTML = "Please fix the invalid fields."; 
         return;
     }
 
@@ -81,10 +107,10 @@ document.getElementById("signup-submit").addEventListener("click", function (e) 
                     resultSpan.innerHTML = "Account Created! Logging in...";
                     
                     // Clear fields
-                    document.getElementById("reg-firstName").value = "";
-                    document.getElementById("reg-lastName").value = "";
-                    document.getElementById("reg-email").value = "";
-                    document.getElementById("reg-password").value = "";
+                    firstNameField.value = ""; 
+                    lastNameField.value = "";  
+                    emailField.value = "";     
+                    passwordField.value = ""; 
 
                     // Auto-switch to login tab
                     setTimeout(function(){
@@ -159,7 +185,7 @@ document.getElementById("login-submit").addEventListener("click", function (e) {
                     saveCookie();
 
                     // Redirect to ContactPage
-                    window.location.href = "ContactPage.html";
+                    window.location.href = '../ContactsPage/ContactsPage.html';
                 } else {
                     resultSpan.style.color = "red";
                     resultSpan.innerHTML = "User/Password combination incorrect";

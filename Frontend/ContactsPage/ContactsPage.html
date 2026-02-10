@@ -9,13 +9,22 @@
 <body>
 
 <div class="container">
-    <h2>Contacts</h2>
 
+    <div id="userName" class="user-greeting">Hello, John Doe</div>
+
+    <div class="header-controls">
+        
+        <div class="search-container">
+            <input type="text" id="searchText" placeholder="Search..." onkeyup="searchContacts()">
+        </div>
+
+        <h2>Contacts</h2>
+        <!-- MOHIB FIXEDD ITTTTT YUHHHHH -->
+        <button class="logout-btn" onclick="doLogout()">Logout</button>
+    </div>
     <ul id="contactList">
-        <!-- Should be blank once fully implemented!!! This is populated from the database -->
         <li class="contact">
 
-            <!-- Left side: avatar + contact details -->
             <div class="contact-info">
 
                 <div class="avatar">JD</div>
@@ -37,10 +46,9 @@
 
             </div>
 
-            <!-- Right side: actions -->
             <div class="contact-actions">
-                <button class="edit-btn" id = "editButton" onclick="editContact(this)">Edit</button>
-                <button class="delete-btn" id = "deleteButton" onclick="deleteContact(this)">🗑</button>
+                <button class="edit-btn" id="editButton" onclick="editContact(this)">Edit</button>
+                <button class="delete-btn" id="deleteButton" onclick="deleteContact(this)">🗑</button>
             </div>
 
         </li>
@@ -48,7 +56,6 @@
 </div>
 
 
-<!-- Delete Confirmation Modal -->
 <div id="deleteModal" class="modal">
     <div class="modal-content">
         <p id="deleteText"></p>
@@ -103,16 +110,6 @@ document.getElementById("editButton").onclick = () => {
     window.location.href = '../EditContactPage/ContactEdit.html';
 }
 
-// added by Tyler to read user id from the cookie and redirect if not logged in
-document.addEventListener("DOMContentLoaded", () => {
-    const userId = readUserIdFromCookie();
-    if (userId < 1) {
-        window.location.href = "../HomePage/HomePage.html";
-        return;
-    }     
-    retrieveContacts(userId);
-});
-
 </script>
 
 <!-- ADDED BY JONATHAN, YOU CAN REVISE AND DELETE OR MODIFY AS DESIRED -->
@@ -133,8 +130,8 @@ document.addEventListener("DOMContentLoaded", () => {
         return '(' + phone[0] + phone[1] + phone[2] + ') ' + phone[3] + phone[4] + phone[5] + "-" + phone[6] + phone[7] + phone[8] + phone[9];
     }
 
-    function buildContact(contactId, firstName, lastName, email, phone) {
-        return `<li class="contact" data-contact-id="${contactId}">
+    function buildContact(firstName, lastName, email, phone) {
+        return `<li class="contact">
             <!-- Left side: avatar + contact details -->
             <div class="contact-info">
                 <div class="avatar">${getInitials(firstName, lastName)}</div>
@@ -164,42 +161,111 @@ document.addEventListener("DOMContentLoaded", () => {
         </li>`
     }
 
-    async function retrieveContacts(userId, query = "") {
-        const params = new URLSearchParams({ UserID: String(userId)});
-        if (query.trim() !== "") params.set("query", query.trim());
 
-        const res = await fetch(`getContacts.php?${params.toString()}`);
-        const data = await res.json();
+    // Modified from searchColor() in colors lab
+    function retrieveContacts()
+    {
+        let userId = 0; // Ideally we should use session storage or cookies here!!
+        document.getElementById("contactList").innerHTML = "";
+        
+        let contactList = "";
 
-        if (data.error) {
-            console.error("getContacts error:", data.error);
-            return;
+        let tmp = {action:"getContacts", ID:userId};
+        let jsonPayload = JSON.stringify( tmp );
+
+        let url = 'ContactsAPI/api.php';
+        
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+        try
+        {
+            xhr.onreadystatechange = function() 
+            {
+                if (this.readyState == 4 && this.status == 200) 
+                {
+                    // Decode JSON into an array, then loop through the array to add to html
+                    let jsonObject = JSON.parse( xhr.responseText );
+                    for( let i=0; i<jsonObject.results.length; i++ )
+                    {
+                        let firstName = jsonObject.results[i].FirstName;
+                        let lastName = jsonObject.results[i].LastName;
+                        let phone = jsonObject.results[i].Phone;
+                        let email = jsonObject.results[i].Email;
+
+                        let newContact = buildContact(firstName, lastName, email, phone);
+
+                        document.getElementById("contactList").innerHTML += newContact;
+                    }
+
+                    console.log("Contacts have been retrieved");
+                }
+            };
+            xhr.send(jsonPayload);
         }
-
-        const list = document.getElementById("contactList");
-        list.innerHTML = "";
-
-        for (const c of data.results) {
-            list.innerHTML += buildContact(c.id, c.FirstName, c.LastName, c.Email, c.Phone);
+        catch(err)
+        {
+            console.error(err.message);
         }
-
+        
     }
-    function readUserIdFromCookie() {
-        const parts = document.cookie.split(",");
-        for (const p of parts) {
-            const [k, v] = p.trim().split("=");
-            if (k === "userId") return parseInt(v, 10);
-        }
-        return -1;
-    }
-
-    function searchContacts() {
-        const userId = readUserIdFromCookie();
-        const q = document.getElementById("searchText").value;
-        retrieveContacts(userId, q);
-    }
-
  </script>
+
+<script>
+    // Read Cookie When Page Loads
+    document.addEventListener('DOMContentLoaded', function() {readCookie();});
+
+    function readCookie() {
+        let userId = -1;
+        let firstName = "";
+        let lastName = "";
+        
+        let data = document.cookie;
+        let splits = data.split(",");
+        
+        for(let i = 0; i < splits.length; i++) {
+            let thisOne = splits[i].trim();
+            let tokens = thisOne.split("=");
+            
+            if(tokens[0] == "firstName") {
+                firstName = tokens[1];
+            }
+            else if(tokens[0] == "lastName") {
+                lastName = tokens[1];
+            }
+            else if(tokens[0] == "userId") {
+                userId = parseInt(tokens[1].trim());
+            }
+        }
+        
+        // If no user ID found, go back to Login
+        if(userId < 0 || isNaN(userId)) {
+            window.location.href = '../HomePage/HomePage.html';
+        }
+        else {
+            // Update Greeting
+            document.getElementById("userName").innerText = "Hello, " + firstName + " " + lastName;
+        }
+    }
+
+    // Logout 
+    function doLogout() {
+        let userId = 0;
+        let firstName = "";
+        let lastName = "";
+        
+        // Set expiration date to the past to delete cookies
+        let date = new Date();
+        date.setTime(date.getTime() - 1);
+        
+        document.cookie = "firstName=; expires=" + date.toGMTString();
+        document.cookie = "lastName=; expires=" + date.toGMTString();
+        document.cookie = "userId=; expires=" + date.toGMTString();
+        
+        // Redirect to Login Page
+        window.location.href = '../HomePage/HomePage.html';
+    }
+</script>
 
 </body>
 </html>
