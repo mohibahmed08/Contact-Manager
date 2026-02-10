@@ -133,8 +133,8 @@ document.addEventListener("DOMContentLoaded", () => {
         return '(' + phone[0] + phone[1] + phone[2] + ') ' + phone[3] + phone[4] + phone[5] + "-" + phone[6] + phone[7] + phone[8] + phone[9];
     }
 
-    function buildContact(firstName, lastName, email, phone) {
-        return `<li class="contact">
+    function buildContact(contactId, firstName, lastName, email, phone) {
+        return `<li class="contact" data-contact-id="${contactId}">
             <!-- Left side: avatar + contact details -->
             <div class="contact-info">
                 <div class="avatar">${getInitials(firstName, lastName)}</div>
