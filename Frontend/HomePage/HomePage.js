@@ -1,4 +1,4 @@
-const urlBase = 'ContactAPI'; 
+const urlBase = 'http://colorslab.xyz/ContactsAPI'; 
 const extension = 'php';
 
 let userId = 0;
@@ -159,7 +159,7 @@ document.getElementById("login-submit").addEventListener("click", function (e) {
                     saveCookie();
 
                     // Redirect to ContactPage
-                    window.location.href = "ContactPage.html";
+                    window.location.href = "ContactsPage.html";
                 } else {
                     resultSpan.style.color = "red";
                     resultSpan.innerHTML = "User/Password combination incorrect";
