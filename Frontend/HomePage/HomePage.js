@@ -159,7 +159,7 @@ document.getElementById("login-submit").addEventListener("click", function (e) {
                     saveCookie();
 
                     // Redirect to ContactPage
-                    window.location.href = "ContactPage.html";
+                    window.location.href = "ContactPages.html";
                 } else {
                     resultSpan.style.color = "red";
                     resultSpan.innerHTML = "User/Password combination incorrect";
