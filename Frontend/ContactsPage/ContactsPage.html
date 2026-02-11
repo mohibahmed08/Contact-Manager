@@ -163,7 +163,7 @@ document.getElementById("editButton").onclick = () => {
 
 
     // Modified from searchColor() in colors lab
-    function retrieveContacts()
+    function retrieveContacts(query="")
     {
         let userId = window.currentUserId; // uses the cookie stored in readCookie
         document.getElementById("contactList").innerHTML = ""; 
