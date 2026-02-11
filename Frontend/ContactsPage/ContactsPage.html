@@ -10,7 +10,10 @@
 
 <div class="container">
 
-    <div id="userName" class="user-greeting">Hello, John Doe</div>
+    <div class="top-bar">
+        <button class="add-btn" onclick="window.location.href='../EditContactPage/ContactEdit.html'">+ Add Contact</button>
+        <div id="userName" class="user-greeting">Hello, John Doe</div>
+    </div>
 
     <div class="header-controls">
         
@@ -237,7 +240,7 @@ document.getElementById("editButton").onclick = () => {
                 userId = parseInt(tokens[1].trim());
             }
         }
-        
+
         // If no user ID found, go back to Login
         if(userId < 0 || isNaN(userId)) {
             window.location.href = '../HomePage/HomePage.html';
@@ -249,7 +252,7 @@ document.getElementById("editButton").onclick = () => {
             document.getElementById("userName").innerText = "Hello, " + firstName + " " + lastName;
             // Retrieve Contacts
             retrieveContacts();
-        }
+            }
     }
 
     // Logout 
