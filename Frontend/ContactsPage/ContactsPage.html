@@ -18,7 +18,7 @@
     <div class="header-controls">
         
         <div class="search-container">
-            <input type="text" id="searchText" placeholder="Search..." onkeyup="searchContacts()">
+            <input type="text" id="searchText" placeholder="Search..." onkeydown="if (event.key === 'Enter') searchContacts();" onblur="searchContacts();">
         </div>
 
         <h2>Contacts</h2>
