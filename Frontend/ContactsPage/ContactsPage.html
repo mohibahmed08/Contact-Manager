@@ -86,6 +86,62 @@ document.getElementById("cancelDelete").onclick = function () {
     document.getElementById("deleteModal").style.display = "none";
 };
 
+// Implemented to find the contact ID, use it with the remove contact API endpoint, and then delete the html list element
+document.getElementById("confirmDelete").onclick = function () {
+    if (contactToDelete) {
+        contactToDelete.classList.add("removing");
+
+        // Get the contact ID
+        const contactId = Number(contactToDelete.dataset.contactId);
+        if (!Number.isFinite(contactId)) {
+            console.error("Contact ID not found");
+            contactToDelete.classList.remove("removing");
+            return;
+        }
+
+        // Send to the remove endpoint
+        let payload = JSON.stringify({ 
+            UserID: window.currentUserId,
+            ID: contactId
+        });
+
+        let url = 'http://colorslab.xyz/ContactsAPI/removeContact.php'; 
+        
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true); // 
+        xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+        try
+        {
+            xhr.onreadystatechange = function() 
+            {
+                if (this.readyState == 4 && this.status == 200) 
+                {
+                    console.log("Deleted contact successfully!");
+
+                    setTimeout(() => {
+                        contactToDelete.remove();
+                        contactToDelete = null;
+                    }, 250);
+                } else if (this.readyState == 4) {
+                    console.error("Failed to delete contact:", this.status, this.responseText);
+                    contactToDelete.classList.remove("removing");
+                    return;                    
+                }
+            };
+            xhr.send(payload);
+        }
+        catch(err)
+        {
+            console.error(err.message);
+        }
+    }
+
+    document.getElementById("deleteModal").style.display = "none";
+};
+
+// KEPT THE OLD FUNTION HERE JUST INCASE!
+/*
 document.getElementById("confirmDelete").onclick = function () {
     if (contactToDelete) {
         contactToDelete.classList.add("removing");
@@ -97,7 +153,7 @@ document.getElementById("confirmDelete").onclick = function () {
     }
 
     document.getElementById("deleteModal").style.display = "none";
-};
+};*/
 
 // ADDED BY JASON TO LINK EDIT TO CONTACT PAGE FOR NOW
 document.getElementById("editButton").onclick = () => {
