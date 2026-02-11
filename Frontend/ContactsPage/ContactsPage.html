@@ -170,7 +170,7 @@ document.getElementById("editButton").onclick = () => {
         
         let contactList = "";
 
-        let url = 'http://colorslab.xyz/ContactsAPI/getContacts.php?UserID=' + encodeURIComponent(userId); // 
+        let url = 'http://colorslab.xyz/ContactsAPI/getContacts.php?UserID=' + encodeURIComponent(userId) + "&query=" + encodeURIComponent(query); 
         
         let xhr = new XMLHttpRequest();
         xhr.open("GET", url, true); // 
