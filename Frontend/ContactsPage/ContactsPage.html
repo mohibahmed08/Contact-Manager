@@ -269,6 +269,15 @@ document.getElementById("editButton").onclick = () => {
         // Redirect to Login Page
         window.location.href = '../HomePage/HomePage.html';
     }
+
+    // Search function (implemented by Jonathan, feel free to modify as needed):
+    function searchContacts() {
+        // Get the query
+        let query = document.getElementById("searchText").value;
+
+        // Retrieve the contacts matching our query
+        retrieveContacts(query);
+    }
 </script>
 
 </body>
