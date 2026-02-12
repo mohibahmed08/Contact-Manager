@@ -104,7 +104,7 @@ document.getElementById("signup-submit").addEventListener("click", function (e) 
             if (this.readyState == 4) {
                 if (this.status == 201 || this.status == 200) {
                     resultSpan.style.color = "green";
-                    resultSpan.innerHTML = "Account Created! Logging in...";
+                    resultSpan.innerHTML = "Account Created!";
                     
                     // Clear fields
                     firstNameField.value = ""; 
