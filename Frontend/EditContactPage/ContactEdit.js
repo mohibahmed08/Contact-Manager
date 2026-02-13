@@ -61,6 +61,9 @@ function setAllFieldsErr(array){
     //IF ERROR EXISTS, RETURN
     if(containsVal) return containsVal;
 
+    //IF ARRAY IS EMPTY, RETURN
+    if(!array) return;
+
     //CHECK IF PHP RETURNED ARRAY CONTAINS ALL SAME INFO AS BEING ENTERED
     array.forEach(element => {
         
@@ -172,7 +175,6 @@ window.addEventListener("beforeunload", (e) => {
     localStorage.removeItem("contactInfo");
 });
 
-
 //IF BACK BUTTON IS CLICKED
 document.getElementById("back-button").addEventListener("click", function () {
     //SWITCH BACK TO THE CONTACT PAGE
@@ -186,10 +188,10 @@ document.getElementById("back-button-wrapper").addEventListener("click", functio
 
 //CHECKS IF A FIELD IS UNIQUE FROM WHATS IN THE DB
 //-------------> REMOVE DEAD VARIABLES IF NOT NEEDED WHEN MERGE
-function isTaken(firstName, lastName, phoneNumber, emailAddress){ 
+function isTaken(searchQuery){ 
     
     //SEARCH THE CONTACTS VIA BACKEND TO SEE IF CONTACT HAS ALREADY BEEN ASSIGNED
-    fetch("searchContacts.php", {
+    fetch("../../ContactsAPI/searchContacts.php", {
         //POST THE CONTACT INFORMATION TO SEARCH FOR
         method: "POST",
         //SPECIFY JSON CODE BETWEEN API AND FRONTEND
@@ -197,9 +199,9 @@ function isTaken(firstName, lastName, phoneNumber, emailAddress){
             "Content-Type": "application/json"
         },
         //TURN THE USER ID AND NAME INTO SEARCH FOR
-        body: JSON.stringify({ // ?UserID={id}& query={something}
-            ID: localStorage("UserID"), //OR CHANGE WITH WHATEVER HOLDS THE ID
-            query: emailAddress //SEARCH FOR EMAIL ADDRESS TO CONFIRM NOT SAME PERSON
+        body: JSON.stringify({
+            UserID: localStorage.getItem("UserID"), //OR CHANGE WITH WHATEVER HOLDS THE ID
+            query: searchQuery //SEARCH FOR EMAIL ADDRESS TO CONFIRM NOT SAME PERSON
         })
     })
     //THEN SEND THE RESPONSE AS THE JSON
@@ -237,10 +239,10 @@ document.getElementById("action-button").addEventListener("click", function () {
     let isEmpty = setAllFieldsErr();
     
     //CHECK IF THE FIELD DATA HAS BEEN TAKEN ALREADY IN BACKEND
-    if(isEmpty || isTaken(firstName, lastName, phoneNumber, emailAddress)) return; //PASS IN CURRENT FIELD INFO (NEED METHOD TO BE COMPLETED !!!!!!!!)
+    if(isEmpty || isTaken(emailAddress)) return; //PASS IN CURRENT FIELD INFO (NEED METHOD TO BE COMPLETED !!!!!!!!)
 
     //IF NOT ALREADY TAKEN, THEN SEND TO BACKEND VIA API ENDPOINT
-    fetch('editContact.php', { // <-- CHANGE THIS OUT WITH THE ACTUAL BACKEND CODE NAME !!!!!!!!!!!!!
+    fetch('../../ContactsAPI/createContact.php', { // <-- CHANGE THIS OUT WITH THE ACTUAL BACKEND CODE NAME !!!!!!!!!!!!!
         //POST TO THE BACKEND PHP
         method: 'POST',
         //STATE WE ARE SENDING JSON FILE TYPE
@@ -258,7 +260,7 @@ document.getElementById("action-button").addEventListener("click", function () {
             //ASSIGN THE EMAILADDRESS FIELD WITH EMAILADDRESS IN DOM
             Email: emailAddress,
             //ASSIGN THE ID FIELD WITH LOCAL STORAGE IN DOM
-            ID: localStorage("UserID") //OR CHANGE WITH WHATEVER HOLDS THE ID
+            UserID: localStorage.getItem("UserID") //OR CHANGE WITH WHATEVER HOLDS THE ID
         })
     })
         //THEN SEND THE RESPONSE AS THE JSON
