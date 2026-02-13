@@ -43,7 +43,7 @@
             $stmt = $conn->prepare("SELECT ID, UserID, FirstName, LastName, Phone, Email FROM Contacts WHERE UserID = ? ORDER BY LastName, FirstName");
             $stmt->bind_param("i", $inData["UserID"]);
         } else {
-            $stmt = $conn->prepare("SELECT * FROM Contacts WHERE UserID = ? AND ( FirstName LIKE ? OR LastName LIKE ? OR Email LIKE ? OR Phone LIKE ? );");
+            $stmt = $conn->prepare("SELECT * FROM Contacts WHERE UserID = ? AND ( FirstName LIKE ? OR LastName LIKE ? OR Email LIKE ? OR Phone LIKE ? ) ORDER BY LastName, FirstName;");
             $search = "%" . $query . "%";
             $stmt->bind_param("issss", $inData["UserID"], $search, $search, $search, $search);
         }

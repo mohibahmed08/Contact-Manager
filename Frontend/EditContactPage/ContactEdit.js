@@ -61,6 +61,9 @@ function setAllFieldsErr(array){
     //IF ERROR EXISTS, RETURN
     if(containsVal) return containsVal;
 
+    //IF ARRAY IS EMPTY, RETURN
+    if(!array) return;
+
     //CHECK IF PHP RETURNED ARRAY CONTAINS ALL SAME INFO AS BEING ENTERED
     array.forEach(element => {
         
@@ -172,7 +175,6 @@ window.addEventListener("beforeunload", (e) => {
     localStorage.removeItem("contactInfo");
 });
 
-
 //IF BACK BUTTON IS CLICKED
 document.getElementById("back-button").addEventListener("click", function () {
     //SWITCH BACK TO THE CONTACT PAGE
@@ -186,10 +188,10 @@ document.getElementById("back-button-wrapper").addEventListener("click", functio
 
 //CHECKS IF A FIELD IS UNIQUE FROM WHATS IN THE DB
 //-------------> REMOVE DEAD VARIABLES IF NOT NEEDED WHEN MERGE
-function isTaken(firstName, lastName, phoneNumber, emailAddress){ 
+function isTaken(searchQuery){ 
     
     //SEARCH THE CONTACTS VIA BACKEND TO SEE IF CONTACT HAS ALREADY BEEN ASSIGNED
-    fetch("searchContacts.php", {
+    fetch("../../ContactsAPI/searchContacts.php", {
         //POST THE CONTACT INFORMATION TO SEARCH FOR
         method: "POST",
         //SPECIFY JSON CODE BETWEEN API AND FRONTEND
@@ -197,9 +199,9 @@ function isTaken(firstName, lastName, phoneNumber, emailAddress){
             "Content-Type": "application/json"
         },
         //TURN THE USER ID AND NAME INTO SEARCH FOR
-        body: JSON.stringify({ // ?UserID={id}& query={something}
-            ID: localStorage("UserID"), //OR CHANGE WITH WHATEVER HOLDS THE ID
-            query: emailAddress //SEARCH FOR EMAIL ADDRESS TO CONFIRM NOT SAME PERSON
+        body: JSON.stringify({
+            UserID: localStorage.getItem("UserID"), //OR CHANGE WITH WHATEVER HOLDS THE ID
+            query: searchQuery //SEARCH FOR EMAIL ADDRESS TO CONFIRM NOT SAME PERSON
         })
     })
     //THEN SEND THE RESPONSE AS THE JSON
@@ -237,30 +239,78 @@ document.getElementById("action-button").addEventListener("click", function () {
     let isEmpty = setAllFieldsErr();
     
     //CHECK IF THE FIELD DATA HAS BEEN TAKEN ALREADY IN BACKEND
-    if(isEmpty || isTaken(firstName, lastName, phoneNumber, emailAddress)) return; //PASS IN CURRENT FIELD INFO (NEED METHOD TO BE COMPLETED !!!!!!!!)
+    if(isEmpty || isTaken(emailAddress)) return; //PASS IN CURRENT FIELD INFO (NEED METHOD TO BE COMPLETED !!!!!!!!)
 
-    //IF NOT ALREADY TAKEN, THEN SEND TO BACKEND VIA API ENDPOINT
-    fetch('editContact.php', { // <-- CHANGE THIS OUT WITH THE ACTUAL BACKEND CODE NAME !!!!!!!!!!!!!
-        //POST TO THE BACKEND PHP
-        method: 'POST',
-        //STATE WE ARE SENDING JSON FILE TYPE
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        //STRINGIFY FIELD INFO TO JSON DELIVERABLE
-        body: JSON.stringify({ 
-            //ASSIGN THE FIRSTNAME FIELD WITH FIRSTNAME IN DOM
-            FirstName: firstName, 
-            //ASSIGN THE LASTNAME FIELD WITH LASTNAME IN DOM
-            LastName: lastName, 
-            //ASSIGN THE PHONENUMBER FIELD WITH PHONENUMBER IN DOM
-            Phone: phoneNumber, 
-            //ASSIGN THE EMAILADDRESS FIELD WITH EMAILADDRESS IN DOM
-            Email: emailAddress,
-            //ASSIGN THE ID FIELD WITH LOCAL STORAGE IN DOM
-            ID: localStorage("UserID") //OR CHANGE WITH WHATEVER HOLDS THE ID
+    //OBTAIN CONTACT INFO IT EXISTS
+    const raw = localStorage.getItem("contactInfo");
+    const savedContactInfo = raw ? JSON.parse(raw) : null;
+
+    //IF EDIT CONTACT, THERE WILL BE INFORMATION PASSED IN
+    if(savedContactInfo){ 
+        //IF NOT ALREADY TAKEN, THEN SEND TO BACKEND VIA API ENDPOINT
+        fetch("../../ContactsAPI/editContact.php", {
+            //POST TO THE BACKEND PHP
+            method: "POST",
+            //STATE WE ARE SENDING JSON FILE TYPE
+            headers: {
+                "Content-Type": "application/json"
+            },
+            //STRINGIFY FIELD INFO TO JSON DELIVERABLE
+            body: JSON.stringify({
+                //ASSIGN THE FIRSTNAME FIELD WITH FIRSTNAME IN DOM
+                FirstName: firstName,
+                //ASSIGN THE LASTNAME FIELD WITH FIRSTNAME IN DOM
+                LastName: lastName,
+                //ASSIGN THE PHONE NUMBER FIELD WITH FIRSTNAME IN DOM
+                Phone: phoneNumber,
+                //ASSIGN THE EMAIL ADDRESS FIELD WITH FIRSTNAME IN DOM
+                Email: emailAddress,
+                //ASSIGN THE USER ID FIELD LOGIN ID
+                UserID: localStorage.getItem("UserID"),
+                //ASSIGN THE CONTACT ID WITH THE CONTACT EDITING
+                ID: localStorage.getItem("ContactID")
+            })
         })
-    })
+        //THEN SEND THE RESPONSE AS THE JSON
+        .then(response => response.json())
+        //LOG WHAT DATA HAS BEEN SENT
+        .then(data => {
+            console.log("Server response:", data);
+            if (data.success) {
+                console.log("Update successful!");
+            } else {
+                console.error("Update failed:", data.error);
+            }
+        })
+        //CATCH ANY EXTRANIOUS ERRORS
+        .catch(error => {
+            console.error("Fetch error:", error);
+        });
+    }
+    //ELSE ITS CREATE CONTACT
+    else{
+        //IF NOT ALREADY TAKEN, THEN SEND TO BACKEND VIA API ENDPOINT
+        fetch('../../ContactsAPI/createContact.php', { // <-- CHANGE THIS OUT WITH THE ACTUAL BACKEND CODE NAME !!!!!!!!!!!!!
+            //POST TO THE BACKEND PHP
+            method: 'POST',
+            //STATE WE ARE SENDING JSON FILE TYPE
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            //STRINGIFY FIELD INFO TO JSON DELIVERABLE
+            body: JSON.stringify({ 
+                //ASSIGN THE FIRSTNAME FIELD WITH FIRSTNAME IN DOM
+                FirstName: firstName, 
+                //ASSIGN THE LASTNAME FIELD WITH LASTNAME IN DOM
+                LastName: lastName, 
+                //ASSIGN THE PHONENUMBER FIELD WITH PHONENUMBER IN DOM
+                Phone: phoneNumber, 
+                //ASSIGN THE EMAILADDRESS FIELD WITH EMAILADDRESS IN DOM
+                Email: emailAddress,
+                //ASSIGN THE ID FIELD WITH LOCAL STORAGE IN DOM
+                UserID: localStorage.getItem("UserID") //OR CHANGE WITH WHATEVER HOLDS THE ID
+            })
+        })
         //THEN SEND THE RESPONSE AS THE JSON
         .then(response => response.json())
         //LOG WHAT DATA HAS BEEN SENT
@@ -269,7 +319,7 @@ document.getElementById("action-button").addEventListener("click", function () {
         })
         //CATCH ANY EXTRANIOUS ERRORS
         .catch(error => console.error('Fetch error:', error));
-
+    }
 });
 
 //FOR FORMATTING THE PHONE NUMBER FIELD PROPERLY AS USER TYPES THEIR PHONE NUMBER
