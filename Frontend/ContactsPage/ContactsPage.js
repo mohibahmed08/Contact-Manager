@@ -258,10 +258,56 @@ document.getElementById("editButton").onclick = () => {
     }
 
     // Search function (implemented by Jonathan, feel free to modify as needed):
-    function searchContacts() {
-        // Get the query
-        let query = document.getElementById("searchText").value;
+    // function searchContacts() {
+    //     // Get the query
+    //     let query = document.getElementById("searchText").value;
 
-        // Retrieve the contacts matching our query
-        retrieveContacts(query);
-    }
+    //     // Retrieve the contacts matching our query
+    //     retrieveContacts(query);
+    // }
+let searchTimeout;
+
+document.addEventListener('DOMContentLoaded', function() {
+    readCookie();
+
+    const searchInput = document.getElementById("searchText");
+
+    searchInput.addEventListener("input", function() {
+        clearTimeout(searchTimeout);
+
+        searchTimeout = setTimeout(() => {
+            let query = searchInput.value.trim();
+            retrieveContacts(query);
+        }, 300); // wait 300ms after typing stops
+    });
+});
+
+function createContact() {
+    let firstName = document.getElementById("firstName").value;
+    let lastName = document.getElementById("lastName").value;
+    let phone = document.getElementById("phone").value;
+    let email = document.getElementById("email").value;
+
+    let payload = JSON.stringify({
+        UserID: window.currentUserId,
+        FirstName: firstName,
+        LastName: lastName,
+        Phone: phone,
+        Email: email
+    });
+
+    let url = "http://colorslab.xyz/ContactsAPI/createContact.php";
+
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            console.log("Contact created!");
+            retrieveContacts(); // refresh list
+        }
+    };
+
+    xhr.send(payload);
+}
