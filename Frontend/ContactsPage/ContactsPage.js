@@ -20,6 +20,7 @@ function editContact(button){
     //  ^^^^^^^^^^^ HARD CODED UNTIL YOU SET UP THE LIST TO DYNAMIC !!!!!!!
     //PASS IN THE CURRENT FIELD INFO ARRAY TO LOCAL STORAGE VIA JSON
     localStorage.setItem("contactInfo", JSON.stringify(contactInfo));
+    localStorage.setItem("ContactID", field.dataset.contactId); // store contact id as well
     //SWITCH CONCURRENT WINDOW TO THE CONTACT EDIT PAGE
     window.location.href = '../EditContactPage/ContactEdit.html';
 }
