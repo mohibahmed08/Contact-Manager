@@ -186,6 +186,21 @@ document.getElementById("back-button-wrapper").addEventListener("click", functio
     document.getElementById("back-button").click();
 });
 
+//GETS THE COOKIE'S VALUE BY NAME
+function getCookieValue(name) {
+    //SPLIT THE COOKIE BY DELIMETER
+    const cookies = document.cookie.split("; ");
+    //ITERATE THROUGH COOKIES
+    for (let c of cookies) {
+        //SPLIT THE KEY FROM ITS VALUE
+        const [key, value] = c.split("=");
+        //RETURN THE VALUE THAT EQUATES TO KEY
+        if (key === name) return value;
+    }
+    //IF NO VALUE FOUND WITH KEY, RETURN NULL
+    return null;
+}
+
 //CHECKS IF A FIELD IS UNIQUE FROM WHATS IN THE DB
 //-------------> REMOVE DEAD VARIABLES IF NOT NEEDED WHEN MERGE
 function isTaken(searchQuery){ 
@@ -200,7 +215,7 @@ function isTaken(searchQuery){
         },
         //TURN THE USER ID AND NAME INTO SEARCH FOR
         body: JSON.stringify({
-            UserID: localStorage.getItem("UserID"), //OR CHANGE WITH WHATEVER HOLDS THE ID
+            ID: parseInt(getCookieValue("UserID")), //FORMAT: [FIRSTNAME;LASTNAME;USERID]
             query: searchQuery //SEARCH FOR EMAIL ADDRESS TO CONFIRM NOT SAME PERSON
         })
     })
@@ -223,7 +238,6 @@ function isTaken(searchQuery){
     .catch(err => {
         console.error("Fetch failed:", err);
     });
-
 } 
 
 //TASKS FOR WHEN WHEN THE ACTION BUTTON IS CLICKED
@@ -266,9 +280,9 @@ document.getElementById("action-button").addEventListener("click", function () {
                 //ASSIGN THE EMAIL ADDRESS FIELD WITH FIRSTNAME IN DOM
                 Email: emailAddress,
                 //ASSIGN THE USER ID FIELD LOGIN ID
-                UserID: localStorage.getItem("UserID"),
-                //ASSIGN THE CONTACT ID WITH THE CONTACT EDITING
-                ID: localStorage.getItem("ContactID")
+                UserID: getCookieValue("userId"),
+                //ASSIGN THE CONTACT ID WITH THE CONTACT EDITING 
+                ID: getCookieValue("ID") // <------- !!!!!!!!!!!!! PROBABLY THE ERROR IF ONE EXISTS !!!!!!!!!
             })
         })
         //THEN SEND THE RESPONSE AS THE JSON
@@ -308,7 +322,7 @@ document.getElementById("action-button").addEventListener("click", function () {
                 //ASSIGN THE EMAILADDRESS FIELD WITH EMAILADDRESS IN DOM
                 Email: emailAddress,
                 //ASSIGN THE ID FIELD WITH LOCAL STORAGE IN DOM
-                UserID: localStorage.getItem("UserID") //OR CHANGE WITH WHATEVER HOLDS THE ID
+                UserID: localStorage.getItem("userId") //OR CHANGE WITH WHATEVER HOLDS THE ID
             })
         })
         //THEN SEND THE RESPONSE AS THE JSON
