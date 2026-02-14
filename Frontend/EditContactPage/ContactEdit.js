@@ -323,7 +323,7 @@ document.getElementById("action-button").addEventListener("click", function () {
                 //ASSIGN THE EMAILADDRESS FIELD WITH EMAILADDRESS IN DOM
                 Email: emailAddress,
                 //ASSIGN THE ID FIELD WITH LOCAL STORAGE IN DOM
-                UserID: localStorage.getItem("userId") //OR CHANGE WITH WHATEVER HOLDS THE ID
+                UserID: getCookieValue("userId") //OR CHANGE WITH WHATEVER HOLDS THE ID
             })
         })
         //THEN SEND THE RESPONSE AS THE JSON
