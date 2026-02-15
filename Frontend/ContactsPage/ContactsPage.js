@@ -67,7 +67,14 @@ document.getElementById("confirmDelete").onclick = function () {
 
     xhr.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
-            retrieveContacts(); // Refresh list cleanly
+
+            // ✅ ADD ANIMATION
+            contactToDelete.classList.add("removing");
+
+            // Wait for animation to finish before removing
+            setTimeout(() => {
+                contactToDelete.remove();
+            }, 250); // match CSS transition time
         }
     };
 
@@ -75,7 +82,6 @@ document.getElementById("confirmDelete").onclick = function () {
 
     document.getElementById("deleteModal").style.display = "none";
 };
-
 
 /* ===============================
    BUILD CONTACT CARD
