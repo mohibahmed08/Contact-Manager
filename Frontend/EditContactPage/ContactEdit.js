@@ -293,6 +293,8 @@ document.getElementById("action-button").addEventListener("click", function () {
             console.log("Server response:", data);
             if (data.success) {
                 console.log("Update successful!");
+                //IF UPDATE SUCCESSFUL, RETURN BACK TO CONTACT PAGE
+                window.location.href = '../ContactsPage/ContactsPage.html';
             } else {
                 console.error("Update failed:", data.error);
             }
@@ -334,7 +336,10 @@ document.getElementById("action-button").addEventListener("click", function () {
         .then(response => response.json())
         //LOG WHAT DATA HAS BEEN SENT
         .then(data => {
+            //LOG UPDATED DATA
             console.log(data);
+            //IF UPDATE SUCCESSFUL, RETURN BACK TO CONTACT PAGE
+            window.location.href = '../ContactsPage/ContactsPage.html';
         })
         //CATCH ANY EXTRANIOUS ERRORS
         .catch(error => console.error('Fetch error:', error));
