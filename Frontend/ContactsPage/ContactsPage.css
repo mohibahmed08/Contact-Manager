@@ -29,22 +29,19 @@ body {
     background-attachment: fixed;
 }
 
-/* ===== Main Container ===== */
 .container {
-    
     position: relative;
 
-    width: 1200px;
-    height: 700px;
+    width: 95%;
+    max-width: 1200px;
+    min-height: 700px;
 
-    
-    border-radius: 20px;
+    border-radius: 24px;
     box-sizing: border-box;
 
     overflow-y: auto;
     background-color: #f4f4f6;
     padding: 40px;
-    border-radius: 24px;
     box-shadow: 0 18px 40px rgba(0, 0, 0, 0.15);
 }
 
@@ -392,4 +389,48 @@ body {
 
 .logout-btn:hover {
     background-color: #5a6268;
+}
+
+/* ================= MOBILE FIX ================= */
+@media (max-width: 768px) {
+
+    .container {
+        width: 100%;
+        height: auto;
+        padding: 20px;
+        border-radius: 0;
+    }
+
+    .top-bar {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .header-controls {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .search-container input {
+        width: 100%;
+    }
+
+    .contact {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .contact-actions {
+        margin-left: 0;
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .modal-content {
+        width: 90%;
+        padding: 25px;
+    }
 }
