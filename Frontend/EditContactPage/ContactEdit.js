@@ -258,7 +258,7 @@ document.getElementById("action-button").addEventListener("click", function () {
             //ASSIGN THE EMAILADDRESS FIELD WITH EMAILADDRESS IN DOM
             Email: emailAddress,
             //ASSIGN THE ID FIELD WITH LOCAL STORAGE IN DOM
-            ID: localStorage("UserID") //OR CHANGE WITH WHATEVER HOLDS THE ID
+            ID: localStorage("ID") //OR CHANGE WITH WHATEVER HOLDS THE ID
         })
     })
         //THEN SEND THE RESPONSE AS THE JSON
@@ -267,8 +267,13 @@ document.getElementById("action-button").addEventListener("click", function () {
         .then(data => {
             console.log(data);
         })
+        
         //CATCH ANY EXTRANIOUS ERRORS
         .catch(error => console.error('Fetch error:', error));
+
+        // If the API returns no error, redirect back to the contact list
+        if (!data.error) 
+             window.location.href = '../ContactsPage/ContactsPage.html';
 
 });
 
