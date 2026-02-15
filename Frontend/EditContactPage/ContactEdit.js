@@ -301,6 +301,10 @@ document.getElementById("action-button").addEventListener("click", function () {
         .catch(error => {
             console.error("Fetch error:", error);
         });
+
+        // If the API returns no error, redirect back to the contact list
+        if (!data.error) 
+             window.location.href = '../ContactsPage/ContactsPage.html';
     }
     //ELSE ITS CREATE CONTACT
     else{
