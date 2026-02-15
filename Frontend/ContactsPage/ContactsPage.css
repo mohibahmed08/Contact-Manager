@@ -144,7 +144,9 @@ body {
     border-radius: 14px;
 
     display: flex;
+    justify-content: space-between;
     align-items: center;
+    gap: 15px;
 
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
@@ -164,6 +166,8 @@ body {
     color: #555;
     cursor: pointer;
     display: block;
+    word-break: break-word;
+
 }
 
 .phone {
@@ -391,46 +395,23 @@ body {
     background-color: #5a6268;
 }
 
-/* ================= MOBILE FIX ================= */
 @media (max-width: 768px) {
-
-    .container {
-        width: 100%;
-        height: auto;
-        padding: 20px;
-        border-radius: 0;
-    }
-
-    .top-bar {
-        flex-direction: column;
-        gap: 10px;
-        text-align: center;
-    }
-
-    .header-controls {
-        flex-direction: column;
-        gap: 15px;
-        text-align: center;
-    }
-
-    .search-container input {
-        width: 100%;
-    }
 
     .contact {
         flex-direction: column;
         align-items: flex-start;
-        gap: 10px;
     }
 
     .contact-actions {
-        margin-left: 0;
         width: 100%;
+        display: flex;
         justify-content: flex-end;
+        gap: 10px;
     }
 
-    .modal-content {
-        width: 90%;
-        padding: 25px;
+    .edit-btn,
+    .delete-btn {
+        flex: none;
     }
+
 }
