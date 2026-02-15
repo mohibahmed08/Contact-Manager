@@ -283,7 +283,7 @@ document.getElementById("action-button").addEventListener("click", function () {
                 //ASSIGN THE USER ID FIELD LOGIN ID
                 UserID: getCookieValue("userId"),
                 //ASSIGN THE CONTACT ID WITH THE CONTACT EDITING 
-                ID: getCookieValue("ID") // <------- !!!!!!!!!!!!! PROBABLY THE ERROR IF ONE EXISTS !!!!!!!!!
+                ID: localStorage.getItem("ContactID") // <------- !!!!!!!!!!!!! PROBABLY THE ERROR IF ONE EXISTS !!!!!!!!!
             })
         })
         //THEN SEND THE RESPONSE AS THE JSON
@@ -361,64 +361,3 @@ document.getElementById("phone-number-field").addEventListener("input", function
     e.target.value = parts.join("");
 
 });
-
-// retrieve the cookie
-function getCookie(name) {
-  const cookies = document.cookie.split(";").map(c => c.trim());
-  for (const c of cookies) {
-    const [k, v] = c.split("=");
-    if (k === name) return decodeURIComponent(v || "");
-  }
-  return "";
-}
-
-async function createContact(first, last, phone, email) {
-    const userId = getCookie("userId");
-
-    const response = await fetch("../../ContactsAPI/createContact.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            FirstName: first,
-            LastName: last,
-            Phone: phone,
-            Email: email,
-            UserID: userId
-        })
-    });
-
-    const data = await response.json();
-
-    if (!data.success) {
-        throw new Error(data.error || "Failed to create contact");
-    }
-
-    return data; // contains data.id
-
-}
-
-async function editContact(first, last, phone, email) {
-    const userId = getCookie("userId");
-    const contactId = localStorage.getItem("ContactID");
-
-    const response = await fetch("../../ContactsAPI/editContact.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            FirstName: first,
-            LastName: last,
-            Phone: phone,
-            Email: email,
-            UserID: userId,
-            ID: contactId
-        })
-    });
-
-    const data = await response.json();
-
-    if (!data.success) {
-        throw new Error(data.error || "Failed to edit contact");
-
-    }
-    return data;
-}
