@@ -432,7 +432,7 @@ body {
 
 .search-container {
     flex: 1;
-    min-width: 0; /* important for flex shrink */
+    min-width: 0;
 }
 
 .search-container input {
