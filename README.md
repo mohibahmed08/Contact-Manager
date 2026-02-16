@@ -7,10 +7,10 @@ Each user on the app can create an account, log in, and manage their own private
   - Registration (Sign up)
   - Login
 * Contact Management (per user)
- - Add contacts
- - Edit contacts
- - Delete contacts
- - Search contacts
+  - Add contacts
+  - Edit contacts
+  - Delete contacts
+  - Search contacts
 
 ## Technologies Used
 A LAMP (Linux, Apache, MySQL, and PHP) stack, provided through Digital Ocean, was used in a droplet. The domain
