@@ -6,7 +6,6 @@ Each user on the app can create an account, log in, and manage their own private
 * User Authentication:
   - Registration (Sign up)
   - Login
-
 * Contact Management (per user)
  - Add contacts
  - Edit contacts
