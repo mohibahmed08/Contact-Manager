@@ -1,20 +1,4 @@
 <?php
-    // ===== DEBUG MODE (REMOVE OR DISABLE IN PRODUCTION) =====
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    ini_set('log_errors', 1);
-
-    // Log file (make sure Apache can write to this)
-    ini_set('error_log', __DIR__ . '/php_errors.log');
-
-    error_reporting(E_ALL);
-
-    // Force JSON output even on fatal errors
-    header('Content-Type: application/json; charset=utf-8');
-
-    // END CHAT GPT ASSISTANCE. PROMPT: "[pasted file] New beginning of the file with RETURNING AND VISIBLE ERRORS?"
-
-    
     require_once "helperFunctions.php";
 
     $inData = $_GET;
@@ -42,7 +26,7 @@
         $stmt = null;
         if ($query === "") {
             $stmt = $conn->prepare("SELECT ID, UserID, FirstName, LastName, Phone, Email FROM Contacts WHERE UserID = ? ORDER BY LastName, FirstName ");
-            
+
             // Safety check that we actually built a valid SQL statement
             if (!$stmt) {
                 returnContactWithError("Prepare failed: " . $conn->error);
