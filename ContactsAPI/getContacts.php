@@ -25,7 +25,7 @@
     {
         $stmt = null;
         if ($query === "") {
-            $stmt = $conn->prepare("SELECT * FROM Contacts WHERE UserID = ? ORDER BY LastName, FirstName");
+            $stmt = $conn->prepare("SELECT ID, UserID, FirstName, LastName, Phone, Email FROM Contacts WHERE UserID = ? ORDER BY LastName, FirstName ");
 
             // Safety check that we actually built a valid SQL statement
             if (!$stmt) {

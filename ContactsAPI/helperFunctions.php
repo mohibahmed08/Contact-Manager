@@ -34,19 +34,7 @@
 
             $rowNum++;
 
-	    //If there is an image, convert the binary back to Base64
-	    $imageBase64 = "";
-
-	    if(!empty($row["image"]) && !empty($row["imageData"])) $imageBase64 = "data:" . $row["imageData"] . ";base64," . base64_encode($row["image"]);
-
-            $retValue .= '{';
-            $retValue .= '"id":' . $row["ID"] . ',';
-            $retValue .= '"FirstName":"' . $row["FirstName"] . '",';
-            $retValue .= '"LastName":"' . $row["LastName"] . '",';
-            $retValue .= '"Phone":"' . $row["Phone"] . '",';
-            $retValue .= '"Email":"' . $row["Email"] . '",';
-            $retValue .= '"image":"' . $imageBase64 . '"';    //Send the image string back for display!
-            $retValue .= '}';
+            $retValue .= '{"id":' . $row["ID"] . ',"FirstName":"' . $row["FirstName"] . '","LastName":"' . $row["LastName"] . '","Phone":"' . $row["Phone"] . '","Email":"' . $row["Email"] . '"}';
         }
 
         $retValue .= '], "error":"" }'; 
@@ -61,4 +49,3 @@
 		sendResultInfoAsJson( $retValue );
     }
 ?>
-
