@@ -347,14 +347,6 @@ body {
     background-color: #0056b3;
 }
 
-/* Header Controls (Search - Title - Logout)  */
-.header-controls {
-    display: flex;
-    justify-content: space-between; /* Pushes items to Left, Center, Right */
-    align-items: center; /* Vertically aligns them */
-    margin-bottom: 30px;
-    width: 100%;
-}
 
 /* Modify the existing h2 */
 .container h2 {
@@ -440,8 +432,10 @@ body {
 
 .search-container {
     flex: 1;
+    min-width: 0;
 }
 
 .search-container input {
     width: 100%;
+    box-sizing: border-box;
 }
