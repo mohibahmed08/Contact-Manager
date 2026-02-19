@@ -118,6 +118,68 @@ function setAllFieldsErr(array){
 
 }
 
+//Helper function to handle the preview appearance
+function updatePreviewAppearance()
+    {
+        const preview = document.getElementById('profile-preview');
+	const removeBtn = document.getElementById('remove-photo');
+	const wrapper = preview.parentElement;    //The .edit-contact-name-bubble-wrapper
+
+	//Check if the current source is the default pencil icon
+	if (preview.src.includes('pencil-line.svg'))
+	    {
+                preview.style.width = "50%";
+		preview.style.height = "50%";
+		preview.style.objectFit = "contain";
+		//Keep the blue background for the icon
+		wrapper.style.backgroundColor = "#e1ebf7";
+		removeBtn.style.display = "none";
+	    }
+	else
+	    {
+                preview.style.width = "100%";
+		preview.style.height = "100%";
+		preview.style.objectFit = "cover";
+		//Change background to transparent/white so blue doesn't bleed through
+		wrapper.style.backgroundColor = "transparent";
+		removeBtn.style.display = "inline";
+	    }
+    }
+
+//Speeds up the app by resizing large photos to 200x200 before saving
+function compressImage(base64Str) 
+    {
+        return new Promise((resolve) => {
+        const img = new Image();
+        img.src = base64Str;
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const MAX_SIZE = 200;    //Small enough to be instant, large enough for a contact list
+            let width = img.width;
+            let height = img.height;
+
+            if(width > height)
+	        {
+                    if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; }
+                }
+	    else
+                {if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; }}
+
+            canvas.width = width; canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', 0.7));    //70% quality JPEG is very small
+        };
+    });
+    }
+
+document.getElementById('remove-photo').addEventListener('click', function()
+    {
+	document.getElementById('profile-preview').src = "../Icons/pencil-line.svg";
+	updatePreviewAppearance();
+	document.getElementById('contactImage').value = "";    //Clear the file selector
+    });
+
 //LOADED DOM ON PAGE STARTUP
 document.addEventListener("DOMContentLoaded", () => {
     
@@ -149,6 +211,8 @@ document.addEventListener("DOMContentLoaded", () => {
 	        {
                     document.getElementById('profile-preview').src = savedContactInfo[4];
 		}
+
+	    updatePreviewAppearance();    //Call the helper to set initial styling
         }
         //IF NOT PROPER SIZE, EXPLAIN WHAT SHOULD BE GIVEN
         else{
@@ -364,14 +428,15 @@ document.getElementById('contactImage').addEventListener('change', function(e)
 	if (file)
             {
 	        const reader = new FileReader();
-		reader.onload = function(event)
+		reader.onload = async function(event)
                     {
+			//Compress the image before showing or saving it
+			const compressedBase64 = await compressImage(event.target.result);
+
 		        //Change the picture bubble to the uploaded image instantly
-			let img = document.getElementById('profile-preview');
-			if(img.getAttribute('src') === "../Icons/pencil-line.svg") img.style.cssText = "width:50%; height:50%; object-fit:cover;";
-			else img.style.cssText = "width:100%; height:100%; object-fit:cover;";
-			
-		        img.src = event.target.result;
+			const img = document.getElementById('profile-preview');
+		        img.src = compressedBase64;
+			updatePreviewAppearance();
 		    };
 		reader.readAsDataURL(file);
 	    }
