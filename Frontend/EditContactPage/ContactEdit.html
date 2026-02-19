@@ -25,10 +25,13 @@
         </div>
 
         <!-- WILL HOLD THE NAME BUBBLE FOR EDIT CONTACT -->
-        <div class = "edit-contact-name-bubble-wrapper">
-            <!-- OR IF CREATING CONTACT, USE A WRITING ICON -->
-            <img class = "edit-contact-pencil-icon" src = "../Icons/pencil-line.svg" alt = "Edit Icon"/>
+        <div class="edit-contact-name-bubble-wrapper" style="overflow: hidden;">
+	  <!-- OR IF CREATING CONTACT, USE A WRITING ICON -->
+          <img class="edit-contact-pencil-icon" id="profile-preview" src="../Icons/pencil-line.svg" alt="Profile Preview" style="width:100%; height:100%; object-fit:cover;"/>
         </div>
+
+        <label for="contactImage" style="cursor: pointer; color: #007bff; font-weight: 500; font-size: 14px; margin-top: -10px;">Upload a profile picture</label>
+        <input type="file" id="contactImage" accept="image/*" style="display: none;">
         
         <!-- HOLDS THE FULL NAME OF THE CURRENT CONTACT WANTING TO EDIT -->
         <!-- OR HOLDS TITLE OF THE CURRENT ACTIONS NEEDED TO BE DONE -->
@@ -51,11 +54,6 @@
             <button class = "edit-contact-action-button" id = "action-button">Done</button>
         </div>
 
-	<!-- CONTACT IMAGE -->
-	<div class="edit-contact-fields-wrapper">
-	    <label for="contactImage" style="color: white; margin-top: 10px; display: block;">Profile Picture (Optional):</label>
-	    <input type="file" id="contactImage" accept="image/*" class="edit-contact-field">
-	</div>
      </div>
 
     <!-- TIE THE JAVASCRIPT TO THE HTML DOM -->
