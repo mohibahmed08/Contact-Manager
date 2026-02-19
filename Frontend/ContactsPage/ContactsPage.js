@@ -6,6 +6,10 @@ function editContact(button){
     //HOLDS THE CONTACT FIELD POSITION
     let field = button.closest(".contact");
 
+    //Grab the image source if it exists
+    let imgElement = field.querySelector(".avatar-img");
+    let currentImage = imgElement ? imgElement.src : "";
+
     //OBTAIN THE CONTACT INFO ON CURRENT SELECTION (NEEDS THIS FORMAT FOR IT TO WORK)
     let contactInfo = [
         //PASS IN THE FIRST NAME FROM THE DOM FIELD
@@ -15,7 +19,9 @@ function editContact(button){
         //PASS IN THE PHONE NUMBER FROM THE DOM FIELD
         field.querySelector(".phone").textContent,
         //PASS IN THE EMAIL FROM THE DOM FIELD
-        field.querySelector(".email").textContent
+        field.querySelector(".email").textContent,
+	//Pass in the image!
+	currentImage
     ];
     //  ^^^^^^^^^^^ HARD CODED UNTIL YOU SET UP THE LIST TO DYNAMIC !!!!!!!
     //PASS IN THE CURRENT FIELD INFO ARRAY TO LOCAL STORAGE VIA JSON
@@ -243,3 +249,4 @@ function doLogout() {
 
     window.location.href = "../HomePage/HomePage.html";
 }
+

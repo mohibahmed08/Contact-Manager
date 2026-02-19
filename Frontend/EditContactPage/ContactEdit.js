@@ -256,6 +256,11 @@ document.getElementById("action-button").addEventListener("click", function () {
     let phoneNumber = phoneNumberField.value;
     let emailAddress = emailAddressField.value;
 
+    const profilePreview = document.getElementById('profile-preview');
+
+    //Only send the base64 if it's not the default pencil icon
+    let imageBase64 = profilePreview.src.includes('data:image') ? profilePreview.src : "";
+    
     //IF ANY FIELDS CONTAIN EMPTY STRING
     let isEmpty = setAllFieldsErr();
     
@@ -289,7 +294,9 @@ document.getElementById("action-button").addEventListener("click", function () {
                 //ASSIGN THE USER ID FIELD LOGIN ID
                 UserID: getCookieValue("userId"),
                 //ASSIGN THE CONTACT ID WITH THE CONTACT EDITING 
-                ID: localStorage.getItem("ContactID") // <------- !!!!!!!!!!!!! PROBABLY THE ERROR IF ONE EXISTS !!!!!!!!!
+                ID: localStorage.getItem("ContactID"), // <------- !!!!!!!!!!!!! PROBABLY THE ERROR IF ONE EXISTS !!!!!!!!!
+		//Get the image!
+		image: imageBase64
             })
         })
         //THEN SEND THE RESPONSE AS THE JSON
@@ -331,7 +338,9 @@ document.getElementById("action-button").addEventListener("click", function () {
                 //ASSIGN THE EMAILADDRESS FIELD WITH EMAILADDRESS IN DOM
                 Email: emailAddress,
                 //ASSIGN THE ID FIELD WITH LOCAL STORAGE IN DOM
-                UserID: getCookieValue("userId") //OR CHANGE WITH WHATEVER HOLDS THE ID
+                UserID: getCookieValue("userId"), //OR CHANGE WITH WHATEVER HOLDS THE ID
+		//Don't forget about the image!
+		image: imageBase64
             })
         })
         //THEN SEND THE RESPONSE AS THE JSON
@@ -358,6 +367,7 @@ document.getElementById('contactImage').addEventListener('change', function(e)
 		reader.onload = function(event)
                     {
 		        //Change the picture bubble to the uploaded image instantly
+			document.getElementById('profile-preview').style = "width:100%; height:100%; object-fit:cover;";
 		        document.getElementById('profile-preview').src = event.target.result;
 		    };
 		reader.readAsDataURL(file);
@@ -384,3 +394,4 @@ document.getElementById("phone-number-field").addEventListener("input", function
     e.target.value = parts.join("");
 
 });
+
