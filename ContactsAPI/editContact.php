@@ -15,9 +15,9 @@
     // END CHAT GPT ASSISTANCE. PROMPT: "[pasted file] New beginning of the file with RETURNING AND VISIBLE ERRORS?"
     require_once "helperFunctions.php";
 
-    $inData = json_decode(file_get_contents("php://input"), true);
+    $inData = json_decode(file_get_contents("php://input"), true);    //Receive the JSON payload
 
-    
+    //Check if the required text fields exist
     if (!isset($inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $inData["UserID"], $inData["ID"])) {
         sendResultInfoAsJson(json_encode([
             "success" => false,
@@ -27,9 +27,26 @@
 
         exit();
     }
-    $id = 0;
+
+    //Handle the image (if the user uploaded one)
+    $binaryImage = null;
+    $imageType = null;
+
+    if(isset($inData["image"]) && $inData["image"] != "")
+    	{
+	    //Split the "data:image/jpeg;base64," prefix from the actual text that is carrying our Base64 string image
+	    $imageParts = explode(";base64,", $inData["image"]);
+
+	    //Extract just the "image/jpeg" part
+	    $imageType = explode(":", $imageParts[0])[1];
+
+	    //Decode the text back into raw binary for the longblob column of our database
+	    $binaryImage = base64_decode($imageParts[1]);
+	}
+
 
     $conn = new mysqli("localhost", "API", "admin1234", "ContactManager"); 	
+
     if( $conn->connect_error )
     {
         sendResultInfoAsJson(json_encode([
@@ -42,8 +59,10 @@
     }
     else
     {
-        $stmt = $conn->prepare("UPDATE Contacts SET FirstName = ?, LastName = ?, Phone = ?, Email = ? WHERE UserID = ? AND ID = ?;");
-        $stmt->bind_param("ssssii", $inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $inData["UserID"], $inData["ID"]);
+        $stmt = $conn->prepare("UPDATE Contacts SET FirstName = ?, LastName = ?, Phone = ?, Email = ?, image = ?, imageData = ? WHERE UserID = ? AND ID = ?;");
+
+	//"ssssssii" means 6 strings, 2 integers
+        $stmt->bind_param("ssssssii", $inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $binaryImage, $imageType, $inData["UserID"], $inData["ID"]);
 
         if (!$stmt->execute()) {
             sendResultInfoAsJson(json_encode([
@@ -60,7 +79,7 @@
         // Failure/no changes
         if ($stmt->affected_rows === 0) {
             sendResultInfoAsJson(json_encode([
-                "success" => false,
+                "success" => true,
                 "affectedRows" => $stmt->affected_rows,
                 "error" => "No rows affected."
             ]));
@@ -84,3 +103,4 @@
 
     
 ?>
+
