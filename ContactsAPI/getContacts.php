@@ -15,7 +15,7 @@
     }
 
 
-    $conn = new mysqli("localhost", "API", "admin1234", "ContactManager"); 	
+    $conn = new mysqli("localhost", "API", "admin1234", "ContactManager");
     if( $conn->connect_error )
     {
         returnContactWithError( $conn->connect_error );
@@ -25,7 +25,7 @@
     {
         $stmt = null;
         if ($query === "") {
-            $stmt = $conn->prepare("SELECT ID, UserID, FirstName, LastName, Phone, Email FROM Contacts WHERE UserID = ? ORDER BY LastName, FirstName ");
+            $stmt = $conn->prepare("SELECT * FROM Contacts WHERE UserID = ? ORDER BY LastName, FirstName");
 
             // Safety check that we actually built a valid SQL statement
             if (!$stmt) {
@@ -71,11 +71,11 @@
             foreach ($bindArray as $k => $v) {
                 $bindArguments[] = &$bindArray[$k];
             }
-            
+
             // Call the $stmt bind_param function with our arguments
             call_user_func_array([$stmt, 'bind_param'], $bindArguments);
         }
-        
+
 
         $stmt->execute();
         $result = $stmt->get_result();
@@ -90,5 +90,5 @@
         $stmt->close();
         $conn->close();
         return;
-    }    
+    }
 ?>
