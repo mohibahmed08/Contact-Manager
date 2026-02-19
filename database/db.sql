@@ -33,6 +33,8 @@ CREATE TABLE `Contacts` (
   `Phone` varchar(20) NOT NULL,
   `Email` varchar(50) NOT NULL,
   `DateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `image` LONGBLOB,
+  `imageData` varchar(250), 
   PRIMARY KEY (`ID`),
   KEY `UserID` (`UserID`),
   CONSTRAINT `Contacts_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`ID`) ON DELETE CASCADE
