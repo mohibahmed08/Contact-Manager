@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //WE HAVE STORED INFORMATION FROM OUR LOCAL STORAGE (AND ITS THE PROPER SIZE)
     if(savedContactInfo){ 
         //CHECK IF PROPER SIZE AND IN PROPER ORDER
-        if(savedContactInfo.length == 4){
+        if(savedContactInfo.length >= 4){
             //SET THE TITLE TO EDIT CONTACT
             document.getElementById('title-label').textContent = "Edit Contact";
             //SET THE WEBPAGE NAME ACCORDINGLY
