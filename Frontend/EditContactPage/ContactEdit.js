@@ -349,7 +349,7 @@ document.getElementById("action-button").addEventListener("click", function () {
 });
 
 //LIVE IMAGE PREVIEW LOGIC
-document.getElementById('contactImage').addEventListener('change', function(e) {
+document.getElementById('contactImage').addEventListener('change', function(e)
     {
 	const file = e.target.files[0];
 	if (file)
