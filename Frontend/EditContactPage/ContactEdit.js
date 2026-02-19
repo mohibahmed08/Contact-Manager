@@ -367,8 +367,11 @@ document.getElementById('contactImage').addEventListener('change', function(e)
 		reader.onload = function(event)
                     {
 		        //Change the picture bubble to the uploaded image instantly
-			document.getElementById('profile-preview').style = "width:100%; height:100%; object-fit:cover;";
-		        document.getElementById('profile-preview').src = event.target.result;
+			let img = document.getElementById('profile-preview');
+			if(img.getAttribute('src') === "../Icons/pencil-line.svg") img.style.cssText = "width:50%; height:50%; object-fit:cover;";
+			else img.style.cssText = "width:100%; height:100%; object-fit:cover;";
+			
+		        img.src = event.target.result;
 		    };
 		reader.readAsDataURL(file);
 	    }
