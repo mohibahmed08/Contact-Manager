@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //WE HAVE STORED INFORMATION FROM OUR LOCAL STORAGE (AND ITS THE PROPER SIZE)
     if(savedContactInfo){ 
         //CHECK IF PROPER SIZE AND IN PROPER ORDER
-        if(savedContactInfo.length == 4){
+        if(savedContactInfo.length >= 4){
             //SET THE TITLE TO EDIT CONTACT
             document.getElementById('title-label').textContent = "Edit Contact";
             //SET THE WEBPAGE NAME ACCORDINGLY
@@ -143,6 +143,12 @@ document.addEventListener("DOMContentLoaded", () => {
             lastNameField.value = savedContactInfo[1];
             phoneNumberField.value = savedContactInfo[2];
             emailAddressField.value = savedContactInfo[3];
+
+	    //If they have an existing image (index 4), load it into the preview bubble
+            if(savedContactInfo.length >= 5 && savedContactInfo[4])
+	        {
+                    document.getElementById('profile-preview').src = savedContactInfo[4];
+		}
         }
         //IF NOT PROPER SIZE, EXPLAIN WHAT SHOULD BE GIVEN
         else{
@@ -173,6 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
 window.addEventListener("beforeunload", (e) => {
     //CLEAR THE LOCAL STORAGE CACHE WITH PRIOR CONTACT
     localStorage.removeItem("contactInfo");
+    localStorage.removeItem("ContactID");
 });
 
 //IF BACK BUTTON IS CLICKED
@@ -185,6 +192,21 @@ document.getElementById("back-button-wrapper").addEventListener("click", functio
     //ACTIVATE BACK BUTTON CLICK ABOVE
     document.getElementById("back-button").click();
 });
+
+//GETS THE COOKIE'S VALUE BY NAME
+function getCookieValue(name) {
+    //SPLIT THE COOKIE BY DELIMETER
+    const cookies = document.cookie.split("; ");
+    //ITERATE THROUGH COOKIES
+    for (let c of cookies) {
+        //SPLIT THE KEY FROM ITS VALUE
+        const [key, value] = c.split("=");
+        //RETURN THE VALUE THAT EQUATES TO KEY
+        if (key === name) return value;
+    }
+    //IF NO VALUE FOUND WITH KEY, RETURN NULL
+    return null;
+}
 
 //CHECKS IF A FIELD IS UNIQUE FROM WHATS IN THE DB
 //-------------> REMOVE DEAD VARIABLES IF NOT NEEDED WHEN MERGE
@@ -200,7 +222,7 @@ function isTaken(searchQuery){
         },
         //TURN THE USER ID AND NAME INTO SEARCH FOR
         body: JSON.stringify({
-            UserID: localStorage.getItem("UserID"), //OR CHANGE WITH WHATEVER HOLDS THE ID
+            ID: parseInt(getCookieValue("UserID")), //FORMAT: [FIRSTNAME;LASTNAME;USERID]
             query: searchQuery //SEARCH FOR EMAIL ADDRESS TO CONFIRM NOT SAME PERSON
         })
     })
@@ -223,7 +245,6 @@ function isTaken(searchQuery){
     .catch(err => {
         console.error("Fetch failed:", err);
     });
-
 } 
 
 //TASKS FOR WHEN WHEN THE ACTION BUTTON IS CLICKED
@@ -235,6 +256,11 @@ document.getElementById("action-button").addEventListener("click", function () {
     let phoneNumber = phoneNumberField.value;
     let emailAddress = emailAddressField.value;
 
+    const profilePreview = document.getElementById('profile-preview');
+
+    //Only send the base64 if it's not the default pencil icon
+    let imageBase64 = profilePreview.src.includes('data:image') ? profilePreview.src : "";
+    
     //IF ANY FIELDS CONTAIN EMPTY STRING
     let isEmpty = setAllFieldsErr();
     
@@ -266,9 +292,11 @@ document.getElementById("action-button").addEventListener("click", function () {
                 //ASSIGN THE EMAIL ADDRESS FIELD WITH FIRSTNAME IN DOM
                 Email: emailAddress,
                 //ASSIGN THE USER ID FIELD LOGIN ID
-                UserID: localStorage.getItem("UserID"),
-                //ASSIGN THE CONTACT ID WITH THE CONTACT EDITING
-                ID: localStorage.getItem("ContactID")
+                UserID: getCookieValue("userId"),
+                //ASSIGN THE CONTACT ID WITH THE CONTACT EDITING 
+                ID: localStorage.getItem("ContactID"), // <------- !!!!!!!!!!!!! PROBABLY THE ERROR IF ONE EXISTS !!!!!!!!!
+		//Get the image!
+		image: imageBase64
             })
         })
         //THEN SEND THE RESPONSE AS THE JSON
@@ -278,6 +306,8 @@ document.getElementById("action-button").addEventListener("click", function () {
             console.log("Server response:", data);
             if (data.success) {
                 console.log("Update successful!");
+                //IF UPDATE SUCCESSFUL, RETURN BACK TO CONTACT PAGE
+                window.location.href = '../ContactsPage/ContactsPage.html';
             } else {
                 console.error("Update failed:", data.error);
             }
@@ -308,18 +338,43 @@ document.getElementById("action-button").addEventListener("click", function () {
                 //ASSIGN THE EMAILADDRESS FIELD WITH EMAILADDRESS IN DOM
                 Email: emailAddress,
                 //ASSIGN THE ID FIELD WITH LOCAL STORAGE IN DOM
-                UserID: localStorage.getItem("UserID") //OR CHANGE WITH WHATEVER HOLDS THE ID
+                UserID: getCookieValue("userId"), //OR CHANGE WITH WHATEVER HOLDS THE ID
+		//Don't forget about the image!
+		image: imageBase64
             })
         })
         //THEN SEND THE RESPONSE AS THE JSON
         .then(response => response.json())
         //LOG WHAT DATA HAS BEEN SENT
         .then(data => {
+            //LOG UPDATED DATA
             console.log(data);
+            //IF UPDATE SUCCESSFUL, RETURN BACK TO CONTACT PAGE
+            window.location.href = '../ContactsPage/ContactsPage.html';
         })
         //CATCH ANY EXTRANIOUS ERRORS
         .catch(error => console.error('Fetch error:', error));
     }
+});
+
+//LIVE IMAGE PREVIEW LOGIC
+document.getElementById('contactImage').addEventListener('change', function(e)
+    {
+	const file = e.target.files[0];
+	if (file)
+            {
+	        const reader = new FileReader();
+		reader.onload = function(event)
+                    {
+		        //Change the picture bubble to the uploaded image instantly
+			let img = document.getElementById('profile-preview');
+			if(img.getAttribute('src') === "../Icons/pencil-line.svg") img.style.cssText = "width:50%; height:50%; object-fit:cover;";
+			else img.style.cssText = "width:100%; height:100%; object-fit:cover;";
+			
+		        img.src = event.target.result;
+		    };
+		reader.readAsDataURL(file);
+	    }
 });
 
 //FOR FORMATTING THE PHONE NUMBER FIELD PROPERLY AS USER TYPES THEIR PHONE NUMBER
@@ -342,3 +397,4 @@ document.getElementById("phone-number-field").addEventListener("input", function
     e.target.value = parts.join("");
 
 });
+

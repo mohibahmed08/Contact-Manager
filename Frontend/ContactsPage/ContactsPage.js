@@ -1,6 +1,36 @@
 let contactToDelete = null;
 let searchTimeout = null;
 
+// ADDED BY JASON TO LINK EDIT TO CONTACT PAGE FOR NOW
+function editContact(button){
+    //HOLDS THE CONTACT FIELD POSITION
+    let field = button.closest(".contact");
+
+    //Grab the image source if it exists
+    let imgElement = field.querySelector(".avatar-img");
+    let currentImage = imgElement ? imgElement.src : "";
+
+    //OBTAIN THE CONTACT INFO ON CURRENT SELECTION (NEEDS THIS FORMAT FOR IT TO WORK)
+    let contactInfo = [
+        //PASS IN THE FIRST NAME FROM THE DOM FIELD
+        field.querySelector(".first-name").textContent,
+        //PASS IN THE LAST NAME FROM THE DOM FIELD
+        field.querySelector(".last-name").textContent,
+        //PASS IN THE PHONE NUMBER FROM THE DOM FIELD
+        field.querySelector(".phone").textContent,
+        //PASS IN THE EMAIL FROM THE DOM FIELD
+        field.querySelector(".email").textContent,
+	//Pass in the image!
+	currentImage
+    ];
+    //  ^^^^^^^^^^^ HARD CODED UNTIL YOU SET UP THE LIST TO DYNAMIC !!!!!!!
+    //PASS IN THE CURRENT FIELD INFO ARRAY TO LOCAL STORAGE VIA JSON
+    localStorage.setItem("contactInfo", JSON.stringify(contactInfo));
+    localStorage.setItem("ContactID", field.dataset.contactId); // store contact id as well
+    //SWITCH CONCURRENT WINDOW TO THE CONTACT EDIT PAGE
+    window.location.href = '../EditContactPage/ContactEdit.html';
+}
+
 /* ===============================
    DELETE CONTACT
 ================================ */
@@ -75,11 +105,16 @@ function formatPhone(phone) {
     return `(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`;
 }
 
-function buildContact(firstName, lastName, email, phone, contactId) {
+function buildContact(firstName, lastName, email, phone, contactId, imageBase64) {
+    //Check if an image exists; if not, use the initials
+    let avatarContent = imageBase64
+	? `<img src="${imageBase64}" class="avatar-img" style="width:100%; height:100%; border-radius:50%; object-fit:cover;" alt="Avatar">`
+        : getInitials(firstName, lastName);
+
     return `
     <li class="contact" data-contact-id="${contactId}">
         <div class="contact-info">
-            <div class="avatar">${getInitials(firstName, lastName)}</div>
+            <div class="avatar">${avatarContent}</div>
             <div class="contact-details">
                 <div class="name">
                     <span class="first-name">${firstName}</span>
@@ -91,7 +126,7 @@ function buildContact(firstName, lastName, email, phone, contactId) {
         </div>
 
         <div class="contact-actions">
-            <button class="edit-btn">Edit</button>
+            <button class="edit-btn" onclick = editContact(this)>Edit</button>
             <button class="delete-btn" onclick="deleteContact(this)">🗑</button>
         </div>
     </li>`;
@@ -131,7 +166,8 @@ function retrieveContacts(query = "") {
                     c.LastName,
                     c.Email,
                     c.Phone,
-                    c.id
+                    c.id,
+		    c.image
                 );
             }
 
@@ -213,3 +249,4 @@ function doLogout() {
 
     window.location.href = "../HomePage/HomePage.html";
 }
+

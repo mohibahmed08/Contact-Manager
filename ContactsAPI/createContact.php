@@ -1,23 +1,9 @@
 <?php
-    // ===== DEBUG MODE (REMOVE OR DISABLE IN PRODUCTION) =====
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    ini_set('log_errors', 1);
-
-    // Log file (make sure Apache can write to this)
-    ini_set('error_log', __DIR__ . '/php_errors.log');
-
-    error_reporting(E_ALL);
-
-    // Force JSON output even on fatal errors
-    header('Content-Type: application/json; charset=utf-8');
-
-    // END CHAT GPT ASSISTANCE. PROMPT: "[pasted file] New beginning of the file with RETURNING AND VISIBLE ERRORS?"
     require_once "helperFunctions.php";
 
-    $inData = json_decode(file_get_contents("php://input"), true);
+    $inData = json_decode(file_get_contents("php://input"), true);    //Receive the JSON payload
 
-
+    //Check if the required text fields exist
     if (!isset($inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $inData["UserID"])) {
         sendResultInfoAsJson(json_encode([
             "success" => false,
@@ -27,47 +13,53 @@
         exit();
     }
 
-    $id = 0;
+    //Handle the image (if the user uploaded one)
+    $binaryImage = null;
+    $imageType = null;
 
-    $conn = new mysqli("localhost", "API", "admin1234", "ContactManager"); 	
-    if ($conn->connect_error) {
-        sendResultInfoAsJson(json_encode([
-            "success" => false,
-            "id" => 0,
-            "error" => $conn->connect_error
-        ]));
-        exit();
-    }
+    if(isset($inData["image"]) && $inData["image"] != "")
+        {
+            //Split the "data:image/jpeg;base64," prefix from the actual text that is carrying our Base64 string image
+            $imageParts = explode(";base64,", $inData["image"]);
 
-    else
-    {
-        $stmt = $conn->prepare("INSERT INTO Contacts (FirstName, LastName, Phone, Email, UserID) VALUES (?, ?, ?, ?, ?);");
-        $stmt->bind_param("ssssi", $inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $inData["UserID"]);
+            //Extract just the "image/jpeg" part
+            $imageType = explode(":", $imageParts[0])[1];
 
-        if (!$stmt->execute()) {
-            sendResultInfoAsJson(json_encode([
-                "success" => false,
-                "id" => 0,
-                "error" => "Insert failed: " . $stmt->error
-            ]));
-            $stmt->close();
-            $conn->close();
+            //Decode the text back into raw binary for the longblob column of our database
+            $binaryImage = base64_decode($imageParts[1]);
+        }
+
+    $conn = new mysqli("localhost", "API", "admin1234", "ContactManager");
+
+    if($conn->connect_error)
+        {
+            sendResultInfoAsJson(json_encode(["success" => false, "id" => 0, "error" => $conn->connect_error]));
             exit();
         }
 
-        $newId = $conn->insert_id;
+    //Update the SQL query to include the new image columns
+    $stmt = $conn->prepare("INSERT INTO Contacts (FirstName, LastName, Phone, Email, UserID, image, imageData) VALUES (?, ?, ?, ?, ?, ?, ?);");
 
-        sendResultInfoAsJson(json_encode([
-            "success" => true,
-            "id" => $newId,
-            "error" => ""
-        ]));
+    //"ssssiss" means 4 strings, 1 integer, 2 strings (binary counts as string here in mysqli bind_param)
+    $stmt->bind_param("ssssiss",
+        $inData["FirstName"],
+        $inData["LastName"],
+        $inData["Phone"],
+        $inData["Email"],
+        $inData["UserID"],
+        $binaryImage,
+        $imageType
+    );
 
-        $stmt->close();
-        $conn->close();
+    if(!$stmt->execute()) sendResultInfoAsJson(json_encode(["success" => false, "id" => 0, "error" => "Insert failed: " . $stmt->error]));
+    else
+        {
+            $newId = $conn->insert_id;
+            sendResultInfoAsJson(json_encode(["success" => true, "id" => $newId, "error" => ""]));
+        }
 
-        exit();
-    }
+    $stmt->close();
+    $conn->close();
 
-    
+
 ?>
