@@ -25,13 +25,17 @@
         </div>
 
         <!-- WILL HOLD THE NAME BUBBLE FOR EDIT CONTACT -->
-        <div class="edit-contact-name-bubble-wrapper" style="overflow: hidden;">
+	<div class="edit-contact-name-bubble-wrapper" 
+	     style="overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #e1ebf7;">
 	  <!-- OR IF CREATING CONTACT, USE A WRITING ICON -->
-          <img class="edit-contact-pencil-icon" id="profile-preview" src="../Icons/pencil-line.svg" alt="Profile Preview"/>
-        </div>
+	  <img class="edit-contact-pencil-icon" id="profile-preview" src="../Icons/pencil-line.svg" alt="Profile Preview"/>
+	</div>
 
-        <label for="contactImage" style="cursor: pointer; color: #007bff; font-weight: 500; font-size: 14px; margin-top: -10px;">Upload a profile picture</label>
-        <input type="file" id="contactImage" accept="image/*" style="display: none;">
+	<div style="display: flex; flex-direction: column; align-items: center;">
+          <label for="contactImage" style="cursor: pointer; color: #007bff; font-weight: 500; font-size: 14px; margin-top: -10px;">Upload a profile picture</label>
+          <input type="file" id="contactImage" accept="image/*" style="display: none;">
+	  <span id="remove-photo" style="cursor: pointer; color: #ff4d4d; font-size: 12px; margin-top: 5px; display: none;">Remove Photo</span>
+	</div>
         
         <!-- HOLDS THE FULL NAME OF THE CURRENT CONTACT WANTING TO EDIT -->
         <!-- OR HOLDS TITLE OF THE CURRENT ACTIONS NEEDED TO BE DONE -->
