@@ -143,6 +143,12 @@ document.addEventListener("DOMContentLoaded", () => {
             lastNameField.value = savedContactInfo[1];
             phoneNumberField.value = savedContactInfo[2];
             emailAddressField.value = savedContactInfo[3];
+
+	    //If they have an existing image (index 4), load it into the preview bubble
+            if(savedContactInfo.length >= 5 && savedContactInfo[4])
+	        {
+                    document.getElementById('profile-preview').src = savedContactInfo[4];
+		}
         }
         //IF NOT PROPER SIZE, EXPLAIN WHAT SHOULD BE GIVEN
         else{
@@ -340,6 +346,22 @@ document.getElementById("action-button").addEventListener("click", function () {
         //CATCH ANY EXTRANIOUS ERRORS
         .catch(error => console.error('Fetch error:', error));
     }
+});
+
+//LIVE IMAGE PREVIEW LOGIC
+document.getElementById('contactImage').addEventListener('change', function(e) {
+    {
+	const file = e.target.files[0];
+	if (file)
+            {
+	        const reader = new FileReader();
+		reader.onload = function(event)
+                    {
+		        //Change the picture bubble to the uploaded image instantly
+		        document.getElementById('profile-preview').src = event.target.result;
+		    };
+		reader.readAsDataURL(file);
+	    }
 });
 
 //FOR FORMATTING THE PHONE NUMBER FIELD PROPERLY AS USER TYPES THEIR PHONE NUMBER
