@@ -108,7 +108,7 @@ function buildContact(firstName, lastName, email, phone, contactId, imageBase64)
     return `
     <li class="contact" data-contact-id="${contactId}">
         <div class="contact-info">
-            <div class="avatar">${getInitials(firstName, lastName)}</div>
+            <div class="avatar">${avatarContent}</div>
             <div class="contact-details">
                 <div class="name">
                     <span class="first-name">${firstName}</span>
@@ -160,7 +160,8 @@ function retrieveContacts(query = "") {
                     c.LastName,
                     c.Email,
                     c.Phone,
-                    c.id
+                    c.id,
+		    c.image
                 );
             }
 
