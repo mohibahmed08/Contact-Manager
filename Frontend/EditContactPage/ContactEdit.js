@@ -141,7 +141,7 @@ function updatePreviewAppearance()
 		preview.style.height = "100%";
 		preview.style.objectFit = "cover";
 		//Change background to transparent/white so blue doesn't bleed through
-		wrapper.style.backgroundColor = "transparent";
+		wrapper.style.backgroundColor = "white";
 		removeBtn.style.display = "inline";
 	    }
     }
@@ -167,6 +167,11 @@ function compressImage(base64Str)
 
             canvas.width = width; canvas.height = height;
             const ctx = canvas.getContext('2d');
+
+	    //Fill the background with white before drawing the image. This will prevent transparent PNGs from turning black
+	    ctx.fillStyle = "white";
+	    ctx.fillRect(0, 0, width, height);
+	    
             ctx.drawImage(img, 0, 0, width, height);
             resolve(canvas.toDataURL('image/jpeg', 0.7));    //70% quality JPEG is very small
         };
