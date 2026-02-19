@@ -108,13 +108,15 @@ function formatPhone(phone) {
 function buildContact(firstName, lastName, email, phone, contactId, imageBase64) {
     //Check if an image exists; if not, use the initials
     let avatarContent = imageBase64
-	? `<img src="${imageBase64}" class="avatar-img" loading="lazy" style="width:100%; height:100%; border-radius:50%; object-fit:cover; background-color:white;" alt="Avatar">`
+	? `<img src="${imageBase64}" class="avatar-img" loading="lazy" style="width:100%; height:100%; border-radius:50%; object-fit:cover; background-color:white; display:block;" alt="Avatar">`
         : getInitials(firstName, lastName);
 
     return `
     <li class="contact" data-contact-id="${contactId}">
         <div class="contact-info">
-            <div class="avatar">${avatarContent}</div>
+            <div class="avatar" style="background-color: #e1ebf7; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 50%;">
+                ${avatarContent}
+            </div>
             <div class="contact-details">
                 <div class="name">
                     <span class="first-name">${firstName}</span>
