@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //WE HAVE STORED INFORMATION FROM OUR LOCAL STORAGE (AND ITS THE PROPER SIZE)
     if(savedContactInfo){ 
         //CHECK IF PROPER SIZE AND IN PROPER ORDER
-        if(savedContactInfo.length >= 4){
+        if(savedContactInfo.length == 4){
             //SET THE TITLE TO EDIT CONTACT
             document.getElementById('title-label').textContent = "Edit Contact";
             //SET THE WEBPAGE NAME ACCORDINGLY
@@ -262,115 +262,89 @@ document.getElementById("action-button").addEventListener("click", function () {
     //CHECK IF THE FIELD DATA HAS BEEN TAKEN ALREADY IN BACKEND
     if(isEmpty || isTaken(emailAddress)) return; //PASS IN CURRENT FIELD INFO (NEED METHOD TO BE COMPLETED !!!!!!!!)
 
-    //CONTACT IMAGE LOGIC
-    const fileInput = document.getElementById('contactImage');
-    const file = fileInput.files[0];    //Get the selected file
+    //OBTAIN CONTACT INFO IT EXISTS
+    const raw = localStorage.getItem("contactInfo");
+    const savedContactInfo = raw ? JSON.parse(raw) : null;
 
-    if(file)    //If a file is selected, convert it before sending
-        {
-	    const reader = new FileReader();    //We will use a built-in browser tool called FileReader to read the image file and convert it
-	    reader.onloadend = function() {sendContactData(reader.result);};    //Once converted to Base64, trigger the send function
-	    reader.readAsDataURL(file);
-	}
-    else
-        {
-	    const raw = localStorage.getItem("contactInfo");    //If editing but no new file is chosen, keep the old image!
-	    const oldData = raw ? JSON.parse(raw) : null;
-
-	    //If oldData[4] exists (the old image), send it. Otherwise, send an empty string
-            let imageToSend = (oldData && oldData[4]) ? oldData[4] : "";
-            sendContactData(imageToSend);
-	}
-	    
-    function sendContactData(base64Image) {
-        //OBTAIN CONTACT INFO IT EXISTS
-        const raw = localStorage.getItem("contactInfo");
-        const savedContactInfo = raw ? JSON.parse(raw) : null;
-
-        //IF EDIT CONTACT, THERE WILL BE INFORMATION PASSED IN
-        if(savedContactInfo){ 
-            //IF NOT ALREADY TAKEN, THEN SEND TO BACKEND VIA API ENDPOINT
-            fetch("../../ContactsAPI/editContact.php", {
-                //POST TO THE BACKEND PHP
-                method: "POST",
-                //STATE WE ARE SENDING JSON FILE TYPE
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                //STRINGIFY FIELD INFO TO JSON DELIVERABLE
-                body: JSON.stringify({
-                    //ASSIGN THE FIRSTNAME FIELD WITH FIRSTNAME IN DOM
-                    FirstName: firstName,
-                    //ASSIGN THE LASTNAME FIELD WITH FIRSTNAME IN DOM
-                    LastName: lastName,
-                    //ASSIGN THE PHONE NUMBER FIELD WITH FIRSTNAME IN DOM
-                    Phone: phoneNumber,
-                    //ASSIGN THE EMAIL ADDRESS FIELD WITH FIRSTNAME IN DOM
-                    Email: emailAddress,
-                    //ASSIGN THE USER ID FIELD LOGIN ID
-                    UserID: getCookieValue("userId"),
-                    //ASSIGN THE IMAGE STRING
-                    image: base64Image,
-                    //ASSIGN THE CONTACT ID WITH THE CONTACT EDITING 
-                    ID: localStorage.getItem("ContactID") // <------- !!!!!!!!!!!!! PROBABLY THE ERROR IF ONE EXISTS !!!!!!!!!
-                })
+    //IF EDIT CONTACT, THERE WILL BE INFORMATION PASSED IN
+    if(savedContactInfo){ 
+        //IF NOT ALREADY TAKEN, THEN SEND TO BACKEND VIA API ENDPOINT
+        fetch("../../ContactsAPI/editContact.php", {
+            //POST TO THE BACKEND PHP
+            method: "POST",
+            //STATE WE ARE SENDING JSON FILE TYPE
+            headers: {
+                "Content-Type": "application/json"
+            },
+            //STRINGIFY FIELD INFO TO JSON DELIVERABLE
+            body: JSON.stringify({
+                //ASSIGN THE FIRSTNAME FIELD WITH FIRSTNAME IN DOM
+                FirstName: firstName,
+                //ASSIGN THE LASTNAME FIELD WITH FIRSTNAME IN DOM
+                LastName: lastName,
+                //ASSIGN THE PHONE NUMBER FIELD WITH FIRSTNAME IN DOM
+                Phone: phoneNumber,
+                //ASSIGN THE EMAIL ADDRESS FIELD WITH FIRSTNAME IN DOM
+                Email: emailAddress,
+                //ASSIGN THE USER ID FIELD LOGIN ID
+                UserID: getCookieValue("userId"),
+                //ASSIGN THE CONTACT ID WITH THE CONTACT EDITING 
+                ID: localStorage.getItem("ContactID") // <------- !!!!!!!!!!!!! PROBABLY THE ERROR IF ONE EXISTS !!!!!!!!!
             })
-            //THEN SEND THE RESPONSE AS THE JSON
-            .then(response => response.json())
-            //LOG WHAT DATA HAS BEEN SENT
-            .then(data => {
-                console.log("Server response:", data);
-                if (data.success) {
-                    console.log("Update successful!");
-                    //IF UPDATE SUCCESSFUL, RETURN BACK TO CONTACT PAGE
-                    window.location.href = '../ContactsPage/ContactsPage.html';
-                } else {
-                    console.error("Update failed:", data.error);
-                }
-            })
-            //CATCH ANY EXTRANIOUS ERRORS
-            .catch(error => {
-                console.error("Fetch error:", error);
-            });
-        }
-        //ELSE ITS CREATE CONTACT
-        else{
-            //IF NOT ALREADY TAKEN, THEN SEND TO BACKEND VIA API ENDPOINT
-            fetch('../../ContactsAPI/createContact.php', { // <-- CHANGE THIS OUT WITH THE ACTUAL BACKEND CODE NAME !!!!!!!!!!!!!
-                //POST TO THE BACKEND PHP
-                method: 'POST',
-                //STATE WE ARE SENDING JSON FILE TYPE
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                //STRINGIFY FIELD INFO TO JSON DELIVERABLE
-                body: JSON.stringify({ 
-                    //ASSIGN THE FIRSTNAME FIELD WITH FIRSTNAME IN DOM
-                    FirstName: firstName, 
-                    //ASSIGN THE LASTNAME FIELD WITH LASTNAME IN DOM
-                    LastName: lastName, 
-                    //ASSIGN THE PHONENUMBER FIELD WITH PHONENUMBER IN DOM
-                    Phone: phoneNumber, 
-                    //ASSIGN THE EMAILADDRESS FIELD WITH EMAILADDRESS IN DOM
-                    Email: emailAddress,
-                    //ASSIGN THE IMAGE STRING
-                    image: base64Image,
-                    //ASSIGN THE ID FIELD WITH LOCAL STORAGE IN DOM
-                    UserID: getCookieValue("userId") //OR CHANGE WITH WHATEVER HOLDS THE ID
-                })
-            })
-            //THEN SEND THE RESPONSE AS THE JSON
-            .then(response => response.json())
-            //LOG WHAT DATA HAS BEEN SENT
-            .then(data => {
-                //LOG UPDATED DATA
-                console.log(data);
+        })
+        //THEN SEND THE RESPONSE AS THE JSON
+        .then(response => response.json())
+        //LOG WHAT DATA HAS BEEN SENT
+        .then(data => {
+            console.log("Server response:", data);
+            if (data.success) {
+                console.log("Update successful!");
                 //IF UPDATE SUCCESSFUL, RETURN BACK TO CONTACT PAGE
                 window.location.href = '../ContactsPage/ContactsPage.html';
+            } else {
+                console.error("Update failed:", data.error);
+            }
+        })
+        //CATCH ANY EXTRANIOUS ERRORS
+        .catch(error => {
+            console.error("Fetch error:", error);
+        });
+    }
+    //ELSE ITS CREATE CONTACT
+    else{
+        //IF NOT ALREADY TAKEN, THEN SEND TO BACKEND VIA API ENDPOINT
+        fetch('../../ContactsAPI/createContact.php', { // <-- CHANGE THIS OUT WITH THE ACTUAL BACKEND CODE NAME !!!!!!!!!!!!!
+            //POST TO THE BACKEND PHP
+            method: 'POST',
+            //STATE WE ARE SENDING JSON FILE TYPE
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            //STRINGIFY FIELD INFO TO JSON DELIVERABLE
+            body: JSON.stringify({ 
+                //ASSIGN THE FIRSTNAME FIELD WITH FIRSTNAME IN DOM
+                FirstName: firstName, 
+                //ASSIGN THE LASTNAME FIELD WITH LASTNAME IN DOM
+                LastName: lastName, 
+                //ASSIGN THE PHONENUMBER FIELD WITH PHONENUMBER IN DOM
+                Phone: phoneNumber, 
+                //ASSIGN THE EMAILADDRESS FIELD WITH EMAILADDRESS IN DOM
+                Email: emailAddress,
+                //ASSIGN THE ID FIELD WITH LOCAL STORAGE IN DOM
+                UserID: getCookieValue("userId") //OR CHANGE WITH WHATEVER HOLDS THE ID
             })
-            //CATCH ANY EXTRANIOUS ERRORS
-            .catch(error => console.error('Fetch error:', error));
-        }
+        })
+        //THEN SEND THE RESPONSE AS THE JSON
+        .then(response => response.json())
+        //LOG WHAT DATA HAS BEEN SENT
+        .then(data => {
+            //LOG UPDATED DATA
+            console.log(data);
+            //IF UPDATE SUCCESSFUL, RETURN BACK TO CONTACT PAGE
+            window.location.href = '../ContactsPage/ContactsPage.html';
+        })
+        //CATCH ANY EXTRANIOUS ERRORS
+        .catch(error => console.error('Fetch error:', error));
     }
 });
 
@@ -410,4 +384,3 @@ document.getElementById("phone-number-field").addEventListener("input", function
     e.target.value = parts.join("");
 
 });
-

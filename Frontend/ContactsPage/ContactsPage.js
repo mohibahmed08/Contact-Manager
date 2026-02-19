@@ -6,10 +6,6 @@ function editContact(button){
     //HOLDS THE CONTACT FIELD POSITION
     let field = button.closest(".contact");
 
-    //Find the image if it exists
-    const imgElement = field.querySelector(".avatar-img");
-    const existingImage = imgElement ? imgElement.src : "";
-
     //OBTAIN THE CONTACT INFO ON CURRENT SELECTION (NEEDS THIS FORMAT FOR IT TO WORK)
     let contactInfo = [
         //PASS IN THE FIRST NAME FROM THE DOM FIELD
@@ -19,8 +15,7 @@ function editContact(button){
         //PASS IN THE PHONE NUMBER FROM THE DOM FIELD
         field.querySelector(".phone").textContent,
         //PASS IN THE EMAIL FROM THE DOM FIELD
-        field.querySelector(".email").textContent,
-	existingImage    //Pass the image string to LocalStorage
+        field.querySelector(".email").textContent
     ];
     //  ^^^^^^^^^^^ HARD CODED UNTIL YOU SET UP THE LIST TO DYNAMIC !!!!!!!
     //PASS IN THE CURRENT FIELD INFO ARRAY TO LOCAL STORAGE VIA JSON
@@ -113,7 +108,7 @@ function buildContact(firstName, lastName, email, phone, contactId, imageBase64)
     return `
     <li class="contact" data-contact-id="${contactId}">
         <div class="contact-info">
-            <div class="avatar">${avatarContent}</div>
+            <div class="avatar">${getInitials(firstName, lastName)}</div>
             <div class="contact-details">
                 <div class="name">
                     <span class="first-name">${firstName}</span>
@@ -165,8 +160,7 @@ function retrieveContacts(query = "") {
                     c.LastName,
                     c.Email,
                     c.Phone,
-                    c.id,
-		    c.image
+                    c.id
                 );
             }
 
@@ -248,4 +242,3 @@ function doLogout() {
 
     window.location.href = "../HomePage/HomePage.html";
 }
-
