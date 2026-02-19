@@ -114,7 +114,7 @@ function buildContact(firstName, lastName, email, phone, contactId, imageBase64)
     return `
     <li class="contact" data-contact-id="${contactId}">
         <div class="contact-info">
-            <div class="avatar" style="background-color: #e1ebf7; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 50%;">
+            <div class="avatar" style="display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 50%;">
                 ${avatarContent}
             </div>
             <div class="contact-details">
