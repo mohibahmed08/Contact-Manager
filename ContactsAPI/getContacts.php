@@ -25,7 +25,7 @@
     {
         $stmt = null;
         if ($query === "") {
-            $stmt = $conn->prepare("SELECT ID, UserID, FirstName, LastName, Phone, Email FROM Contacts WHERE UserID = ? ORDER BY LastName, FirstName ");
+            $stmt = $conn->prepare("SELECT * FROM Contacts WHERE UserID = ? ORDER BY LastName, FirstName");
 
             // Safety check that we actually built a valid SQL statement
             if (!$stmt) {
@@ -35,6 +35,7 @@
 
             $userID = (int)$inData["UserID"]; // Typecast to int to make sure it's the right data type
             $stmt->bind_param("i", $userID);
+>>>>>>> origin/main
         } else {
             // Split query into multiple, delimeted by space. From Google.
             $queries = preg_split('/\s+/', $query, -1, PREG_SPLIT_NO_EMPTY);
