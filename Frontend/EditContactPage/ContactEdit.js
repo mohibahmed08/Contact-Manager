@@ -435,12 +435,18 @@ document.getElementById('contactImage').addEventListener('change', function(e)
 	        const reader = new FileReader();
 		reader.onload = async function(event)
                     {
-			//Compress the image before showing or saving it
-			const compressedBase64 = await compressImage(event.target.result);
-
-		        //Change the picture bubble to the uploaded image instantly
 			const img = document.getElementById('profile-preview');
-		        img.src = compressedBase64;
+
+			if(file.type === 'image/gif') img.src = event.target.result;    //Keep the original data so the gif keeps moving!
+			else
+			    {
+				//Compress the image before showing or saving it
+				const compressedBase64 = await compressImage(event.target.result);
+
+				//Change the picture bubble to the uploaded image instantly
+				img.src = compressedBase64;
+			    }
+			
 			updatePreviewAppearance();
 		    };
 		reader.readAsDataURL(file);
