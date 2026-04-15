@@ -29,6 +29,8 @@
             $binaryImage = base64_decode($imageParts[1]);
         }
 
+    $isFavorite = isset($inData["IsFavorite"]) && (int)$inData["IsFavorite"] === 1 ? 1 : 0;
+
     $conn = new mysqli("localhost", "API", "admin1234", "ContactManager");
 
     if($conn->connect_error)
@@ -38,15 +40,16 @@
         }
 
     //Update the SQL query to include the new image columns
-    $stmt = $conn->prepare("INSERT INTO Contacts (FirstName, LastName, Phone, Email, UserID, image, imageData) VALUES (?, ?, ?, ?, ?, ?, ?);");
+    $stmt = $conn->prepare("INSERT INTO Contacts (FirstName, LastName, Phone, Email, UserID, IsFavorite, image, imageData) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
 
-    //"ssssiss" means 4 strings, 1 integer, 2 strings (binary counts as string here in mysqli bind_param)
-    $stmt->bind_param("ssssiss",
+    //"ssssiiss" means 4 strings, 2 integers, 2 strings (binary counts as string here in mysqli bind_param)
+    $stmt->bind_param("ssssiiss",
         $inData["FirstName"],
         $inData["LastName"],
         $inData["Phone"],
         $inData["Email"],
         $inData["UserID"],
+        $isFavorite,
         $binaryImage,
         $imageType
     );

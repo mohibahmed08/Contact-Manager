@@ -20,10 +20,10 @@ function editContact(button){
         field.querySelector(".phone").textContent,
         //PASS IN THE EMAIL FROM THE DOM FIELD
         field.querySelector(".email").textContent,
-	//Pass in the image!
-	currentImage
+        //Pass in the image!
+        currentImage,
+        field.dataset.isFavorite === "1"
     ];
-    //  ^^^^^^^^^^^ HARD CODED UNTIL YOU SET UP THE LIST TO DYNAMIC !!!!!!!
     //PASS IN THE CURRENT FIELD INFO ARRAY TO LOCAL STORAGE VIA JSON
     localStorage.setItem("contactInfo", JSON.stringify(contactInfo));
     localStorage.setItem("ContactID", field.dataset.contactId); // store contact id as well
@@ -73,14 +73,11 @@ document.getElementById("confirmDelete").onclick = function () {
 
     xhr.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
-
-            // ✅ ADD ANIMATION
             contactToDelete.classList.add("removing");
 
-            // Wait for animation to finish before removing
             setTimeout(() => {
                 contactToDelete.remove();
-            }, 250); // match CSS transition time
+            }, 250);
         }
     };
 
@@ -105,14 +102,51 @@ function formatPhone(phone) {
     return `(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`;
 }
 
-function buildContact(firstName, lastName, email, phone, contactId, imageBase64) {
-    //Check if an image exists; if not, use the initials
+function toggleFavorite(button) {
+    const contact = button.closest(".contact");
+
+    if (!contact) return;
+
+    const avatar = contact.querySelector(".avatar-img");
+    const nextFavorite = contact.dataset.isFavorite === "1" ? 0 : 1;
+
+    fetch("../../ContactsAPI/editContact.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            FirstName: contact.querySelector(".first-name").textContent,
+            LastName: contact.querySelector(".last-name").textContent,
+            Phone: contact.querySelector(".phone").getAttribute("href").replace("tel:", ""),
+            Email: contact.querySelector(".email").textContent,
+            UserID: window.currentUserId,
+            ID: Number(contact.dataset.contactId),
+            IsFavorite: nextFavorite,
+            image: avatar ? avatar.src : ""
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (!data.success) {
+            console.error("Favorite toggle failed:", data.error);
+            return;
+        }
+
+        retrieveContacts(document.getElementById("searchText")?.value.trim() || "");
+    })
+    .catch(error => {
+        console.error("Favorite toggle failed:", error);
+    });
+}
+
+function buildContact(firstName, lastName, email, phone, contactId, imageBase64, isFavorite) {
     let avatarContent = imageBase64
-	? `<img src="${imageBase64}" class="avatar-img" loading="lazy" style="width:100%; height:100%; border-radius:50%; object-fit:cover; background-color:white; display:block;" alt="Avatar">`
+        ? `<img src="${imageBase64}" class="avatar-img" loading="lazy" style="width:100%; height:100%; border-radius:50%; object-fit:cover; background-color:white; display:block;" alt="Avatar">`
         : getInitials(firstName, lastName);
 
     return `
-    <li class="contact" data-contact-id="${contactId}">
+    <li class="contact${isFavorite ? " favorite" : ""}" data-contact-id="${contactId}" data-is-favorite="${isFavorite ? 1 : 0}">
         <div class="contact-info">
             <div class="avatar" style="display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 50%;">
                 ${avatarContent}
@@ -128,12 +162,12 @@ function buildContact(firstName, lastName, email, phone, contactId, imageBase64)
         </div>
 
         <div class="contact-actions">
-            <button class="edit-btn" onclick = editContact(this)>Edit</button>
-            <button class="delete-btn" onclick="deleteContact(this)">🗑</button>
+            <button class="favorite-btn${isFavorite ? " is-favorite" : ""}" onclick="toggleFavorite(this)" aria-label="${isFavorite ? "Remove from favorites" : "Add to favorites"}">${isFavorite ? "★" : "☆"}</button>
+            <button class="edit-btn" onclick="editContact(this)">Edit</button>
+            <button class="delete-btn" onclick="deleteContact(this)">Delete</button>
         </div>
     </li>`;
 }
-
 
 /* ===============================
    RETRIEVE CONTACTS
@@ -169,7 +203,8 @@ function retrieveContacts(query = "") {
                     c.Email,
                     c.Phone,
                     c.id,
-		    c.image
+                    c.image,
+                    c.IsFavorite === 1
                 );
             }
 
@@ -179,7 +214,6 @@ function retrieveContacts(query = "") {
 
     xhr.send();
 }
-
 
 /* ===============================
    COOKIE + INITIAL LOAD
@@ -212,7 +246,6 @@ function readCookie() {
     retrieveContacts();
 }
 
-
 /* ===============================
    LIVE SEARCH (Debounced)
 ================================ */
@@ -236,7 +269,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-
 /* ===============================
    LOGOUT
 ================================ */
@@ -251,4 +283,3 @@ function doLogout() {
 
     window.location.href = "../HomePage/HomePage.html";
 }
-

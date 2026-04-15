@@ -23,8 +23,8 @@
     <div class="header-row">
         <div class="search-container">
             <input type="text" id="searchText" placeholder="Search..."
-                onkeydown="if (event.key === 'Enter') searchContacts();"
-                onblur="searchContacts();">
+                onkeydown="if (event.key === 'Enter') retrieveContacts(this.value.trim());"
+                onblur="retrieveContacts(this.value.trim());">
         </div>
 
         <button class="logout-btn" onclick="doLogout()">Logout</button>

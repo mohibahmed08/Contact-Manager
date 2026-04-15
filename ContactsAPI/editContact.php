@@ -31,6 +31,8 @@
         }
 
 
+    $isFavorite = isset($inData["IsFavorite"]) && (int)$inData["IsFavorite"] === 1 ? 1 : 0;
+
     $conn = new mysqli("localhost", "API", "admin1234", "ContactManager");
 
     if( $conn->connect_error )
@@ -45,10 +47,10 @@
     }
     else
     {
-        $stmt = $conn->prepare("UPDATE Contacts SET FirstName = ?, LastName = ?, Phone = ?, Email = ?, image = ?, imageData = ? WHERE UserID = ? AND ID = ?;");
+        $stmt = $conn->prepare("UPDATE Contacts SET FirstName = ?, LastName = ?, Phone = ?, Email = ?, IsFavorite = ?, image = ?, imageData = ? WHERE UserID = ? AND ID = ?;");
 
-        //"ssssssii" means 6 strings, 2 integers
-        $stmt->bind_param("ssssssii", $inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $binaryImage, $imageType, $inData["UserID"], $inData["ID"]);
+        //"ssssissii" means 4 strings, 1 integer, 2 strings, 2 integers
+        $stmt->bind_param("ssssissii", $inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $isFavorite, $binaryImage, $imageType, $inData["UserID"], $inData["ID"]);
 
         if (!$stmt->execute()) {
             sendResultInfoAsJson(json_encode([
