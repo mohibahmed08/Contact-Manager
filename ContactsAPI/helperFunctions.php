@@ -45,6 +45,7 @@
             $retValue .= '"LastName":"' . $row["LastName"] . '",';
             $retValue .= '"Phone":"' . $row["Phone"] . '",';
             $retValue .= '"Email":"' . $row["Email"] . '",';
+            $retValue .= '"IsFavorite":' . (int)$row["IsFavorite"] . ',';
             $retValue .= '"image":"' . $imageBase64 . '"';    //Send the image string back for display!
             $retValue .= '}';
         }

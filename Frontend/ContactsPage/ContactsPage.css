@@ -151,6 +151,11 @@ body {
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
+.contact.favorite {
+    border: 2px solid #f3c54d;
+    box-shadow: 0 10px 22px rgba(243, 197, 77, 0.22);
+}
+
 
 .first-name,
 .last-name {
@@ -180,8 +185,28 @@ body {
 
 .contact-actions {
     display: flex;
+    align-items: center;
     gap: 4px;
     margin-left: auto; /* THIS pushes buttons to the right */
+}
+
+.favorite-btn {
+    padding: 6px 10px;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: #ffe08a;
+    color: #7c5a00;
+}
+
+.favorite-btn:hover {
+    background-color: #ffd14d;
+}
+
+.favorite-btn.is-favorite {
+    background-color: #f5b301;
+    color: white;
 }
 
 

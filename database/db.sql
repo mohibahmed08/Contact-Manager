@@ -32,6 +32,7 @@ CREATE TABLE `Contacts` (
   `LastName` varchar(50) NOT NULL,
   `Phone` varchar(20) NOT NULL,
   `Email` varchar(50) NOT NULL,
+  `IsFavorite` tinyint(1) NOT NULL DEFAULT '0',
   `DateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `image` LONGBLOB,
   `imageData` varchar(50), 
