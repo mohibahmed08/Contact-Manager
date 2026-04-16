@@ -37,47 +37,25 @@ document.getElementById("signup-submit").addEventListener("click", function (e) 
     let passwordField = document.getElementById("reg-password");   
     let resultSpan = document.getElementById("signupResult");
 
-    // Pull from Field
     let firstNameVal = firstNameField.value.trim(); 
     let lastNameVal = lastNameField.value.trim();   
     let emailVal = emailField.value.trim();         
     let passwordVal = passwordField.value;
 
-    // Validation
     let hasError = false;
     resultSpan.innerHTML = "";
 
-    // 1. First Name Check
-    if(firstNameVal === "") { 
-        firstNameField.classList.add('error'); 
-        hasError = true; 
-    } else {
-        firstNameField.classList.remove('error');
-    }
+    if(firstNameVal === "") { firstNameField.classList.add('error'); hasError = true; } 
+    else firstNameField.classList.remove('error');
 
-    // 2. Last Name Check
-    if(lastNameVal === "") { 
-        lastNameField.classList.add('error'); 
-        hasError = true; 
-    } else {
-        lastNameField.classList.remove('error');
-    }
+    if(lastNameVal === "") { lastNameField.classList.add('error'); hasError = true; } 
+    else lastNameField.classList.remove('error');
 
-    // 3. Email Check (Empty OR missing '@' OR missing '.')
-    if(emailVal === "" || !emailVal.includes("@") || !emailVal.includes(".")) { 
-        emailField.classList.add('error'); 
-        hasError = true; 
-    } else {
-        emailField.classList.remove('error');
-    }
+    if(emailVal === "" || !emailVal.includes("@") || !emailVal.includes(".")) { emailField.classList.add('error'); hasError = true; } 
+    else emailField.classList.remove('error');
 
-    // 4. Password Check
-    if(passwordVal.trim() === "") { 
-        passwordField.classList.add('error'); 
-        hasError = true; 
-    } else {
-        passwordField.classList.remove('error');
-    }
+    if(passwordVal.trim() === "") { passwordField.classList.add('error'); hasError = true; } 
+    else passwordField.classList.remove('error');
 
     if(hasError) {
         resultSpan.style.color = "red";
@@ -85,15 +63,8 @@ document.getElementById("signup-submit").addEventListener("click", function (e) 
         return;
     }
 
-    // JSON Payload
-    let tmp = {
-        FirstName: firstNameVal,
-        LastName: lastNameVal,
-        Login: emailVal,
-        Password: passwordVal
-    };
+    let tmp = { FirstName: firstNameVal, LastName: lastNameVal, Login: emailVal, Password: passwordVal };
     let jsonPayload = JSON.stringify(tmp);
-
     let url = urlBase + '/signup.' + extension;
 
     let xhr = new XMLHttpRequest();
@@ -105,14 +76,10 @@ document.getElementById("signup-submit").addEventListener("click", function (e) 
                 if (this.status == 201 || this.status == 200) {
                     resultSpan.style.color = "green";
                     resultSpan.innerHTML = "Account Created!";
-                    
-                    // Clear fields
                     firstNameField.value = ""; 
                     lastNameField.value = "";  
                     emailField.value = "";     
                     passwordField.value = ""; 
-
-                    // Auto-switch to login tab
                     setTimeout(function(){
                          let loginBtn = document.querySelector("button[onclick*='login']");
                          if(loginBtn) loginBtn.click();
@@ -139,7 +106,6 @@ document.getElementById("signup-submit").addEventListener("click", function (e) 
 document.getElementById("login-submit").addEventListener("click", function (e) {
     e.preventDefault(); 
 
-    // Reset Globals
     userId = 0;
     firstName = "";
     lastName = "";
@@ -148,7 +114,6 @@ document.getElementById("login-submit").addEventListener("click", function (e) {
     let password = document.getElementById("login-password").value;
     let resultSpan = document.getElementById("loginResult");
 
-    // Validation
     if(login.trim() === "" || password.trim() === "") {
         resultSpan.style.color = "red";
         resultSpan.innerHTML = "Please enter email and password.";
@@ -159,7 +124,6 @@ document.getElementById("login-submit").addEventListener("click", function (e) {
 
     let tmp = {Login: login, Password: password};
     let jsonPayload = JSON.stringify(tmp);
-
     let url = urlBase + '/login.' + extension;
 
     let xhr = new XMLHttpRequest();
@@ -181,11 +145,10 @@ document.getElementById("login-submit").addEventListener("click", function (e) {
                     firstName = jsonObject.FirstName;
                     lastName = jsonObject.LastName;
 
-                    // SAVE COOKIE 
                     saveCookie();
 
-                    // Redirect to ContactPage
-                    window.location.href = '../ContactsPage/ContactsPage.html';
+                    // Navigate via iframe instead of window.location
+                    window.parent.navigateTo('/Frontend/ContactsPage/ContactsPage.html');
                 } else {
                     resultSpan.style.color = "red";
                     resultSpan.innerHTML = "User/Password combination incorrect";
@@ -202,14 +165,13 @@ document.getElementById("login-submit").addEventListener("click", function (e) {
 
 function setCookie(name, value, minutes) {
   const expires = new Date(Date.now() + minutes * 60 * 1000).toUTCString();
-  value = value ?? ""; // "Clean up" the value so it's safe
+  value = value ?? "";
   document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
 }
 
 function saveCookie() {
-  const minutes = 48 * 60; // 48 hours or two day expiration
+  const minutes = 48 * 60;
   setCookie("firstName", firstName, minutes);
   setCookie("lastName", lastName,  minutes);
   setCookie("userId", String(userId), minutes);
 }
-
