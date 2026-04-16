@@ -1,34 +1,25 @@
 let contactToDelete = null;
 let searchTimeout = null;
 
-// ADDED BY JASON TO LINK EDIT TO CONTACT PAGE FOR NOW
 function editContact(button){
-    //HOLDS THE CONTACT FIELD POSITION
     let field = button.closest(".contact");
 
-    //Grab the image source if it exists
     let imgElement = field.querySelector(".avatar-img");
     let currentImage = imgElement ? imgElement.src : "";
 
-    //OBTAIN THE CONTACT INFO ON CURRENT SELECTION (NEEDS THIS FORMAT FOR IT TO WORK)
     let contactInfo = [
-        //PASS IN THE FIRST NAME FROM THE DOM FIELD
         field.querySelector(".first-name").textContent,
-        //PASS IN THE LAST NAME FROM THE DOM FIELD
         field.querySelector(".last-name").textContent,
-        //PASS IN THE PHONE NUMBER FROM THE DOM FIELD
         field.querySelector(".phone").textContent,
-        //PASS IN THE EMAIL FROM THE DOM FIELD
         field.querySelector(".email").textContent,
-	//Pass in the image!
-	currentImage
+        currentImage
     ];
-    //  ^^^^^^^^^^^ HARD CODED UNTIL YOU SET UP THE LIST TO DYNAMIC !!!!!!!
-    //PASS IN THE CURRENT FIELD INFO ARRAY TO LOCAL STORAGE VIA JSON
+
     localStorage.setItem("contactInfo", JSON.stringify(contactInfo));
-    localStorage.setItem("ContactID", field.dataset.contactId); // store contact id as well
-    //SWITCH CONCURRENT WINDOW TO THE CONTACT EDIT PAGE
-    window.location.href = '../EditContactPage/ContactEdit.html';
+    localStorage.setItem("ContactID", field.dataset.contactId);
+
+    // Navigate via iframe instead of window.location
+    window.parent.navigateTo('/Frontend/EditContactPage/ContactEdit.html');
 }
 
 /* ===============================
@@ -73,14 +64,10 @@ document.getElementById("confirmDelete").onclick = function () {
 
     xhr.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
-
-            // ✅ ADD ANIMATION
             contactToDelete.classList.add("removing");
-
-            // Wait for animation to finish before removing
             setTimeout(() => {
                 contactToDelete.remove();
-            }, 250); // match CSS transition time
+            }, 250);
         }
     };
 
@@ -99,16 +86,13 @@ function getInitials(firstName, lastName) {
 
 function formatPhone(phone) {
     const digits = String(phone || "").replace(/\D/g, "");
-
     if (digits.length !== 10) return "";
-
     return `(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`;
 }
 
 function buildContact(firstName, lastName, email, phone, contactId, imageBase64) {
-    //Check if an image exists; if not, use the initials
     let avatarContent = imageBase64
-	? `<img src="${imageBase64}" class="avatar-img" loading="lazy" style="width:100%; height:100%; border-radius:50%; object-fit:cover; background-color:white; display:block;" alt="Avatar">`
+        ? `<img src="${imageBase64}" class="avatar-img" loading="lazy" style="width:100%; height:100%; border-radius:50%; object-fit:cover; background-color:white; display:block;" alt="Avatar">`
         : getInitials(firstName, lastName);
 
     return `
@@ -126,21 +110,18 @@ function buildContact(firstName, lastName, email, phone, contactId, imageBase64)
                 <a class="phone" href="tel:${phone}">${formatPhone(phone)}</a>
             </div>
         </div>
-
         <div class="contact-actions">
-            <button class="edit-btn" onclick = editContact(this)>Edit</button>
+            <button class="edit-btn" onclick="editContact(this)">Edit</button>
             <button class="delete-btn" onclick="deleteContact(this)">🗑</button>
         </div>
     </li>`;
 }
-
 
 /* ===============================
    RETRIEVE CONTACTS
 ================================ */
 
 function retrieveContacts(query = "") {
-
     let userId = window.currentUserId;
     if (!userId) return;
 
@@ -155,22 +136,12 @@ function retrieveContacts(query = "") {
 
     xhr.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
-
             let jsonObject = JSON.parse(xhr.responseText);
-
             let contactListHTML = "";
 
             for (let i = 0; i < jsonObject.results.length; i++) {
                 let c = jsonObject.results[i];
-
-                contactListHTML += buildContact(
-                    c.FirstName,
-                    c.LastName,
-                    c.Email,
-                    c.Phone,
-                    c.id,
-		    c.image
-                );
+                contactListHTML += buildContact(c.FirstName, c.LastName, c.Email, c.Phone, c.id, c.image);
             }
 
             document.getElementById("contactList").innerHTML = contactListHTML;
@@ -179,7 +150,6 @@ function retrieveContacts(query = "") {
 
     xhr.send();
 }
-
 
 /* ===============================
    COOKIE + INITIAL LOAD
@@ -194,48 +164,41 @@ function readCookie() {
 
     for (let item of data) {
         let [key, value] = item.trim().split("=");
-
         if (key === "firstName") firstName = value;
         if (key === "lastName") lastName = value;
         if (key === "userId") userId = parseInt(value);
     }
 
     if (userId < 0 || isNaN(userId)) {
-        window.location.href = "../HomePage/HomePage.html";
+        // Navigate via iframe instead of window.location
+        window.parent.navigateTo('/Frontend/HomePage/HomePage.html');
         return;
     }
 
     window.currentUserId = userId;
-    document.getElementById("userName").innerText =
-        "Hello, " + firstName + " " + lastName;
+    document.getElementById("userName").innerText = "Hello, " + firstName + " " + lastName;
 
     retrieveContacts();
 }
-
 
 /* ===============================
    LIVE SEARCH (Debounced)
 ================================ */
 
 document.addEventListener("DOMContentLoaded", function () {
-
     readCookie();
 
     const searchInput = document.getElementById("searchText");
 
     if (searchInput) {
         searchInput.addEventListener("input", function () {
-
             clearTimeout(searchTimeout);
-
             searchTimeout = setTimeout(() => {
                 retrieveContacts(searchInput.value.trim());
             }, 300);
-
         });
     }
 });
-
 
 /* ===============================
    LOGOUT
@@ -249,6 +212,6 @@ function doLogout() {
     document.cookie = "lastName=; expires=" + date.toUTCString();
     document.cookie = "userId=; expires=" + date.toUTCString();
 
-    window.location.href = "../HomePage/HomePage.html";
+    // Navigate via iframe instead of window.location
+    window.parent.navigateTo('/Frontend/HomePage/HomePage.html');
 }
-
