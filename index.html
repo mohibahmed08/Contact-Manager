@@ -1,37 +1,39 @@
 <!DOCTYPE html>
 <head>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
+            margin: 0;
+            padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
+            
+            display: flex;
+            flex-direction: column; 
+            justify-content: center;
+            align-items: center;
+            
             background-color: #fff;
-
+            
             /* Notebook Paper */
-            background-image:
+            background-image: 
+
+                /* The Red Vertical Margin Line */
                 linear-gradient(to right, transparent 60px, #ff9ea5 60px, #ff9ea5 62px, transparent 62px),
+                
+                /* The Blue Horizontal Lines */
                 repeating-linear-gradient(transparent, transparent 29px, #00a6ff 30px);
-
-            background-repeat: no-repeat, repeat;
-            background-attachment: fixed;
-        }
-
-        #mainFrame {
-            width: 100%;
-            height: 100vh;
-            border: none;
-            display: block;
+                
+            /* Positioning background elements */
+            background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat;
+            background-attachment: fixed; /* Keeps lines fixed when scrolling */
         }
     </style>
 </head>
 <body>
-    <iframe id="mainFrame" src="/Frontend/HomePage/HomePage.html"></iframe>
-
+    Redirecting to <a href="http://colorslab.xyz/Frontend/HomePage/HomePage.html">http://colorslab.xyz/Frontend/HomePage/HomePage.html</a>...
     <script>
-        // Any page inside the iframe calls: window.parent.navigateTo('/path/to/page.html')
-        function navigateTo(page) {
-            document.getElementById('mainFrame').src = page;
-        }
+    window.onload = function() {
+        window.location.replace("http://colorslab.xyz/Frontend/HomePage/HomePage.html");
+    }
     </script>
 </body>
