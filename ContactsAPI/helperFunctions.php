@@ -1,4 +1,6 @@
 <?php
+    mysqli_report(MYSQLI_REPORT_OFF);
+
     function getRequestInfo()
         {
                 return json_decode(file_get_contents('php://input'), true);
@@ -16,11 +18,43 @@
                 sendResultInfoAsJson( $retValue );
         }
 
-        function returnWithInfo( $firstName, $lastName, $id )
-        {
-                $retValue = '{"id":' . $id . ',"FirstName":"' . $firstName . '","LastName":"' . $lastName . '","error":""}';
-                sendResultInfoAsJson( $retValue );
+    function returnWithInfo( $firstName, $lastName, $id )
+    {
+            $retValue = '{"id":' . $id . ',"FirstName":"' . $firstName . '","LastName":"' . $lastName . '","error":""}';
+            sendResultInfoAsJson( $retValue );
+    }
+
+    function normalizeFavoriteValue($value)
+    {
+        if (is_bool($value)) {
+            return $value ? 1 : 0;
         }
+
+        return ((int)$value === 1) ? 1 : 0;
+    }
+
+    function getDatabaseConfig()
+    {
+        return [
+            "host" => getenv("CONTACT_MANAGER_DB_HOST") ?: "127.0.0.1",
+            "user" => getenv("CONTACT_MANAGER_DB_USER") ?: "API",
+            "password" => getenv("CONTACT_MANAGER_DB_PASSWORD") ?: "admin1234",
+            "name" => getenv("CONTACT_MANAGER_DB_NAME") ?: "ContactManager"
+        ];
+    }
+
+    function openDatabaseConnection(&$error = "")
+    {
+        $config = getDatabaseConfig();
+        $conn = @new mysqli($config["host"], $config["user"], $config["password"], $config["name"]);
+
+        if ($conn->connect_error) {
+            $error = $conn->connect_error;
+            return null;
+        }
+
+        return $conn;
+    }
 
     function returnContactWithInfo ( $rows )
     {
@@ -45,6 +79,7 @@
             $retValue .= '"LastName":"' . $row["LastName"] . '",';
             $retValue .= '"Phone":"' . $row["Phone"] . '",';
             $retValue .= '"Email":"' . $row["Email"] . '",';
+            $retValue .= '"IsFavorite":' . normalizeFavoriteValue($row["IsFavorite"] ?? 0) . ',';
             $retValue .= '"image":"' . $imageBase64 . '"';    //Send the image string back for display!
             $retValue .= '}';
         }

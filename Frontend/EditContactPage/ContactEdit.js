@@ -1,400 +1,300 @@
-//HOLDS THE DOM FIELD REFERENCE FOR ALL FIELDS
-const firstNameField = document.getElementById('first-name-field');
-const lastNameField = document.getElementById('last-name-field');
-const phoneNumberField = document.getElementById('phone-number-field');
-const emailAddressField = document.getElementById('email-address-field');
+const urlBase = "../../ContactsAPI";
 
-//SETS ALL FIELDS TO A CERTAIN PARAMETER
-function setAllFields(newText){
-    firstNameField.textContent = newText;
-    lastNameField.textContent = newText;
-    phoneNumberField.textContent = newText;
-    emailAddressField.textContent = newText;
+const firstNameField = document.getElementById("first-name-field");
+const lastNameField = document.getElementById("last-name-field");
+const phoneNumberField = document.getElementById("phone-number-field");
+const emailAddressField = document.getElementById("email-address-field");
+const favoriteField = document.getElementById("favorite-field");
+
+function getApiUrl(endpoint) {
+    return `${urlBase}/${endpoint}.php`;
 }
 
-//SETS ALL FIELDS TO ERROR FOR A CERTAIN PARAMETER
-function setAllFieldsErr(array){
+function isFavoriteValue(value) {
+    return value === true || value === 1 || value === "1";
+}
 
-    //ORIGINATE CONTAINS VALUE TO FALSE
+function safeParseJson(text) {
+    try {
+        return JSON.parse(text);
+    } catch {
+        return null;
+    }
+}
+
+function setAllFields(newText) {
+    firstNameField.value = newText;
+    lastNameField.value = newText;
+    phoneNumberField.value = newText;
+    emailAddressField.value = newText;
+}
+
+function setAllFieldsErr(array) {
     let containsVal = false;
 
-    //IF ANY FIELD IS EMPTY, RETURN ERROR
-    if(firstNameField.value.trim() === "") { 
-        //ADD THE ERROR IF EMPTY FIELD
-        firstNameField.classList.add('error'); 
-        //STATE ERROR FOR RETURN
-        containsVal = true; 
-    }
-    //ELSE REMOVE ERROR
-    else firstNameField.classList.remove('error');
-
-    //IF ANY FIELD IS EMPTY, RETURN ERROR
-    if(lastNameField.value.trim() === "") {
-        //ADD THE ERROR IF EMPTY FIELD
-        lastNameField.classList.add('error');
-        //STATE ERROR FOR RETURN
+    if (firstNameField.value.trim() === "") {
+        firstNameField.classList.add("error");
         containsVal = true;
-    }
-    //ELSE REMOVE ERROR
-    else lastNameField.classList.remove('error');
+    } else firstNameField.classList.remove("error");
 
-    //IF ANY FIELD IS EMPTY OR IF ADDRESS FIELD DOESN'T CONTAIN '@' OR '.', RETURN ERROR
-    if(emailAddressField.value.trim() === "" || !emailAddressField.value.trim().includes("@") || !emailAddressField.value.trim().includes(".")) {
-        //ADD THE ERROR IF EMPTY FIELD
-        emailAddressField.classList.add('error');
-        //STATE ERROR FOR RETURN
+    if (lastNameField.value.trim() === "") {
+        lastNameField.classList.add("error");
         containsVal = true;
-    }
-    //ELSE REMOVE ERROR
-    else emailAddressField.classList.remove('error');
+    } else lastNameField.classList.remove("error");
 
-    //IF ANY FIELD IS EMPTY OR IF PHONE NUMBER FIELD DOESN'T CONTAIN ALL DIGITS NEEDED, RETURN ERROR
-    if(phoneNumberField.value.trim() === "" || phoneNumberField.value.trim().length < 14) {
-        //ADD THE ERROR IF EMPTY FIELD
-        phoneNumberField.classList.add('error');
-        //STATE ERROR FOR RETURN
+    if (
+        emailAddressField.value.trim() === "" ||
+        !emailAddressField.value.trim().includes("@") ||
+        !emailAddressField.value.trim().includes(".")
+    ) {
+        emailAddressField.classList.add("error");
         containsVal = true;
-    }
-    //ELSE REMOVE ERROR
-    else phoneNumberField.classList.remove('error');
+    } else emailAddressField.classList.remove("error");
 
-    //IF ERROR EXISTS, RETURN
-    if(containsVal) return containsVal;
+    if (
+        phoneNumberField.value.trim() === "" ||
+        phoneNumberField.value.trim().length < 14
+    ) {
+        phoneNumberField.classList.add("error");
+        containsVal = true;
+    } else phoneNumberField.classList.remove("error");
 
-    //IF ARRAY IS EMPTY, RETURN
-    if(!array) return;
+    if (containsVal) return containsVal;
+    if (!array) return;
 
-    //CHECK IF PHP RETURNED ARRAY CONTAINS ALL SAME INFO AS BEING ENTERED
-    array.forEach(element => {
-        
-        //SPLIT THE CURRENT FIELD INTO ARRAY CONTENTS
-        let field = element.split(", ");
-        
-        //CHECK IF THE (FIRST && LAST) || EMAIL || PHONE MATCH
-        if(
-            //IF THE FIRST AND LAST NAME ARE THE SAME, THEN YOU HAVE A DUPLICATE
-            (field[0] === firstNameField.value.trim() && field[1] === lastNameField.value.trim()) 
-        ){
-            //SET ERROR TO THE FIRST AND LAST NAME FIELD
-            firstNameField.classList.add('error');
-            lastNameField.classList.add('error');
-            //SET CONTAINS VALUE TO TRUE
+    array.forEach((element) => {
+        const field = element.split(", ");
+
+        if (
+            field[0] === firstNameField.value.trim() &&
+            field[1] === lastNameField.value.trim()
+        ) {
+            firstNameField.classList.add("error");
+            lastNameField.classList.add("error");
             containsVal = true;
+        } else {
+            firstNameField.classList.remove("error");
+            lastNameField.classList.add("error");
         }
-        //ELSE REMOVE THE ERROR
-        else {
-            firstNameField.classList.remove('error');
-            lastNameField.classList.add('error');
-        }
-      
-        if(
-            //NEXT CHECK FOR MATCHING EMAIL ADDRESS
-            field[2] === emailAddressField.value.trim()
-        ){
-            //SET ERROR TO THE EMAIL ADDRESS FIELD
-            emailAddressField.classList.add('error');
-            //SET CONTAINS VALUE TO TRUE
-            containsVal = true;
-        }
-        //ELSE REMOVE THE ERROR
-        else emailAddressField.classList.remove('error');
-      
-        if(
-            //FINALLY CHECK FOR MATCHING PHONE NUMBER
-            field[3] === phoneNumberField.value.trim()
-        ){
-            //SET ERROR TO THE PHONE FIELD
-            phoneNumberField.classList.add('error');
-            //SET CONTAINS VALUE TO TRUE
-            containsVal = true;
-        }
-        //ELSE REMOVE THE ERROR
-        else phoneNumberField.classList.remove('error');
 
+        if (field[2] === emailAddressField.value.trim()) {
+            emailAddressField.classList.add("error");
+            containsVal = true;
+        } else emailAddressField.classList.remove("error");
+
+        if (field[3] === phoneNumberField.value.trim()) {
+            phoneNumberField.classList.add("error");
+            containsVal = true;
+        } else phoneNumberField.classList.remove("error");
     });
-    
-    //RETURN CONTAINS VALUE AFTER EDITS
-    return containsVal;
 
+    return containsVal;
 }
 
-//LOADED DOM ON PAGE STARTUP
-document.addEventListener("DOMContentLoaded", () => {
-    
-    //ACCESS LOCAL STORAGE THAT MAY OR MAY NOT HAVE BEEN INITALIZED ON PRIOR PAGE
+function getSavedContactInfo() {
     const raw = localStorage.getItem("contactInfo");
-    const savedContactInfo = raw ? JSON.parse(raw) : null;
-    //I'M ASSUMING LOCAL STORAGE IS AN ARRAY OF THE FIELDS
+    if (!raw) return null;
 
-    //IF SAVED FIELD INFO IS NULL (I.E. WE DIDN'T HAVE LOCAL STORAGE)
-    //THEN WE ARE CREATING A NEW CONTACT SINCE THERE'S NOTHING TO EDIT
-    //OTHERWISE WE ARE EDITING A CONTACT AND WE SET UP THE FIELDS ACCORDINGLY
+    try {
+        const savedContactInfo = JSON.parse(raw);
 
-    //WE HAVE STORED INFORMATION FROM OUR LOCAL STORAGE (AND ITS THE PROPER SIZE)
-    if(savedContactInfo){ 
-        //CHECK IF PROPER SIZE AND IN PROPER ORDER
-        if(savedContactInfo.length >= 4){
-            //SET THE TITLE TO EDIT CONTACT
-            document.getElementById('title-label').textContent = "Edit Contact";
-            //SET THE WEBPAGE NAME ACCORDINGLY
-            document.getElementById('webpage-name').textContent = "Edit Contact";
-            //INITALIZE THE FIELDS ACCORDINGLY (ASSUMING IN PROPER ORDER)
-            firstNameField.value = savedContactInfo[0];
-            lastNameField.value = savedContactInfo[1];
-            phoneNumberField.value = savedContactInfo[2];
-            emailAddressField.value = savedContactInfo[3];
+        if (Array.isArray(savedContactInfo)) {
+            if (savedContactInfo.length < 4) {
+                return null;
+            }
 
-	    //If they have an existing image (index 4), load it into the preview bubble
-            if(savedContactInfo.length >= 5 && savedContactInfo[4])
-	        {
-                    document.getElementById('profile-preview').src = savedContactInfo[4];
-		}
+            return {
+                FirstName: savedContactInfo[0],
+                LastName: savedContactInfo[1],
+                Phone: savedContactInfo[2],
+                Email: savedContactInfo[3],
+                image: savedContactInfo[4] || "",
+                IsFavorite: isFavoriteValue(savedContactInfo[5])
+            };
         }
-        //IF NOT PROPER SIZE, EXPLAIN WHAT SHOULD BE GIVEN
-        else{
-            //STATE THE ERROR AND WHAT SHOULD BE DONE TO FIX IT
-            console.error("INVALID \"fieldInfo\" LOCAL STORAGE!!");
-            console.error("PROPER FORMAT: ARRAY OF LENGTH 4 WITH THE FOLLOWING ORDER:\n");
-            console.error("0) First Name\n1) Last Name\n2) Phone Number\n3) Email Address");
-            //DEFAULT TO CREATE CONTACT PAGE FOR NOW BY TAGGING NULL
-            savedContactInfo = null;
+
+        if (savedContactInfo && typeof savedContactInfo === "object") {
+            return {
+                FirstName: savedContactInfo.FirstName || "",
+                LastName: savedContactInfo.LastName || "",
+                Phone: savedContactInfo.Phone || "",
+                Email: savedContactInfo.Email || "",
+                image: savedContactInfo.image || "",
+                IsFavorite: isFavoriteValue(savedContactInfo.IsFavorite)
+            };
         }
+    } catch (error) {
+        console.error("Unable to read contactInfo from local storage:", error);
     }
-    //OTHERWISE, WE DON'T HAVE ANY PASSED IN INFORMATION, THEREFORE WE CREATE A NEW CONTACT
-    if(!savedContactInfo){
-        //SET THE TITLE TO CREATE CONTACT
-        document.getElementById('title-label').textContent = "Create Contact";
-        //SET THE WEBPAGE NAME ACCORDINGLY
-        document.getElementById('webpage-name').textContent = "Create Contact";
-        //INITALIZE THE FIELDS ACCORDINGLY
+
+    return null;
+}
+
+function setProfilePreview(imageSource) {
+    const profilePreview = document.getElementById("profile-preview");
+
+    if (imageSource) {
+        profilePreview.style.cssText = "width:100%; height:100%; object-fit:cover;";
+        profilePreview.src = imageSource;
+        return;
+    }
+
+    profilePreview.style.cssText = "";
+    profilePreview.src = "../Icons/pencil-line.svg";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const savedContactInfo = getSavedContactInfo();
+
+    if (savedContactInfo) {
+        document.getElementById("title-label").textContent = "Edit Contact";
+        document.getElementById("webpage-name").textContent = "Edit Contact";
+
+        firstNameField.value = savedContactInfo.FirstName;
+        lastNameField.value = savedContactInfo.LastName;
+        phoneNumberField.value = savedContactInfo.Phone;
+        emailAddressField.value = savedContactInfo.Email;
+        favoriteField.checked = savedContactInfo.IsFavorite;
+
+        if (savedContactInfo.image) {
+            setProfilePreview(savedContactInfo.image);
+        }
+    } else {
+        document.getElementById("title-label").textContent = "Create Contact";
+        document.getElementById("webpage-name").textContent = "Create Contact";
         setAllFields("");
+        favoriteField.checked = false;
+        setProfilePreview("");
     }
 
-    //STATE SUCCESSFUL LOADING WITH PROPER TITLE
-    console.log((savedContactInfo) ? "Edit" : "Create" + " Contact page loaded");
-
+    console.log(`${savedContactInfo ? "Edit" : "Create"} Contact page loaded`);
 });
 
-//UNLOADING DOM ON PAGE END
-window.addEventListener("beforeunload", (e) => {
-    //CLEAR THE LOCAL STORAGE CACHE WITH PRIOR CONTACT
+window.addEventListener("beforeunload", () => {
     localStorage.removeItem("contactInfo");
     localStorage.removeItem("ContactID");
 });
 
-//IF BACK BUTTON IS CLICKED
 document.getElementById("back-button").addEventListener("click", function () {
-    //SWITCH BACK TO THE CONTACT PAGE
-    window.location.href = '../ContactsPage/ContactsPage.html';
+    window.location.href = "../ContactsPage/ContactsPage.html";
 });
-//TIE THE WRAPPER OF THE BACK BUTTON TO DO THE SAME THING
+
 document.getElementById("back-button-wrapper").addEventListener("click", function () {
-    //ACTIVATE BACK BUTTON CLICK ABOVE
     document.getElementById("back-button").click();
 });
 
-//GETS THE COOKIE'S VALUE BY NAME
 function getCookieValue(name) {
-    //SPLIT THE COOKIE BY DELIMETER
     const cookies = document.cookie.split("; ");
-    //ITERATE THROUGH COOKIES
-    for (let c of cookies) {
-        //SPLIT THE KEY FROM ITS VALUE
+    for (const c of cookies) {
         const [key, value] = c.split("=");
-        //RETURN THE VALUE THAT EQUATES TO KEY
         if (key === name) return value;
     }
-    //IF NO VALUE FOUND WITH KEY, RETURN NULL
+
     return null;
 }
 
-//CHECKS IF A FIELD IS UNIQUE FROM WHATS IN THE DB
-//-------------> REMOVE DEAD VARIABLES IF NOT NEEDED WHEN MERGE
-function isTaken(searchQuery){ 
-    
-    //SEARCH THE CONTACTS VIA BACKEND TO SEE IF CONTACT HAS ALREADY BEEN ASSIGNED
-    fetch("../../ContactsAPI/searchContacts.php", {
-        //POST THE CONTACT INFORMATION TO SEARCH FOR
+function isTaken(searchQuery) {
+    fetch(getApiUrl("searchContacts"), {
         method: "POST",
-        //SPECIFY JSON CODE BETWEEN API AND FRONTEND
         headers: {
             "Content-Type": "application/json"
         },
-        //TURN THE USER ID AND NAME INTO SEARCH FOR
         body: JSON.stringify({
-            ID: parseInt(getCookieValue("UserID")), //FORMAT: [FIRSTNAME;LASTNAME;USERID]
-            query: searchQuery //SEARCH FOR EMAIL ADDRESS TO CONFIRM NOT SAME PERSON
+            ID: parseInt(getCookieValue("userId"), 10),
+            query: searchQuery
         })
     })
-    //THEN SEND THE RESPONSE AS THE JSON
-    .then(res => res.json())
-
-    //LOG WHAT DATA HAS BEEN SENT
-    .then(data => {
-        //SEND API DATA TO SCREEN
-        console.log(data);
-        //LOG ANY API EXTRANIOUS ERRORS
-        if (data.error) {
-            console.error("API Error:", data.error);
-            return;
-        }
-        //SEND THE ARRAY OF FIELDS TO BE RETURNED
-        setAllFieldsErr(data.results || data);
-    })
-    //LOG ANY FETCH EXTRANIOUS ERRORS
-    .catch(err => {
-        console.error("Fetch failed:", err);
-    });
-} 
-
-//TASKS FOR WHEN WHEN THE ACTION BUTTON IS CLICKED
-document.getElementById("action-button").addEventListener("click", function () {
-    
-    //TAKE FIELD INFORMATION FROM THE CREATE CONTACT FIELDS
-    let firstName = firstNameField.value;
-    let lastName = lastNameField.value;
-    let phoneNumber = phoneNumberField.value;
-    let emailAddress = emailAddressField.value;
-
-    const profilePreview = document.getElementById('profile-preview');
-
-    //Only send the base64 if it's not the default pencil icon
-    let imageBase64 = profilePreview.src.includes('data:image') ? profilePreview.src : "";
-    
-    //IF ANY FIELDS CONTAIN EMPTY STRING
-    let isEmpty = setAllFieldsErr();
-    
-    //CHECK IF THE FIELD DATA HAS BEEN TAKEN ALREADY IN BACKEND
-    if(isEmpty || isTaken(emailAddress)) return; //PASS IN CURRENT FIELD INFO (NEED METHOD TO BE COMPLETED !!!!!!!!)
-
-    //OBTAIN CONTACT INFO IT EXISTS
-    const raw = localStorage.getItem("contactInfo");
-    const savedContactInfo = raw ? JSON.parse(raw) : null;
-
-    //IF EDIT CONTACT, THERE WILL BE INFORMATION PASSED IN
-    if(savedContactInfo){ 
-        //IF NOT ALREADY TAKEN, THEN SEND TO BACKEND VIA API ENDPOINT
-        fetch("../../ContactsAPI/editContact.php", {
-            //POST TO THE BACKEND PHP
-            method: "POST",
-            //STATE WE ARE SENDING JSON FILE TYPE
-            headers: {
-                "Content-Type": "application/json"
-            },
-            //STRINGIFY FIELD INFO TO JSON DELIVERABLE
-            body: JSON.stringify({
-                //ASSIGN THE FIRSTNAME FIELD WITH FIRSTNAME IN DOM
-                FirstName: firstName,
-                //ASSIGN THE LASTNAME FIELD WITH FIRSTNAME IN DOM
-                LastName: lastName,
-                //ASSIGN THE PHONE NUMBER FIELD WITH FIRSTNAME IN DOM
-                Phone: phoneNumber,
-                //ASSIGN THE EMAIL ADDRESS FIELD WITH FIRSTNAME IN DOM
-                Email: emailAddress,
-                //ASSIGN THE USER ID FIELD LOGIN ID
-                UserID: getCookieValue("userId"),
-                //ASSIGN THE CONTACT ID WITH THE CONTACT EDITING 
-                ID: localStorage.getItem("ContactID"), // <------- !!!!!!!!!!!!! PROBABLY THE ERROR IF ONE EXISTS !!!!!!!!!
-		//Get the image!
-		image: imageBase64
-            })
-        })
-        //THEN SEND THE RESPONSE AS THE JSON
-        .then(response => response.json())
-        //LOG WHAT DATA HAS BEEN SENT
-        .then(data => {
-            console.log("Server response:", data);
-            if (data.success) {
-                console.log("Update successful!");
-                //IF UPDATE SUCCESSFUL, RETURN BACK TO CONTACT PAGE
-                window.location.href = '../ContactsPage/ContactsPage.html';
-            } else {
-                console.error("Update failed:", data.error);
+        .then((res) => res.json())
+        .then((data) => {
+            console.log(data);
+            if (data.error) {
+                console.error("API Error:", data.error);
+                return;
             }
+
+            setAllFieldsErr(data.results || data);
         })
-        //CATCH ANY EXTRANIOUS ERRORS
-        .catch(error => {
+        .catch((err) => {
+            console.error("Fetch failed:", err);
+        });
+}
+
+document.getElementById("action-button").addEventListener("click", function () {
+    const firstName = firstNameField.value.trim();
+    const lastName = lastNameField.value.trim();
+    const phoneNumber = phoneNumberField.value.trim();
+    const emailAddress = emailAddressField.value.trim();
+    const isFavorite = favoriteField.checked;
+    const profilePreview = document.getElementById("profile-preview");
+    const imageBase64 = profilePreview.src.includes("data:image") ? profilePreview.src : "";
+
+    const isEmpty = setAllFieldsErr();
+
+    if (isEmpty) return;
+
+    const savedContactInfo = getSavedContactInfo();
+    const payload = {
+        FirstName: firstName,
+        LastName: lastName,
+        Phone: phoneNumber,
+        Email: emailAddress,
+        UserID: getCookieValue("userId"),
+        IsFavorite: isFavorite,
+        image: imageBase64
+    };
+
+    if (savedContactInfo) {
+        payload.ID = localStorage.getItem("ContactID");
+    }
+
+    fetch(getApiUrl(savedContactInfo ? "editContact" : "createContact"), {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    })
+        .then((response) => response.text())
+        .then((text) => {
+            const data = safeParseJson(text);
+
+            if (!data) {
+                console.error("Save failed with non-JSON response:", text);
+                return;
+            }
+
+            console.log("Server response:", data);
+            if (data.success === false) {
+                console.error("Save failed:", data.error);
+                return;
+            }
+
+            window.location.href = "../ContactsPage/ContactsPage.html";
+        })
+        .catch((error) => {
             console.error("Fetch error:", error);
         });
-    }
-    //ELSE ITS CREATE CONTACT
-    else{
-        //IF NOT ALREADY TAKEN, THEN SEND TO BACKEND VIA API ENDPOINT
-        fetch('../../ContactsAPI/createContact.php', { // <-- CHANGE THIS OUT WITH THE ACTUAL BACKEND CODE NAME !!!!!!!!!!!!!
-            //POST TO THE BACKEND PHP
-            method: 'POST',
-            //STATE WE ARE SENDING JSON FILE TYPE
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            //STRINGIFY FIELD INFO TO JSON DELIVERABLE
-            body: JSON.stringify({ 
-                //ASSIGN THE FIRSTNAME FIELD WITH FIRSTNAME IN DOM
-                FirstName: firstName, 
-                //ASSIGN THE LASTNAME FIELD WITH LASTNAME IN DOM
-                LastName: lastName, 
-                //ASSIGN THE PHONENUMBER FIELD WITH PHONENUMBER IN DOM
-                Phone: phoneNumber, 
-                //ASSIGN THE EMAILADDRESS FIELD WITH EMAILADDRESS IN DOM
-                Email: emailAddress,
-                //ASSIGN THE ID FIELD WITH LOCAL STORAGE IN DOM
-                UserID: getCookieValue("userId"), //OR CHANGE WITH WHATEVER HOLDS THE ID
-		//Don't forget about the image!
-		image: imageBase64
-            })
-        })
-        //THEN SEND THE RESPONSE AS THE JSON
-        .then(response => response.json())
-        //LOG WHAT DATA HAS BEEN SENT
-        .then(data => {
-            //LOG UPDATED DATA
-            console.log(data);
-            //IF UPDATE SUCCESSFUL, RETURN BACK TO CONTACT PAGE
-            window.location.href = '../ContactsPage/ContactsPage.html';
-        })
-        //CATCH ANY EXTRANIOUS ERRORS
-        .catch(error => console.error('Fetch error:', error));
-    }
 });
 
-//LIVE IMAGE PREVIEW LOGIC
-document.getElementById('contactImage').addEventListener('change', function(e)
-    {
-	const file = e.target.files[0];
-	if (file)
-            {
-	        const reader = new FileReader();
-		reader.onload = function(event)
-                    {
-		        //Change the picture bubble to the uploaded image instantly
-			let img = document.getElementById('profile-preview');
-			if(img.getAttribute('src') === "../Icons/pencil-line.svg") img.style.cssText = "width:50%; height:50%; object-fit:cover;";
-			else img.style.cssText = "width:100%; height:100%; object-fit:cover;";
-			
-		        img.src = event.target.result;
-		    };
-		reader.readAsDataURL(file);
-	    }
+document.getElementById("contactImage").addEventListener("change", function (e) {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (event) {
+        setProfilePreview(event.target.result);
+    };
+    reader.readAsDataURL(file);
 });
 
-//FOR FORMATTING THE PHONE NUMBER FIELD PROPERLY AS USER TYPES THEIR PHONE NUMBER
 document.getElementById("phone-number-field").addEventListener("input", function (e) {
+    const digits = e.target.value.replace(/\D/g, "").substring(0, 10);
+    const parts = [];
 
-    //REMOVE EVERYTHING THAT ISN'T A NUMBER AND LIMIT THE RESULT TO 10 DIGITS ONLY
-    let digits = e.target.value.replace(/\D/g, "").substring(0, 10);
-
-    //SEPARATE THE PHONE NUMBER INTO PARTS
-    let parts = [];
-
-    //IF THEIR IS SOMETHING ENTERED, PUSH OPEN PARARENTHESIS AT FIRST INDEX
     if (digits.length > 0) parts.push("(" + digits.substring(0, 3));
-    //IF YOU'VE ENTERED THE FIRST 3 DIGITS, THEN CLOSE THE PARENTHESIS FOR AREA CODE
     if (digits.length >= 4) parts.push(") " + digits.substring(3, 6));
-    //AFTER THE NEXT 3 DIGITS, HAVE A DASH TO SEPARATE PHONE NUMBER FIELD
     if (digits.length >= 7) parts.push("-" + digits.substring(6, 10));
 
-    //REJOIN THE FIELD PARTS WITHIN THE FIELD TO SHOW PROPER FORMATTING
     e.target.value = parts.join("");
-
 });
-

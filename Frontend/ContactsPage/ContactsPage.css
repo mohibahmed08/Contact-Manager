@@ -151,6 +151,11 @@ body {
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
+.contact.favorite {
+    border: 1px solid #f2cf66;
+    background: linear-gradient(135deg, #fffdf5, #fff7d8);
+}
+
 
 .first-name,
 .last-name {
@@ -158,6 +163,23 @@ body {
     font-size: 1.20em; /* slightly bigger */
     margin-bottom: 4px;
 
+}
+
+.name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.favorite-badge {
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 0.7em;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: #7a5600;
+    background-color: #ffe08a;
 }
 
 
@@ -180,8 +202,37 @@ body {
 
 .contact-actions {
     display: flex;
+    align-items: center;
     gap: 4px;
     margin-left: auto; /* THIS pushes buttons to the right */
+}
+
+.favorite-btn {
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.3em;
+    line-height: 1;
+    color: #a17b00;
+    background: #fff2bf;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.favorite-btn:hover {
+    transform: translateY(-1px);
+    background: #ffe08a;
+}
+
+.favorite-btn.active {
+    color: #7a5600;
+    background: #ffd24d;
+}
+
+.favorite-btn:disabled {
+    opacity: 0.7;
+    cursor: wait;
 }
 
 
@@ -294,6 +345,13 @@ body {
     margin-right: 14px;
 }
 
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
 .contact-info {
     display: flex;
     align-items: center;
@@ -318,6 +376,30 @@ body {
     align-items: center;
     width: 100%;
     margin-bottom: 20px; /* Space between Top Row and Header Row */
+}
+
+@media (max-width: 720px) {
+    .container {
+        width: calc(100% - 24px);
+        padding: 28px 18px;
+    }
+
+    .top-bar,
+    .header-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .contact {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .contact-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
 }
 
 /* Greeting */

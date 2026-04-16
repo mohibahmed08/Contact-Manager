@@ -1,9 +1,17 @@
-const urlBase = 'http://colorslab.xyz/ContactsAPI'; 
+const urlBase = '../../ContactsAPI'; 
 const extension = 'php';
 
 let userId = 0;
 let firstName = "";
 let lastName = "";
+
+function safeParseJson(text) {
+    try {
+        return JSON.parse(text);
+    } catch {
+        return null;
+    }
+}
 
 // Tab Switching
 function openTab(evt, tabName) {
@@ -102,7 +110,9 @@ document.getElementById("signup-submit").addEventListener("click", function (e) 
     try {
         xhr.onreadystatechange = function() {
             if (this.readyState == 4) {
-                if (this.status == 201 || this.status == 200) {
+                const jsonObject = safeParseJson(xhr.responseText);
+
+                if ((this.status == 201 || this.status == 200) && jsonObject && !jsonObject.error && jsonObject.id > 0) {
                     resultSpan.style.color = "green";
                     resultSpan.innerHTML = "Account Created!";
                     
@@ -118,14 +128,13 @@ document.getElementById("signup-submit").addEventListener("click", function (e) 
                          if(loginBtn) loginBtn.click();
                     }, 1500);
                 } else {
-                    try {
-                        let jsonObject = JSON.parse(xhr.responseText);
+                    if (jsonObject && jsonObject.error) {
                         resultSpan.style.color = "red";
                         resultSpan.innerHTML = jsonObject.error;
-                    } catch {
+                    } else {
                         resultSpan.style.color = "red";
-                        resultSpan.innerHTML = "Error: " + xhr.status;
-                    }
+                        resultSpan.innerHTML = "Unable to create account. Check your local database setup.";
+                    } 
                 }
             }
         };
@@ -168,13 +177,14 @@ document.getElementById("login-submit").addEventListener("click", function (e) {
     try {
         xhr.onreadystatechange = function() {
             if (this.readyState == 4) {
-                if (this.status == 200) {
-                    let jsonObject = JSON.parse(xhr.responseText);
+                const jsonObject = safeParseJson(xhr.responseText);
+
+                if (this.status == 200 && jsonObject) {
                     userId = jsonObject.id;
 
                     if (userId < 1) {
                         resultSpan.style.color = "red";
-                        resultSpan.innerHTML = "User/Password combination incorrect";
+                        resultSpan.innerHTML = jsonObject.error || "User/Password combination incorrect";
                         return;
                     }
 
@@ -188,7 +198,7 @@ document.getElementById("login-submit").addEventListener("click", function (e) {
                     window.location.href = '../ContactsPage/ContactsPage.html';
                 } else {
                     resultSpan.style.color = "red";
-                    resultSpan.innerHTML = "User/Password combination incorrect";
+                    resultSpan.innerHTML = (jsonObject && jsonObject.error) ? jsonObject.error : "Unable to log in. Check your local database setup.";
                 }
             }
         };
@@ -212,4 +222,3 @@ function saveCookie() {
   setCookie("lastName", lastName,  minutes);
   setCookie("userId", String(userId), minutes);
 }
-

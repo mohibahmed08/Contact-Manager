@@ -8,10 +8,12 @@
     $firstName = "";
     $lastName = "";
 
-    $conn = new mysqli("localhost", "API", "admin1234", "ContactManager"); 	
-    if( $conn->connect_error )
+    $connectionError = "";
+    $conn = openDatabaseConnection($connectionError);
+    if( $conn === null )
     {
-        returnWithError( $conn->connect_error );
+        http_response_code(500);
+        returnWithError( $connectionError );
     }
     else
     {

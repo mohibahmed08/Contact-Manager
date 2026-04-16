@@ -205,6 +205,23 @@ body {
     box-shadow: 0 0 0 3px rgba(235, 37, 37, 0.15);
 }
 
+.favorite-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    color: #1f2937;
+    cursor: pointer;
+    user-select: none;
+}
+
+.favorite-toggle input {
+    width: 18px;
+    height: 18px;
+    accent-color: #d4a017;
+    cursor: pointer;
+}
+
 .edit-contact-action-button {
     /* BUTTON WIDTH */
     width: 200px;

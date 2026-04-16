@@ -15,17 +15,19 @@
     }
 
 
-    $conn = new mysqli("localhost", "API", "admin1234", "ContactManager");
-    if( $conn->connect_error )
+    $connectionError = "";
+    $conn = openDatabaseConnection($connectionError);
+    if( $conn === null )
     {
-        returnContactWithError( $conn->connect_error );
+        http_response_code(500);
+        returnContactWithError( $connectionError );
         exit();
     }
     else
     {
         $stmt = null;
         if ($query === "") {
-            $stmt = $conn->prepare("SELECT * FROM Contacts WHERE UserID = ? ORDER BY LastName, FirstName");
+            $stmt = $conn->prepare("SELECT * FROM Contacts WHERE UserID = ? ORDER BY IsFavorite DESC, LastName, FirstName");
 
             // Safety check that we actually built a valid SQL statement
             if (!$stmt) {
@@ -44,7 +46,7 @@
                 $stmtString .= "AND ( FirstName LIKE ? OR LastName LIKE ? OR Email LIKE ? OR Phone LIKE ? ) ";
             }
 
-            $stmtString .= "ORDER BY LastName, FirstName;";
+            $stmtString .= "ORDER BY IsFavorite DESC, LastName, FirstName;";
             $stmt = $conn->prepare($stmtString);
 
             // Safety check that we actually built a valid SQL statement

@@ -29,23 +29,39 @@
             $binaryImage = base64_decode($imageParts[1]);
         }
 
-    $conn = new mysqli("localhost", "API", "admin1234", "ContactManager");
+    $isFavorite = normalizeFavoriteValue($inData["IsFavorite"] ?? 0);
 
-    if($conn->connect_error)
+    $connectionError = "";
+    $conn = openDatabaseConnection($connectionError);
+
+    if($conn === null)
         {
-            sendResultInfoAsJson(json_encode(["success" => false, "id" => 0, "error" => $conn->connect_error]));
+            http_response_code(500);
+            sendResultInfoAsJson(json_encode(["success" => false, "id" => 0, "error" => $connectionError]));
             exit();
         }
 
     //Update the SQL query to include the new image columns
-    $stmt = $conn->prepare("INSERT INTO Contacts (FirstName, LastName, Phone, Email, UserID, image, imageData) VALUES (?, ?, ?, ?, ?, ?, ?);");
+    $stmt = $conn->prepare("INSERT INTO Contacts (FirstName, LastName, Phone, Email, IsFavorite, UserID, image, imageData) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
 
-    //"ssssiss" means 4 strings, 1 integer, 2 strings (binary counts as string here in mysqli bind_param)
-    $stmt->bind_param("ssssiss",
+    if (!$stmt) {
+        http_response_code(500);
+        sendResultInfoAsJson(json_encode([
+            "success" => false,
+            "id" => 0,
+            "error" => "Prepare failed: " . $conn->error
+        ]));
+        $conn->close();
+        exit();
+    }
+
+    //"ssssiiss" means 4 strings, 2 integers, 2 strings (binary counts as string here in mysqli bind_param)
+    $stmt->bind_param("ssssiiss",
         $inData["FirstName"],
         $inData["LastName"],
         $inData["Phone"],
         $inData["Email"],
+        $isFavorite,
         $inData["UserID"],
         $binaryImage,
         $imageType

@@ -14,14 +14,15 @@
     }
     $id = 0;
 
-    $conn = new mysqli("localhost", "API", "admin1234", "ContactManager"); 	
-    if( $conn->connect_error )
+    $connectionError = "";
+    $conn = openDatabaseConnection($connectionError);
+    if( $conn === null )
     {
         http_response_code(500);
         sendResultInfoAsJson(json_encode([
             "success" => false,
             "affectedRows" => 0,
-            "error" => "Deletion failed: " . $conn->connect_error
+            "error" => "Deletion failed: " . $connectionError
         ]));
 
         exit();

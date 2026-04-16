@@ -1,39 +1,43 @@
+const urlBase = "../../ContactsAPI";
+
 let contactToDelete = null;
 let searchTimeout = null;
 
-// ADDED BY JASON TO LINK EDIT TO CONTACT PAGE FOR NOW
-function editContact(button){
-    //HOLDS THE CONTACT FIELD POSITION
-    let field = button.closest(".contact");
-
-    //Grab the image source if it exists
-    let imgElement = field.querySelector(".avatar-img");
-    let currentImage = imgElement ? imgElement.src : "";
-
-    //OBTAIN THE CONTACT INFO ON CURRENT SELECTION (NEEDS THIS FORMAT FOR IT TO WORK)
-    let contactInfo = [
-        //PASS IN THE FIRST NAME FROM THE DOM FIELD
-        field.querySelector(".first-name").textContent,
-        //PASS IN THE LAST NAME FROM THE DOM FIELD
-        field.querySelector(".last-name").textContent,
-        //PASS IN THE PHONE NUMBER FROM THE DOM FIELD
-        field.querySelector(".phone").textContent,
-        //PASS IN THE EMAIL FROM THE DOM FIELD
-        field.querySelector(".email").textContent,
-	//Pass in the image!
-	currentImage
-    ];
-    //  ^^^^^^^^^^^ HARD CODED UNTIL YOU SET UP THE LIST TO DYNAMIC !!!!!!!
-    //PASS IN THE CURRENT FIELD INFO ARRAY TO LOCAL STORAGE VIA JSON
-    localStorage.setItem("contactInfo", JSON.stringify(contactInfo));
-    localStorage.setItem("ContactID", field.dataset.contactId); // store contact id as well
-    //SWITCH CONCURRENT WINDOW TO THE CONTACT EDIT PAGE
-    window.location.href = '../EditContactPage/ContactEdit.html';
+function getApiUrl(endpoint) {
+    return `${urlBase}/${endpoint}.php`;
 }
 
-/* ===============================
-   DELETE CONTACT
-================================ */
+function isFavoriteValue(value) {
+    return value === true || value === 1 || value === "1";
+}
+
+function refreshContacts() {
+    const searchInput = document.getElementById("searchText");
+    retrieveContacts(searchInput ? searchInput.value.trim() : "");
+}
+
+function searchContacts() {
+    refreshContacts();
+}
+
+function editContact(button) {
+    const field = button.closest(".contact");
+    const imgElement = field.querySelector(".avatar-img");
+    const currentImage = imgElement ? imgElement.src : "";
+
+    const contactInfo = {
+        FirstName: field.querySelector(".first-name").textContent,
+        LastName: field.querySelector(".last-name").textContent,
+        Phone: field.querySelector(".phone").textContent,
+        Email: field.querySelector(".email").textContent,
+        image: currentImage,
+        IsFavorite: isFavoriteValue(field.dataset.isFavorite)
+    };
+
+    localStorage.setItem("contactInfo", JSON.stringify(contactInfo));
+    localStorage.setItem("ContactID", field.dataset.contactId);
+    window.location.href = "../EditContactPage/ContactEdit.html";
+}
 
 function deleteContact(button) {
     contactToDelete = button.closest(".contact");
@@ -62,63 +66,99 @@ document.getElementById("confirmDelete").onclick = function () {
         return;
     }
 
-    let payload = JSON.stringify({
+    const payload = JSON.stringify({
         UserID: window.currentUserId,
         ID: contactId
     });
 
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://colorslab.xyz/ContactsAPI/removeContact.php", true);
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", getApiUrl("removeContact"), true);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
 
     xhr.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
-
-            // ✅ ADD ANIMATION
             contactToDelete.classList.add("removing");
 
-            // Wait for animation to finish before removing
             setTimeout(() => {
-                contactToDelete.remove();
-            }, 250); // match CSS transition time
+                contactToDelete = null;
+                refreshContacts();
+            }, 250);
         }
     };
 
     xhr.send(payload);
-
     document.getElementById("deleteModal").style.display = "none";
 };
 
-/* ===============================
-   BUILD CONTACT CARD
-================================ */
+function toggleFavorite(button) {
+    const contactCard = button.closest(".contact");
+    const contactId = Number(contactCard.dataset.contactId);
+
+    if (!Number.isFinite(contactId)) {
+        console.error("Invalid contact ID");
+        return;
+    }
+
+    const shouldFavorite = !isFavoriteValue(contactCard.dataset.isFavorite);
+    button.disabled = true;
+
+    fetch(getApiUrl("toggleFavorite"), {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            UserID: window.currentUserId,
+            ID: contactId,
+            IsFavorite: shouldFavorite
+        })
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (!data.success) {
+                throw new Error(data.error || "Unable to update favorite.");
+            }
+
+            refreshContacts();
+        })
+        .catch((error) => {
+            console.error("Favorite toggle failed:", error);
+        })
+        .finally(() => {
+            button.disabled = false;
+        });
+}
 
 function getInitials(firstName, lastName) {
-    return firstName[0] + lastName[0];
+    const safeFirstName = String(firstName || "");
+    const safeLastName = String(lastName || "");
+
+    return `${safeFirstName.charAt(0)}${safeLastName.charAt(0)}`.trim();
 }
 
 function formatPhone(phone) {
     const digits = String(phone || "").replace(/\D/g, "");
 
-    if (digits.length !== 10) return "";
+    if (digits.length !== 10) return phone || "";
 
-    return `(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`;
+    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
 }
 
-function buildContact(firstName, lastName, email, phone, contactId, imageBase64) {
-    //Check if an image exists; if not, use the initials
-    let avatarContent = imageBase64
-	? `<img src="${imageBase64}" class="avatar-img" style="width:100%; height:100%; border-radius:50%; object-fit:cover;" alt="Avatar">`
+function buildContact(firstName, lastName, email, phone, contactId, imageBase64, isFavorite) {
+    const favorite = isFavoriteValue(isFavorite);
+    const avatarContent = imageBase64
+        ? `<img src="${imageBase64}" class="avatar-img" alt="Avatar">`
         : getInitials(firstName, lastName);
 
     return `
-    <li class="contact" data-contact-id="${contactId}">
+    <li class="contact${favorite ? " favorite" : ""}" data-contact-id="${contactId}" data-is-favorite="${favorite ? 1 : 0}">
         <div class="contact-info">
             <div class="avatar">${avatarContent}</div>
             <div class="contact-details">
                 <div class="name">
                     <span class="first-name">${firstName}</span>
                     <span class="last-name">${lastName}</span>
+                    ${favorite ? '<span class="favorite-badge">Favorite</span>' : ""}
                 </div>
                 <a class="email" href="mailto:${email}">${email}</a>
                 <a class="phone" href="tel:${phone}">${formatPhone(phone)}</a>
@@ -126,40 +166,38 @@ function buildContact(firstName, lastName, email, phone, contactId, imageBase64)
         </div>
 
         <div class="contact-actions">
-            <button class="edit-btn" onclick = editContact(this)>Edit</button>
-            <button class="delete-btn" onclick="deleteContact(this)">🗑</button>
+            <button
+                class="favorite-btn${favorite ? " active" : ""}"
+                type="button"
+                onclick="toggleFavorite(this)"
+                aria-label="${favorite ? "Remove from favorites" : "Add to favorites"} for ${firstName} ${lastName}"
+                aria-pressed="${favorite ? "true" : "false"}"
+            >
+                ${favorite ? "&#9733;" : "&#9734;"}
+            </button>
+            <button class="edit-btn" type="button" onclick="editContact(this)">Edit</button>
+            <button class="delete-btn" type="button" onclick="deleteContact(this)">Delete</button>
         </div>
     </li>`;
 }
 
-
-/* ===============================
-   RETRIEVE CONTACTS
-================================ */
-
 function retrieveContacts(query = "") {
-
-    let userId = window.currentUserId;
+    const userId = window.currentUserId;
     if (!userId) return;
 
-    let url =
-        "http://colorslab.xyz/ContactsAPI/getContacts.php?UserID=" +
-        encodeURIComponent(userId) +
-        "&query=" +
-        encodeURIComponent(query);
+    const url =
+        `${getApiUrl("getContacts")}?UserID=${encodeURIComponent(userId)}&query=${encodeURIComponent(query)}`;
 
-    let xhr = new XMLHttpRequest();
+    const xhr = new XMLHttpRequest();
     xhr.open("GET", url, true);
 
     xhr.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
-
-            let jsonObject = JSON.parse(xhr.responseText);
-
+            const jsonObject = JSON.parse(xhr.responseText);
             let contactListHTML = "";
 
             for (let i = 0; i < jsonObject.results.length; i++) {
-                let c = jsonObject.results[i];
+                const c = jsonObject.results[i];
 
                 contactListHTML += buildContact(
                     c.FirstName,
@@ -167,8 +205,13 @@ function retrieveContacts(query = "") {
                     c.Email,
                     c.Phone,
                     c.id,
-		    c.image
+                    c.image,
+                    c.IsFavorite
                 );
+            }
+
+            if (!contactListHTML) {
+                contactListHTML = '<li id="emptyState">No contacts found.</li>';
             }
 
             document.getElementById("contactList").innerHTML = contactListHTML;
@@ -178,24 +221,19 @@ function retrieveContacts(query = "") {
     xhr.send();
 }
 
-
-/* ===============================
-   COOKIE + INITIAL LOAD
-================================ */
-
 function readCookie() {
     let userId = -1;
     let firstName = "";
     let lastName = "";
 
-    let data = document.cookie.split(";");
+    const data = document.cookie.split(";");
 
-    for (let item of data) {
-        let [key, value] = item.trim().split("=");
+    for (const item of data) {
+        const [key, value] = item.trim().split("=");
 
         if (key === "firstName") firstName = value;
         if (key === "lastName") lastName = value;
-        if (key === "userId") userId = parseInt(value);
+        if (key === "userId") userId = parseInt(value, 10);
     }
 
     if (userId < 0 || isNaN(userId)) {
@@ -210,37 +248,24 @@ function readCookie() {
     retrieveContacts();
 }
 
-
-/* ===============================
-   LIVE SEARCH (Debounced)
-================================ */
-
 document.addEventListener("DOMContentLoaded", function () {
-
     readCookie();
 
     const searchInput = document.getElementById("searchText");
 
     if (searchInput) {
         searchInput.addEventListener("input", function () {
-
             clearTimeout(searchTimeout);
 
             searchTimeout = setTimeout(() => {
                 retrieveContacts(searchInput.value.trim());
             }, 300);
-
         });
     }
 });
 
-
-/* ===============================
-   LOGOUT
-================================ */
-
 function doLogout() {
-    let date = new Date();
+    const date = new Date();
     date.setTime(date.getTime() - 1);
 
     document.cookie = "firstName=; expires=" + date.toUTCString();
@@ -249,4 +274,3 @@ function doLogout() {
 
     window.location.href = "../HomePage/HomePage.html";
 }
-

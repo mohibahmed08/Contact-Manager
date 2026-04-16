@@ -30,25 +30,40 @@
             $binaryImage = base64_decode($imageParts[1]);
         }
 
+    $isFavorite = normalizeFavoriteValue($inData["IsFavorite"] ?? 0);
 
-    $conn = new mysqli("localhost", "API", "admin1234", "ContactManager");
+    $connectionError = "";
+    $conn = openDatabaseConnection($connectionError);
 
-    if( $conn->connect_error )
+    if( $conn === null )
     {
+        http_response_code(500);
         sendResultInfoAsJson(json_encode([
             "success" => false,
             "affectedRows" => 0,
-            "error" => $conn->connect_error
+            "error" => $connectionError
         ]));
 
         exit();
     }
     else
     {
-        $stmt = $conn->prepare("UPDATE Contacts SET FirstName = ?, LastName = ?, Phone = ?, Email = ?, image = ?, imageData = ? WHERE UserID = ? AND ID = ?;");
+        $stmt = $conn->prepare("UPDATE Contacts SET FirstName = ?, LastName = ?, Phone = ?, Email = ?, IsFavorite = ?, image = ?, imageData = ? WHERE UserID = ? AND ID = ?;");
 
-        //"ssssssii" means 6 strings, 2 integers
-        $stmt->bind_param("ssssssii", $inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $binaryImage, $imageType, $inData["UserID"], $inData["ID"]);
+        if (!$stmt) {
+            http_response_code(500);
+            sendResultInfoAsJson(json_encode([
+                "success" => false,
+                "affectedRows" => 0,
+                "error" => "Prepare failed: " . $conn->error
+            ]));
+
+            $conn->close();
+            exit();
+        }
+
+        //"ssssissii" means 4 strings, 1 integer, 2 strings, 2 integers
+        $stmt->bind_param("ssssissii", $inData["FirstName"], $inData["LastName"], $inData["Phone"], $inData["Email"], $isFavorite, $binaryImage, $imageType, $inData["UserID"], $inData["ID"]);
 
         if (!$stmt->execute()) {
             sendResultInfoAsJson(json_encode([

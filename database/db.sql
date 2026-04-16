@@ -32,6 +32,7 @@ CREATE TABLE `Contacts` (
   `LastName` varchar(50) NOT NULL,
   `Phone` varchar(20) NOT NULL,
   `Email` varchar(50) NOT NULL,
+  `IsFavorite` tinyint(1) NOT NULL DEFAULT '0',
   `DateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `image` LONGBLOB,
   `imageData` varchar(50), 
@@ -87,4 +88,3 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2026-01-27 23:19:48
-

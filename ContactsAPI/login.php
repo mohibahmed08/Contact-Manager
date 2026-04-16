@@ -14,11 +14,12 @@
         exit();
     }
 
-    $conn = new mysqli("localhost", "API", "admin1234", "ContactManager"); 	
-    if( $conn->connect_error )
+    $connectionError = "";
+    $conn = openDatabaseConnection($connectionError);
+    if( $conn === null )
     {
         http_response_code(500);
-        returnWithError( $conn->connect_error );
+        returnWithError( $connectionError );
         exit();
     }
     else
